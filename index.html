@@ -6,7 +6,7 @@
   <title>TalkBox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Seu ícone SVG oficial integrado no Manifest -->
+  <!-- Configurações de PWA e Ícone SVG -->
   <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
     %22name%22: %22TalkBox%22,
     %22short_name%22: %22TalkBox%22,
@@ -22,6 +22,9 @@
       }
     ]
   }">
+  <meta name="theme-color" content="#03091f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
     * {
@@ -796,6 +799,15 @@
   <canvas id="snapshotCanvas" style="display:none;"></canvas>
 
   <script>
+    // Registo do Service Worker para permitir a instalação do app
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('Service Worker registado com sucesso:', reg.scope))
+          .catch((err) => console.error('Falha ao registar o Service Worker:', err));
+      });
+    }
+
     let contacts = [
       { id: 1, name: "Juliana", color: "#e91e63", time: "08:05", messages: [{ type: 'text', text: "Oi! Tudo bem?", sender: "received", time: "08:05" }] },
       { id: 2, name: "Carlos Oliveira", color: "#2196f3", time: "Ontem", messages: [{ type: 'text', text: "Você viu o projeto?", sender: "received", time: "Ontem" }] },
