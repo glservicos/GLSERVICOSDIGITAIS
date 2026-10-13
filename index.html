@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABP - Conversas</title>
-  <!-- Ícones do Lucide/FontAwesome para estilo moderno -->
+  <title>ABP - WhatsApp Style</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
@@ -16,7 +15,7 @@
     }
 
     body {
-      background-color: #121b22; /* Modos escuro estilo WhatsApp */
+      background-color: #121b22;
       color: #e9edef;
       display: flex;
       justify-content: center;
@@ -24,7 +23,6 @@
       min-height: 100vh;
     }
 
-    /* Container Principal do App */
     .app-container {
       width: 100%;
       max-width: 420px;
@@ -34,9 +32,28 @@
       flex-direction: column;
       position: relative;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      overflow: hidden;
     }
 
-    /* Cabeçalho Topo */
+    /* Telas (Alternância entre Lista e Chat) */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #111b21;
+      transition: transform 0.3s ease;
+    }
+
+    .screen.hidden {
+      transform: translateX(100%);
+      pointer-events: none;
+    }
+
+    /* --- TELA 1: LISTA DE CONVERSAS --- */
     .header {
       background-color: #202c33;
       padding: 16px;
@@ -58,7 +75,6 @@
       cursor: pointer;
     }
 
-    /* Lista de Conversas */
     .chat-list {
       flex: 1;
       overflow-y: auto;
@@ -77,12 +93,10 @@
       background-color: #202c33;
     }
 
-    /* Avatar do Usuário */
     .avatar {
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background-color: #6b7c85;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -93,7 +107,6 @@
       flex-shrink: 0;
     }
 
-    /* Detalhes da Conversa */
     .chat-info {
       flex: 1;
       overflow: hidden;
@@ -127,7 +140,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Botão Flutuante (+) */
     .fab-btn {
       position: absolute;
       bottom: 24px;
@@ -144,12 +156,123 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       cursor: pointer;
       border: none;
-      transition: transform 0.2s, background 0.2s;
+      z-index: 10;
     }
 
-    .fab-btn:hover {
-      background-color: #008f6f;
-      transform: scale(1.05);
+    /* --- TELA 2: TELA DE CONVERSA (CHAT) --- */
+    .chat-header {
+      background-color: #202c33;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #aebac1;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .chat-header-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .chat-header-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #e9edef;
+    }
+
+    /* Corpo das Mensagens */
+    .chat-body {
+      flex: 1;
+      background-color: #0b141a;
+      background-image: radial-gradient(#1f2c34 1px, transparent 1px);
+      background-size: 20px 20px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+      position: relative;
+      word-wrap: break-word;
+      color: #e9edef;
+    }
+
+    .message.received {
+      background-color: #202c33;
+      align-self: flex-start;
+      border-top-left-radius: 0;
+    }
+
+    .message.sent {
+      background-color: #005c4b;
+      align-self: flex-end;
+      border-top-right-radius: 0;
+    }
+
+    .message-time {
+      font-size: 10px;
+      color: #8696a0;
+      float: right;
+      margin-left: 8px;
+      margin-top: 4px;
+      line-height: 12px;
+    }
+
+    /* Rodapé de Envio de Mensagem */
+    .chat-footer {
+      background-color: #202c33;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      background-color: #2a3942;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #e9edef;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .send-btn {
+      background: none;
+      border: none;
+      color: #00a884;
+      font-size: 20px;
+      cursor: pointer;
     }
 
     /* Modal / Popup de Novo Contato */
@@ -196,10 +319,6 @@
       margin-bottom: 20px;
     }
 
-    .modal input:focus {
-      border-color: #00a884;
-    }
-
     .modal-buttons {
       display: flex;
       justify-content: flex-end;
@@ -229,37 +348,54 @@
 <body>
 
   <div class="app-container">
-    <!-- Cabeçalho -->
-    <header class="header">
-      <h1>ABP</h1>
-      <div class="header-icons">
-        <i class="fa-solid fa-camera"></i>
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <i class="fa-solid fa-ellipsis-vertical"></i>
-      </div>
-    </header>
-
-    <!-- Lista de Contatos/Conversas -->
-    <div class="chat-list" id="chatList">
-      <!-- Conversa Padrão Exemplo: Juliana -->
-      <div class="chat-item">
-        <div class="avatar" style="background-color: #e91e63;">J</div>
-        <div class="chat-info">
-          <div class="chat-top">
-            <span class="chat-name">Juliana</span>
-            <span class="chat-time">08:05</span>
-          </div>
-          <div class="chat-message">Oi! Tudo bem?</div>
+    
+    <!-- TELA 1: LISTA DE CONVERSAS -->
+    <div class="screen" id="homeScreen">
+      <header class="header">
+        <h1>ABP</h1>
+        <div class="header-icons">
+          <i class="fa-solid fa-camera"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
+      </header>
+
+      <div class="chat-list" id="chatList">
+        <!-- Os chats entram dinamicamente aqui -->
+      </div>
+
+      <button class="fab-btn" id="openModalBtn">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- TELA 2: CHAT INDIVIDUAL -->
+    <div class="screen hidden" id="chatScreen">
+      <div class="chat-header">
+        <button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="chat-header-info">
+          <div class="chat-header-avatar" id="activeAvatar">J</div>
+          <div class="chat-header-name" id="activeName">Juliana</div>
+        </div>
+        <div class="header-icons" style="color: #aebac1; font-size: 16px;">
+          <i class="fa-solid fa-video" style="margin-left: 15px;"></i>
+          <i class="fa-solid fa-phone" style="margin-left: 15px;"></i>
+          <i class="fa-solid fa-ellipsis-vertical" style="margin-left: 15px;"></i>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <!-- As mensagens da conversa aparecem aqui -->
+      </div>
+
+      <div class="chat-footer">
+        <i class="fa-regular fa-face-smile" style="color: #8696a0; font-size: 20px; cursor: pointer;"></i>
+        <input type="text" id="messageInput" placeholder="Mensagem" />
+        <button class="send-btn" id="sendMessageBtn"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
     </div>
 
-    <!-- Botão Flutuante (+) -->
-    <button class="fab-btn" id="openModalBtn">
-      <i class="fa-solid fa-plus"></i>
-    </button>
-
-    <!-- Modal para Adicionar Novo Contato -->
+    <!-- MODAL DE NOVO CONTATO -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal">
         <h3>Novo Contato</h3>
@@ -270,81 +406,181 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <script>
-    // Elementos DOM
+    // Lista de contatos e suas respectivas mensagens
+    let contacts = [
+      { 
+        id: 1, 
+        name: "Juliana", 
+        color: "#e91e63", 
+        time: "08:05", 
+        messages: [
+          { text: "Oi! Tudo bem?", sender: "received", time: "08:05" }
+        ] 
+      },
+      { 
+        id: 2, 
+        name: "Carlos Oliveira", 
+        color: "#2196f3", 
+        time: "Ontem", 
+        messages: [
+          { text: "Você viu o projeto?", sender: "received", time: "Ontem" }
+        ] 
+      },
+      { 
+        id: 3, 
+        name: "Grupo da Família", 
+        color: "#4caf50", 
+        time: "Ontem", 
+        messages: [
+          { text: "Bom dia a todos!", sender: "received", time: "Ontem" }
+        ] 
+      }
+    ];
+
+    let currentContactId = null;
+
+    // Elementos da UI
+    const homeScreen = document.getElementById('homeScreen');
+    const chatScreen = document.getElementById('chatScreen');
     const chatList = document.getElementById('chatList');
+    const backBtn = document.getElementById('backBtn');
+    const activeName = document.getElementById('activeName');
+    const activeAvatar = document.getElementById('activeAvatar');
+    const chatBody = document.getElementById('chatBody');
+    const messageInput = document.getElementById('messageInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modalOverlay = document.getElementById('modalOverlay');
     const addContactBtn = document.getElementById('addContactBtn');
     const contactNameInput = document.getElementById('contactNameInput');
 
-    // Lista inicial de contatos fictícios
-    const contacts = [
-      { id: 1, name: "Juliana", message: "Oi! Tudo bem?", time: "08:05", color: "#e91e63" },
-      { id: 2, name: "Carlos Oliveira", message: "Você viu o projeto?", time: "Ontem", color: "#2196f3" },
-      { id: 3, name: "Grupo da Família", message: "Bom dia a todos!", time: "Ontem", color: "#4caf50" }
-    ];
-
-    // Função para gerar uma cor aleatória para os avatares
     function getRandomColor() {
-      const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ff9800'];
+      const colors = ['#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ff9800'];
       return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    // Função para renderizar a lista de conversas
+    // Renderizar a tela inicial de conversas
     function renderChats() {
       chatList.innerHTML = '';
       contacts.forEach(contact => {
-        const initialLetter = contact.name.charAt(0).toUpperCase();
-        
-        const chatItemHTML = `
-          <div class="chat-item">
-            <div class="avatar" style="background-color: ${contact.color};">${initialLetter}</div>
-            <div class="chat-info">
-              <div class="chat-top">
-                <span class="chat-name">${contact.name}</span>
-                <span class="chat-time">${contact.time}</span>
-              </div>
-              <div class="chat-message">${contact.message}</div>
+        const lastMsg = contact.messages[contact.messages.length - 1];
+        const lastText = lastMsg ? lastMsg.text : "Toque para conversar";
+        const initial = contact.name.charAt(0).toUpperCase();
+
+        const item = document.createElement('div');
+        item.className = 'chat-item';
+        item.innerHTML = `
+          <div class="avatar" style="background-color: ${contact.color};">${initial}</div>
+          <div class="chat-info">
+            <div class="chat-top">
+              <span class="chat-name">${contact.name}</span>
+              <span class="chat-time">${contact.time}</span>
             </div>
+            <div class="chat-message">${lastText}</div>
           </div>
         `;
-        chatList.innerHTML += chatItemHTML;
+
+        // Evento de clique para abrir a conversa específica
+        item.addEventListener('click', () => openChat(contact.id));
+        chatList.appendChild(item);
       });
     }
 
-    // Como verificar se a renderização funcionou:
-    // A lista atualizará imediatamente ao carregar a página.
+    // Abrir a tela de chat do contato selecionado
+    function openChat(id) {
+      currentContactId = id;
+      const contact = contacts.find(c => c.id === id);
+      if (!contact) return;
 
-    // Abrir Modal
+      activeName.textContent = contact.name;
+      activeAvatar.textContent = contact.name.charAt(0).toUpperCase();
+      activeAvatar.style.backgroundColor = contact.color;
+
+      renderMessages(contact);
+
+      homeScreen.classList.add('hidden');
+      chatScreen.classList.remove('hidden');
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Renderizar mensagens dentro da conversa
+    function renderMessages(contact) {
+      chatBody.innerHTML = '';
+      contact.messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${msg.sender}`;
+        msgDiv.innerHTML = `
+          ${msg.text}
+          <span class="message-time">${msg.time}</span>
+        `;
+        chatBody.appendChild(msgDiv);
+      });
+    }
+
+    // Botão de voltar para a lista
+    backBtn.addEventListener('click', () => {
+      chatScreen.classList.add('hidden');
+      homeScreen.classList.remove('hidden');
+      renderChats();
+    });
+
+    // Enviar mensagem no chat atual
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text || currentContactId === null) return;
+
+      const contact = contacts.find(c => c.id === currentContactId);
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      contact.messages.push({
+        text: text,
+        sender: 'sent',
+        time: timeStr
+      });
+      contact.time = timeStr;
+
+      messageInput.value = '';
+      renderMessages(contact);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    sendMessageBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // Modal de adicionar contato
     openModalBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
       contactNameInput.focus();
     });
 
-    // Fechar Modal
     closeModalBtn.addEventListener('click', () => {
       modalOverlay.classList.remove('active');
       contactNameInput.value = '';
     });
 
-    // Adicionar Novo Contato
     addContactBtn.addEventListener('click', () => {
       const name = contactNameInput.value.trim();
       if (name) {
         const now = new Date();
-        const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        
-        // Adiciona o novo contato no topo da lista
+        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
         contacts.unshift({
           id: Date.now(),
           name: name,
-          message: "Nova conversa iniciada",
-          time: timeString,
-          color: getRandomColor()
+          color: getRandomColor(),
+          time: timeStr,
+          messages: [
+            { text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }
+          ]
         });
 
         renderChats();
@@ -353,7 +589,7 @@
       }
     });
 
-    // Renderizar contatos ao iniciar
+    // Inicializar o app renderizando os chats
     renderChats();
   </script>
 </body>
