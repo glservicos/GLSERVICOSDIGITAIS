@@ -6,19 +6,19 @@
   <title>TalkBox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Manifest corrigido com ícone garantido -->
+  <!-- Seu ícone SVG oficial integrado no Manifest -->
   <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
     %22name%22: %22TalkBox%22,
     %22short_name%22: %22TalkBox%22,
     %22start_url%22: %22./%22,
     %22display%22: %22standalone%22,
-    %22background_color%22: %22%23111b21%22,
-    %22theme_color%22: %22%23111b21%22,
+    %22background_color%22: %22%2303091f%22,
+    %22theme_color%22: %22%2303091f%22,
     %22icons%22: [
       {
-        %22src%22: %22https://cdn-icons-png.flaticon.com/512/134/134914.png%22,
+        %22src%22: %22data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27512%27%20height%3D%27512%27%20viewBox%3D%270%200%20512%20512%27%3E%3Cdefs%3E%3CradialGradient%20id%3D%27fundo%27%20cx%3D%2750%25%27%20cy%3D%2742%25%27%20r%3D%2778%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23071344%27%2F%3E%3Cstop%20offset%3D%2765%25%27%20stop-color%3D%27%2303091f%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%2301030c%27%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%27neon%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%2300f5ff%27%2F%3E%3Cstop%20offset%3D%2742%25%27%20stop-color%3D%27%23087bff%27%2F%3E%3Cstop%20offset%3D%2772%25%27%20stop-color%3D%27%23a000ff%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23ff35e8%27%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%27letras%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%270%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%239bffff%27%2F%3E%3Cstop%20offset%3D%2742%25%27%20stop-color%3D%27%2300bfff%27%2F%3E%3Cstop%20offset%3D%2772%25%27%20stop-color%3D%27%23c35cff%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23ff7aef%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20x%3D%2718%27%20y%3D%2718%27%20width%3D%27476%27%20height%3D%27476%27%20rx%3D%27104%27%20fill%3D%27url(%23fundo)%27%2F%3E%3Crect%20x%3D%2728%27%20y%3D%2728%27%20width%3D%27456%27%20height%3D%27456%27%20rx%3D%2794%27%20fill%3D%27none%27%20stroke%3D%27url(%23neon)%27%20stroke-width%3D%274%27%2F%3E%3Cpath%20id%3D%27b%27%20d%3D%27M256%20130C164%20130%20105%20186%20105%20259C105%20302%20125%20338%20158%20359L137%20407Q132%20421%20148%20415L207%20383C223%20389%20240%20392%20260%20392C350%20392%20408%20337%20408%20261C408%20186%20348%20130%20256%20130Z%27%20fill%3D%27none%27%20stroke%3D%27url(%23neon)%27%20stroke-width%3D%2725%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ctext%20x%3D%27256%27%20y%3D%27278%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%2765%27%20font-weight%3D%27800%27%20fill%3D%27url(%23letras)%27%3ETalkbox%3C%2Ftext%3E%3C%2Fsvg%3E%22,
         %22sizes%22: %22512x512%22,
-        %22type%22: %22image/png%22
+        %22type%22: %22image/svg+xml%22
       }
     ]
   }">
@@ -1058,7 +1058,7 @@
 
     document.getElementById('closeModalBtn').addEventListener('click', () => {
       modalOverlay.classList.remove('active');
-      document.getElementById('contactNameInput'].value = '';
+      document.getElementById('contactNameInput').value = '';
     });
 
     document.getElementById('addContactBtn').addEventListener('click', () => {
