@@ -3,547 +3,358 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConectaX - ABP Chat</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0d1117">
+  <title>ABP - Conversas</title>
+  <!-- Ícones do Lucide/FontAwesome para estilo moderno -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0d1117; color: #f0f6fc; height: 100vh; display: flex; justify-content: center; align-items: center; }
-    
-    /* TELA DE LOGIN */
-    #tela-login {
-      background: #161b22;
-      padding: 30px 24px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      border: 1px solid #30363d;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    #tela-login h1 { color: #58a6ff; margin-bottom: 8px; font-size: 1.6rem; }
-    #tela-login p { color: #8b949e; font-size: 0.9rem; margin-bottom: 20px; }
-    #tela-login select, #tela-login input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #30363d;
-      background: #0d1117;
-      color: #fff;
-      font-size: 1rem;
-      outline: none;
-    }
-    #tela-login button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #238636, #2ea043);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    #tela-login button:hover { opacity: 0.9; }
-    .erro-senha { color: #f85149; font-size: 0.85rem; margin-top: 10px; display: none; }
 
-    /* CONTAINER DO APLICATIVO DE MENSAGENS */
-    #app-chat {
-      display: none;
+    body {
+      background-color: #121b22; /* Modos escuro estilo WhatsApp */
+      color: #e9edef;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Container Principal do App */
+    .app-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 420px;
       height: 100vh;
-      background: #0d1117;
-      flex-direction: column;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-      border-left: 1px solid #30363d;
-      border-right: 1px solid #30363d;
-    }
-
-    /* CABEÇALHO DO CHAT */
-    .cabecalho-chat {
-      background-color: #161b22;
-      color: white;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #30363d;
-    }
-    .info-usuario-chat { display: flex; align-items: center; gap: 12px; }
-    .avatar-container { position: relative; }
-    .avatar-chat {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #8a2be2, #00ffff);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: white;
-      font-size: 1.1rem;
-      padding: 2px;
-    }
-    .avatar-inner {
-      width: 100%;
-      height: 100%;
-      background: #161b22;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .status-online {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 10px;
-      height: 10px;
-      background-color: #2ea043;
-      border-radius: 50%;
-      border: 2px solid #161b22;
-    }
-    .status-chat h2 { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #f0f6fc; }
-    .status-chat h2 span.verificado { color: #58a6ff; font-size: 0.85rem; }
-    .status-chat span { font-size: 0.75rem; color: #2ea043; }
-    
-    .acoes-topo { display: flex; gap: 16px; color: #8b949e; font-size: 1.1rem; align-items: center; }
-    .acoes-topo button { background: none; border: none; color: inherit; cursor: pointer; font-size: 1.1rem; }
-
-    /* ÁREA DAS MENSAGENS */
-    .lista-mensagens {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
+      background-color: #111b21;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      background: radial-gradient(circle at center, #11161d 0%, #0d1117 100%);
-    }
-    .balao-mensagem {
-      max-width: 80%;
-      padding: 10px 14px;
-      border-radius: 12px;
       position: relative;
-      word-wrap: break-word;
-      font-size: 0.95rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-    .balao-minha {
-      background: linear-gradient(135deg, #1f6feb, #388bfd);
-      color: #fff;
-      align-self: flex-end;
-      border-bottom-right-radius: 2px;
-    }
-    .balao-outro {
-      background-color: #21262d;
-      color: #f0f6fc;
-      align-self: flex-start;
-      border-bottom-left-radius: 2px;
-      border: 1px solid #30363d;
-    }
-    .balao-mensagem strong { display: block; font-size: 0.75rem; color: #8b949e; margin-bottom: 2px; }
-    .balao-mensagem p { margin-bottom: 4px; }
-    .balao-mensagem img { max-width: 100%; border-radius: 8px; margin-top: 4px; display: block; }
-    .balao-mensagem audio { width: 100%; min-width: 200px; height: 36px; margin-top: 4px; filter: invert(1); }
-    .detalhes-rodape-msg {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.65rem;
-      color: #8b949e;
-      margin-top: 2px;
-    }
-    .balao-minha .detalhes-rodape-msg { color: rgba(255,255,255,0.8); }
 
-    /* BARRA INFERIOR DE ENVIO */
-    .painel-inferior {
-      background-color: #161b22;
-      border-top: 1px solid #30363d;
-      padding: 10px;
-    }
-    .barra-envio {
+    /* Cabeçalho Topo */
+    .header {
+      background-color: #202c33;
+      padding: 16px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      background: #0d1117;
-      padding: 6px 12px;
-      border-radius: 24px;
-      border: 1px solid #30363d;
-      margin-bottom: 10px;
+      color: #aebac1;
     }
-    .btn-acao {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
+
+    .header h1 {
+      font-size: 20px;
+      color: #e9edef;
+      font-weight: 600;
+    }
+
+    .header-icons i {
+      font-size: 18px;
+      margin-left: 20px;
       cursor: pointer;
-      color: #8b949e;
-      padding: 2px;
     }
-    .btn-acao:hover { color: #58a6ff; }
-    .campo-texto-msg {
+
+    /* Lista de Conversas */
+    .chat-list {
       flex: 1;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 0.95rem;
-      outline: none;
-    }
-    .btn-ia-circulo {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #58a6ff, #8a2be2);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 8px rgba(88,166,255,0.5);
+      overflow-y: auto;
     }
 
-    /* MENU DE ATALHOS INFERIORES ESTILO FIGURA */
-    .menu-atalhos-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      text-align: center;
-    }
-    .atalho-item {
-      background: #21262d;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 8px 4px;
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
       cursor: pointer;
+      border-bottom: 1px solid #222d34;
       transition: background 0.2s;
     }
-    .atalho-item:hover { background: #30363d; }
-    .atalho-item span.icone { font-size: 1.1rem; display: block; margin-bottom: 2px; }
-    .atalho-item span.texto-atalho { font-size: 0.6rem; color: #8b949e; display: block; line-height: 1.1; }
 
-    .gravando-ativo {
-      color: #f85149 !important;
-      animation: piscar 1s infinite;
+    .chat-item:hover {
+      background-color: #202c33;
     }
-    @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-  </style>
 
-  <!-- Firebase Scripts Compat -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    /* Avatar do Usuário */
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #6b7c85;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: #fff;
+      font-weight: bold;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    /* Detalhes da Conversa */
+    .chat-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .chat-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #e9edef;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-time {
+      font-size: 12px;
+      color: #8696a0;
+    }
+
+    .chat-message {
+      font-size: 14px;
+      color: #8696a0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Botão Flutuante (+) */
+    .fab-btn {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background-color: #00a884;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #111b21;
+      font-size: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .fab-btn:hover {
+      background-color: #008f6f;
+      transform: scale(1.05);
+    }
+
+    /* Modal / Popup de Novo Contato */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background-color: #222e35;
+      width: 85%;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+      color: #e9edef;
+      font-size: 18px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #3b4a54;
+      background-color: #111b21;
+      color: #e9edef;
+      font-size: 15px;
+      outline: none;
+      margin-bottom: 20px;
+    }
+
+    .modal input:focus {
+      border-color: #00a884;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-cancel {
+      background-color: transparent;
+      color: #8696a0;
+    }
+
+    .btn-add {
+      background-color: #00a884;
+      color: #111b21;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- TELA DE LOGIN -->
-  <div id="tela-login">
-    <h1>💬 ConectaX</h1>
-    <p>Mais que mensagens, é conexão.</p>
-    <form id="form-login" onsubmit="validarSenha(event)">
-      <select id="usuario-login" required>
-        <option value="Gabriel">Gabriel</option>
-        <option value="Juliana">Juliana</option>
-      </select>
-      <input type="password" id="input-senha" placeholder="Sua senha" required>
-      <button type="submit">Entrar no Chat</button>
-      <p id="msg-erro" class="erro-senha">❌ Senha incorreta!</p>
-    </form>
-  </div>
+  <div class="app-container">
+    <!-- Cabeçalho -->
+    <header class="header">
+      <h1>ABP</h1>
+      <div class="header-icons">
+        <i class="fa-solid fa-camera"></i>
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </div>
+    </header>
 
-  <!-- APLICATIVO DE MENSAGENS -->
-  <div id="app-chat">
-    <!-- CABEÇALHO -->
-    <div class="cabecalho-chat">
-      <div class="info-usuario-chat">
-        <div class="avatar-container">
-          <div class="avatar-chat">
-            <div id="avatar-usuario" class="avatar-inner">G</div>
+    <!-- Lista de Contatos/Conversas -->
+    <div class="chat-list" id="chatList">
+      <!-- Conversa Padrão Exemplo: Juliana -->
+      <div class="chat-item">
+        <div class="avatar" style="background-color: #e91e63;">J</div>
+        <div class="chat-info">
+          <div class="chat-top">
+            <span class="chat-name">Juliana</span>
+            <span class="chat-time">08:05</span>
           </div>
-          <div class="status-online"></div>
+          <div class="chat-message">Oi! Tudo bem?</div>
         </div>
-        <div class="status-chat">
-          <h2><span id="nome-usuario-logado">Gabriel</span> <span class="verificado">✔</span></h2>
-          <span>online</span>
-        </div>
-      </div>
-      <div class="acoes-topo">
-        <button title="Chamada de voz">📞</button>
-        <button title="Vídeo chamada">📹</button>
-        <button onclick="sair()" title="Sair">⋮</button>
       </div>
     </div>
 
-    <!-- MENSAGENS -->
-    <div id="lista-mensagens" class="lista-mensagens">
-      <p style="text-align: center; color: #8b949e; margin-top: 50%; font-size: 0.85rem;">Carregando conversas...</p>
-    </div>
+    <!-- Botão Flutuante (+) -->
+    <button class="fab-btn" id="openModalBtn">
+      <i class="fa-solid fa-plus"></i>
+    </button>
 
-    <!-- PAINEL INFERIOR -->
-    <div class="painel-inferior">
-      <!-- BARRA DE DIGITAÇÃO E COMANDOS -->
-      <div class="barra-envio">
-        <button type="button" class="btn-acao" title="Inserir Emoji">😊</button>
-        
-        <input type="file" id="input-arquivo" accept="image/*" style="display: none;">
-        <input type="text" id="input-mensagem" class="campo-texto-msg" placeholder="Digite uma mensagem...">
-        
-        <button type="button" class="btn-acao" id="btn-clique-anexo" title="Anexar Arquivo">📎</button>
-        <button type="button" class="btn-ia-circulo" title="Assistente IA">✨</button>
-        <button type="button" class="btn-acao" id="btn-mic" title="Gravar Áudio">🎤</button>
-      </div>
-
-      <!-- GRID DE ATALHOS INFERIORES (CONFORME DESIGN SOLICITADO) -->
-      <div class="menu-atalhos-grid">
-        <div class="atalho-item" onclick="alert('Modo invisível ativado!')">
-          <span class="icone">✨</span>
-          <span class="texto-atalho">Modo invisível</span>
-        </div>
-        <div class="atalho-item" onclick="alert('Compartilhando localização...')">
-          <span class="icone">📍</span>
-          <span class="texto-atalho">Compartilhar localização</span>
-        </div>
-        <div class="atalho-item" onclick="alert('Mensagens que somem configuradas!')">
-          <span class="icone">⏱️</span>
-          <span class="texto-atalho">Mensagens que somem</span>
-        </div>
-        <div class="atalho-item" onclick="alert('Abrindo arquivos secretos...')">
-          <span class="icone">📁</span>
-          <span class="texto-atalho">Arquivos secretos</span>
-        </div>
-        <div class="atalho-item" onclick="alert('Conversa protegida por criptografia!')">
-          <span class="icone">🔒</span>
-          <span class="texto-atalho">Conversa protegida</span>
+    <!-- Modal para Adicionar Novo Contato -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <h3>Novo Contato</h3>
+        <input type="text" id="contactNameInput" placeholder="Digite o nome da pessoa..." />
+        <div class="modal-buttons">
+          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
+          <button class="btn btn-add" id="addContactBtn">Adicionar</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const SENHAS = { Gabriel: "7890", Juliana: "2468" };
+    // Elementos DOM
+    const chatList = document.getElementById('chatList');
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const addContactBtn = document.getElementById('addContactBtn');
+    const contactNameInput = document.getElementById('contactNameInput');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBK3ptWyBo5nxB9SjFZkMLVvP",
-      authDomain: "condoexpress-a20e0.firebaseapp.com",
-      projectId: "condoexpress-a20e0",
-      storageBucket: "condoexpress-a20e0.firebasestorage.app",
-      messagingSenderId: "800579097935",
-      appId: "1:800579097935:web:7ef0b0de349b3",
-      measurementId: "G-9E1MW2B2VY"
-    };
+    // Lista inicial de contatos fictícios
+    const contacts = [
+      { id: 1, name: "Juliana", message: "Oi! Tudo bem?", time: "08:05", color: "#e91e63" },
+      { id: 2, name: "Carlos Oliveira", message: "Você viu o projeto?", time: "Ontem", color: "#2196f3" },
+      { id: 3, name: "Grupo da Família", message: "Bom dia a todos!", time: "Ontem", color: "#4caf50" }
+    ];
 
-    let dbGlobal = null;
-    let mediaRecorder = null;
-    let pedacosAudio = [];
-    let gravandoAtivo = false;
-
-    if (localStorage.getItem('conecta_autenticado') === 'true') {
-      const u = localStorage.getItem('conecta_usuario');
-      if (u && SENHAS[u]) {
-        iniciarApp(u);
-      } else {
-        localStorage.clear();
-      }
+    // Função para gerar uma cor aleatória para os avatares
+    function getRandomColor() {
+      const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ff9800'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    function validarSenha(e) {
-      e.preventDefault();
-      const senha = document.getElementById('input-senha').value.trim();
-      const usuario = document.getElementById('usuario-login').value;
-      const msgErro = document.getElementById('msg-erro');
-
-      if (SENHAS[usuario] && senha === SENHAS[usuario]) {
-        localStorage.setItem('conecta_autenticado', 'true');
-        localStorage.setItem('conecta_usuario', usuario);
-        msgErro.style.display = 'none';
-        iniciarApp(usuario);
-      } else {
-        msgErro.style.display = 'block';
-      }
-    }
-
-    function iniciarApp(usuario) {
-      document.getElementById('tela-login').style.display = 'none';
-      document.getElementById('app-chat').style.display = 'flex';
-      document.getElementById('nome-usuario-logado').textContent = usuario;
-      document.getElementById('avatar-usuario').textContent = usuario.charAt(0);
-
-      iniciarFirebase();
-      configurarEventosDOM();
-    }
-
-    function sair() {
-      localStorage.clear();
-      location.reload();
-    }
-
-    function iniciarFirebase() {
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
-      dbGlobal = firebase.firestore();
-
-      const listaMensagens = document.getElementById('lista-mensagens');
-
-      dbGlobal.collection('mensagens_chat').onSnapshot((snapshot) => {
-        let msgs = [];
-        snapshot.forEach((doc) => { msgs.push({ id: doc.id, ...doc.data() }); });
-        msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-        const usuarioLogado = localStorage.getItem('conecta_usuario');
-        let html = '';
-
-        msgs.forEach((m) => {
-          const ehMinha = m.quem === usuarioLogado;
-          let conteudo = '';
-
-          if (m.tipo === 'imagem') {
-            conteudo = `<img src="${m.url}" alt="Imagem">`;
-          } else if (m.tipo === 'audio') {
-            conteudo = `<audio controls src="${m.url}"></audio>`;
-          } else {
-            conteudo = `<p>${m.texto || ''}</p>`;
-          }
-
-          html += `
-            <div class="balao-mensagem ${ehMinha ? 'balao-minha' : 'balao-outro'}">
-              <strong>${m.quem}</strong>
-              ${conteudo}
-              <div class="detalhes-rodape-msg">
-                <span>${m.horario || ''}</span>
-                ${ehMinha ? '<span style="color: #388bfd; font-weight: bold;">✓✓</span>' : ''}
+    // Função para renderizar a lista de conversas
+    function renderChats() {
+      chatList.innerHTML = '';
+      contacts.forEach(contact => {
+        const initialLetter = contact.name.charAt(0).toUpperCase();
+        
+        const chatItemHTML = `
+          <div class="chat-item">
+            <div class="avatar" style="background-color: ${contact.color};">${initialLetter}</div>
+            <div class="chat-info">
+              <div class="chat-top">
+                <span class="chat-name">${contact.name}</span>
+                <span class="chat-time">${contact.time}</span>
               </div>
+              <div class="chat-message">${contact.message}</div>
             </div>
-          `;
+          </div>
+        `;
+        chatList.innerHTML += chatItemHTML;
+      });
+    }
+
+    // Como verificar se a renderização funcionou:
+    // A lista atualizará imediatamente ao carregar a página.
+
+    // Abrir Modal
+    openModalBtn.addEventListener('click', () => {
+      modalOverlay.classList.add('active');
+      contactNameInput.focus();
+    });
+
+    // Fechar Modal
+    closeModalBtn.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+      contactNameInput.value = '';
+    });
+
+    // Adicionar Novo Contato
+    addContactBtn.addEventListener('click', () => {
+      const name = contactNameInput.value.trim();
+      if (name) {
+        const now = new Date();
+        const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        // Adiciona o novo contato no topo da lista
+        contacts.unshift({
+          id: Date.now(),
+          name: name,
+          message: "Nova conversa iniciada",
+          time: timeString,
+          color: getRandomColor()
         });
 
-        listaMensagens.innerHTML = html || '<p style="text-align: center; color: #8b949e; margin-top: 50%; font-size: 0.85rem;">Nenhuma mensagem ainda. Diga oi!</p>';
-        listaMensagens.scrollTop = listaMensagens.scrollHeight;
-      }, (erro) => {
-        console.error("Erro ao carregar mensagens:", erro);
-      });
-    }
-
-    function configurarEventosDOM() {
-      const inputMensagem = document.getElementById('input-mensagem');
-      inputMensagem.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          enviarTexto();
-        }
-      });
-
-      const inputArquivo = document.getElementById('input-arquivo');
-      document.getElementById('btn-clique-anexo').addEventListener('click', () => {
-        inputArquivo.click();
-      });
-
-      inputArquivo.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          processarEEnviarArquivo(e.target.files[0], 'imagem');
-        }
-      });
-
-      document.getElementById('btn-mic').addEventListener('click', alternarGravacaoAudio);
-    }
-
-    async function enviarTexto() {
-      const input = document.getElementById('input-mensagem');
-      const texto = input.value.trim();
-      const usuarioLogado = localStorage.getItem('conecta_usuario');
-
-      if (!texto || !dbGlobal) return;
-
-      try {
-        await dbGlobal.collection('mensagens_chat').add({
-          quem: usuarioLogado,
-          tipo: 'texto',
-          texto: texto,
-          timestamp: Date.now(),
-          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        });
-        input.value = '';
-        input.focus();
-      } catch (e) {
-        alert("Erro ao enviar texto: " + e.message);
+        renderChats();
+        contactNameInput.value = '';
+        modalOverlay.classList.remove('active');
       }
-    }
+    });
 
-    function processarEEnviarArquivo(arquivo, tipo) {
-      const reader = new FileReader();
-      reader.onload = async function (uploadEvent) {
-        const base64Data = uploadEvent.target.result;
-        const usuarioLogado = localStorage.getItem('conecta_usuario');
-
-        try {
-          await dbGlobal.collection('mensagens_chat').add({
-            quem: usuarioLogado,
-            tipo: tipo,
-            url: base64Data,
-            timestamp: Date.now(),
-            horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-          });
-          if (tipo === 'imagem') {
-            document.getElementById('input-arquivo').value = '';
-          }
-        } catch (e) {
-          alert("Erro ao salvar arquivo: " + e.message);
-        }
-      };
-      reader.readAsDataURL(arquivo);
-    }
-
-    async function alternarGravacaoAudio() {
-      const btnMic = document.getElementById('btn-mic');
-
-      if (!gravandoAtivo) {
-        try {
-          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            alert("Seu navegador não suporta gravação de áudio.");
-            return;
-          }
-
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          pedacosAudio = [];
-
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) {
-              pedancao.push(e.data); // correção de compatibilidade abaixo
-            }
-          };
-
-          // Redefinindo corretamente o ondataavailable
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) {
-              pedacosAudio.push(e.data);
-            }
-          };
-
-          mediaRecorder.onstop = async () => {
-            const blob = new Blob(pedacosAudio, { type: 'audio/webm' });
-            processarEEnviarArquivo(blob, 'audio');
-            stream.getTracks().forEach(t => t.stop());
-          };
-
-          mediaRecorder.start();
-          gravandoAtivo = true;
-          btnMic.classList.add('gravando-ativo');
-          btnMic.title = "Gravando... Clique novamente para parar e enviar";
-        } catch (err) {
-          alert("Erro ao acessar o microfone: " + err.message);
-        }
-      } else {
-        if (mediaRecorder && mediaRecorder.state !== "inactive") {
-          mediaRecorder.stop();
-        }
-        gravandoAtivo = false;
-        btnMic.classList.remove('gravando-ativo');
-        btnMic.title = "Gravar Áudio";
-      }
-    }
+    // Renderizar contatos ao iniciar
+    renderChats();
   </script>
 </body>
 </html>
