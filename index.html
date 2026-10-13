@@ -3,535 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finanças do Casal</title>
+  <title>ABP Mensagens</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#3f51b5">
+  <meta name="theme-color" content="#075e54">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; color: #333; padding: 20px; max-width: 600px; margin: 0 auto; }
-    h1, h2 { text-align: center; color: #2c3e50; margin-bottom: 15px; }
+    body { background-color: #d1d7db; color: #111b21; height: 100vh; display: flex; justify-content: center; align-items: center; }
     
-    /* Tela de Login */
+    /* TELA DE LOGIN */
     #tela-login {
       background: white;
-      padding: 30px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 50px;
+      padding: 30px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 400px;
       text-align: center;
     }
-    #tela-login input, #tela-login select {
-      margin: 10px 0;
-      text-align: center;
-      font-size: 1.1rem;
+    #tela-login h1 { color: #075e54; margin-bottom: 8px; font-size: 1.6rem; }
+    #tela-login p { color: #667781; font-size: 0.9rem; margin-bottom: 20px; }
+    #tela-login select, #tela-login input {
       width: 100%;
       padding: 12px;
-      border-radius: 6px;
+      margin-bottom: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 1rem;
+      outline: none;
     }
-    #tela-login input { letter-spacing: 3px; }
-    .erro-senha { color: #c0392b; font-size: 0.9rem; margin-top: 10px; display: none; }
-
-    #conteudo-principal { display: none; }
-
-    /* Saldo Positivo Topo */
-    .card-saldo-positivo {
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
+    #tela-login button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00a884;
       color: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .card-saldo-positivo h3 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.9; }
-    .card-saldo-positivo .valor-destaque { font-size: 2rem; font-weight: bold; }
-    .card-saldo-positivo p { font-size: 0.85rem; margin-top: 5px; opacity: 0.8; }
-
-    .painel-exclusivo-gabriel {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: none; 
-    }
-
-    form { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-    input, select, button { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
-    button { background-color: #3f51b5; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-    button:hover { background-color: #303f9f; }
-    .btn-sair { background-color: #e74c3c; margin-top: 15px; }
-    .btn-limpar-tudo { background-color: #e67e22; margin-top: 10px; }
-    .btn-limpar-tudo:hover { background-color: #d35400; }
-
-    /* Calculadora */
-    .card-calculadora {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      border: 2px solid #3f51b5;
-    }
-    .visor-calc {
-      background: #2c3e50;
-      color: #2ecc71;
-      padding: 15px;
-      border-radius: 6px;
-      text-align: right;
-      font-size: 1.8rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .visor-subtotal {
-      background: #ecf0f1;
-      color: #34495e;
-      padding: 8px 12px;
-      border-radius: 6px;
-      text-align: right;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .teclado-numerico {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-    .btn-teclado {
-      background-color: #ecf0f1;
-      color: #2c3e50;
-      font-size: 1.2rem;
-      padding: 14px 0;
-      border-radius: 6px;
-      border: 1px solid #bdc3c7;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
+      transition: background 0.2s;
     }
-    .btn-teclado:active { background-color: #bdc3c7; }
-    .btn-operacao { background-color: #3498db; color: white; border: none; }
-    .btn-apagar { background-color: #e74c3c; color: white; border: none; }
+    #tela-login button:hover { background-color: #008f6f; }
+    .erro-senha { color: #e74c3c; font-size: 0.85rem; margin-top: 10px; display: none; }
 
-    .botoes-calc { display: flex; gap: 10px; }
-    .btn-adicionar-item { background-color: #27ae60; }
-    .btn-limpar-calc { background-color: #e67e22; }
-    .lista-itens-calc {
-      max-height: 120px;
-      overflow-y: auto;
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: #555;
-      border-top: 1px solid #eee;
-      padding-top: 8px;
-    }
-
-    /* CHAT ESTILO WHATSAPP COMPLETO */
-    .secao-chat-integrado {
-      margin-top: 20px;
-      border-top: 2px dashed #dcdde1;
-      padding-top: 15px;
-    }
-    .chat-mensagens {
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #dcdde1;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
+    /* CONTAINER DO APLICATIVO DE MENSAGENS */
+    #app-chat {
+      display: none;
+      width: 100%;
+      max-width: 500px;
+      height: 100vh;
       background: #efeae2;
-      display: flex;
       flex-direction: column;
-      gap: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .mensagem-item {
-      padding: 8px 12px;
-      border-radius: 8px;
-      max-width: 80%;
-      word-wrap: break-word;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    .mensagem-gabriel {
-      background: #d9fdd3;
-      margin-left: auto;
-      border-top-right-radius: 0;
-    }
-    .mensagem-juliana {
-      background: #ffffff;
-      margin-right: auto;
-      border-top-left-radius: 0;
-    }
-    .mensagem-item strong { display: block; font-size: 0.75rem; color: #075e54; margin-bottom: 2px; }
-    .mensagem-item p { font-size: 0.9rem; color: #111; }
-    .mensagem-item img { max-width: 100%; border-radius: 6px; margin-top: 4px; }
-    .mensagem-item audio { width: 100%; max-width: 220px; height: 36px; margin-top: 4px; }
-    .mensagem-item small { display: block; font-size: 0.65rem; color: #667781; text-align: right; margin-top: 2px; }
 
-    /* BARRA DE INPUT DO CHAT */
-    .container-envio-chat {
+    /* CABEÇALHO DO CHAT */
+    .cabecalho-chat {
+      background-color: #075e54;
+      color: white;
+      padding: 12px 16px;
       display: flex;
-      gap: 6px;
       align-items: center;
-      background: #fff;
-      padding: 6px 10px;
-      border-radius: 25px;
-      border: 1px solid #ccc;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-    .container-envio-chat input[type="text"] {
-      border: none;
-      outline: none;
-      padding: 8px;
-      font-size: 0.95rem;
-      flex: 1;
+    .info-usuario-chat { display: flex; align-items: center; gap: 12px; }
+    .avatar-chat {
+      width: 40px;
+      height: 40px;
+      background-color: #128c7e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.1rem;
+    }
+    .status-chat h2 { font-size: 1rem; font-weight: 600; }
+    .status-chat span { font-size: 0.75rem; opacity: 0.85; }
+    .btn-sair-chat {
       background: transparent;
-    }
-    .btn-acao-chat {
-      background: none;
       border: none;
+      color: white;
       font-size: 1.2rem;
       cursor: pointer;
       padding: 4px;
-      color: #555;
     }
-    .btn-acao-chat:hover { color: #00a884; }
-    .btn-enviar-chat {
+
+    /* ÁREA DAS MENSAGENS */
+    .lista-mensagens {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .balao-mensagem {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      position: relative;
+      word-wrap: break-word;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      font-size: 0.95rem;
+    }
+    .balao-minha {
+      background-color: #d9fdd3;
+      align-self: flex-end;
+      border-top-right-radius: 0;
+    }
+    .balao-outro {
+      background-color: #ffffff;
+      align-self: flex-start;
+      border-top-left-radius: 0;
+    }
+    .balao-mensagem strong { display: block; font-size: 0.75rem; color: #075e54; margin-bottom: 2px; }
+    .balao-mensagem p { color: #111b21; margin-bottom: 4px; }
+    .balao-mensagem img { max-width: 100%; border-radius: 6px; margin-top: 4px; display: block; }
+    .balao-mensagem audio { width: 100%; min-width: 200px; height: 36px; margin-top: 4px; }
+    .balao-mensagem .horario {
+      display: block;
+      font-size: 0.65rem;
+      color: #667781;
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* BARRA INFERIOR DE ENVIO */
+    .barra-envio {
+      background-color: #f0f2f5;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid #d1d7db;
+    }
+    .btn-anexo, .btn-mic {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #54656f;
+      padding: 4px;
+    }
+    .btn-anexo:hover, .btn-mic:hover { color: #075e54; }
+    .campo-texto-msg {
+      flex: 1;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .btn-enviar-msg {
       background-color: #00a884;
       color: white;
       border: none;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      font-size: 1rem;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      font-size: 1.1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
     }
-    .btn-enviar-chat:hover { background-color: #008f6f; }
+    .btn-enviar-msg:hover { background-color: #008f6f; }
+    
     .gravando-ativo {
       color: #e74c3c !important;
-      animation: pulse 1s infinite;
+      animation: piscar 1s infinite;
     }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-    .historico { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
-    .item-transacao:last-child { border-bottom: none; }
-    .detalhes-transacao strong { display: block; font-size: 1rem; }
-    .detalhes-transacao small { color: #7f8c8d; font-size: 0.8rem; }
-    
-    .lado-direito-transacao {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .valor-transacao { font-weight: bold; }
-    .valor-saida { color: #c0392b; }
-    .btn-deletar-gasto {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      width: auto;
-    }
-    .btn-deletar-gasto:hover {
-      background-color: #c0392b;
-    }
-
-    .card-saldo-final {
-      background: #2c3e50;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .card-saldo-final h3 { font-size: 1rem; }
-    .card-saldo-final span { font-size: 1.3rem; font-weight: bold; color: #2ecc71; }
+    @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
   </style>
 
   <!-- Firebase Scripts Compat -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
 </head>
 <body>
 
   <!-- TELA DE LOGIN -->
   <div id="tela-login">
-    <h1>🔒 Acesso Restrito</h1>
-    <p style="color: #7f8c8d; margin-top: 5px;">Selecione quem está acessando e digite a senha</p>
+    <h1>💬 ABP Chat</h1>
+    <p>Escolha seu usuário e digite sua senha para entrar</p>
     <form id="form-login" onsubmit="validarSenha(event)">
-      <div class="form-group" style="margin-top: 15px;">
-        <label for="usuario-login" style="text-align: left;">Quem está entrando?</label>
-        <select id="usuario-login" required>
-          <option value="Gabriel">Gabriel</option>
-          <option value="Juliana">Juliana</option>
-        </select>
-      </div>
-      <input type="password" id="input-senha" placeholder="Digite sua senha" required>
-      <button type="submit">Entrar</button>
-      <p id="msg-erro" class="erro-senha">❌ Senha incorreta para o usuário selecionado!</p>
+      <select id="usuario-login" required>
+        <option value="Gabriel">Gabriel</option>
+        <option value="Juliana">Juliana</option>
+      </select>
+      <input type="password" id="input-senha" placeholder="Sua senha" required>
+      <button type="submit">Entrar no Chat</button>
+      <p id="msg-erro" class="erro-senha">❌ Senha incorreta!</p>
     </form>
   </div>
 
-  <!-- CONTEÚDO DO APLICATIVO -->
-  <div id="conteudo-principal">
-    <h1>💰 Finanças do Casal</h1>
-
-    <!-- 1. TOPO: SALDO POSITIVO -->
-    <div class="card-saldo-positivo">
-      <h3>💵 Saldo Positivo Base (Sua Verba)</h3>
-      <div id="display-valor-positivo" class="valor-destaque">R$ 500,00</div>
-      <p>Valor base definido para o mês</p>
-    </div>
-
-    <!-- ÁREA EXCLUSIVA DO GABRIEL -->
-    <div id="painel-gabriel" class="painel-exclusivo-gabriel">
-      <form id="form-exclusivo-gabriel" style="background: transparent; box-shadow: none; padding: 0; margin-bottom: 0;">
-        <div class="form-group">
-          <label for="novo-limite-input">Alterar Saldo Positivo Base (R$)</label>
-          <input type="number" id="novo-limite-input" step="0.01" value="500.00" required>
-        </div>
-        <button type="submit" style="background-color: #27ae60;">Atualizar Valor Positivo</button>
-      </form>
-      <button type="button" class="btn-limpar-tudo" onclick="limparTudoDoMes()">🔄 Limpar Tudo e Recomeçar o Mês</button>
-    </div>
-
-    <!-- 2. CALCULADORA & CHAT -->
-    <div class="card-calculadora">
-      <h2>🛒 Calculadora & Chat</h2>
-      <p style="font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 10px;">Some seus itens e mande recados pelos corredores do mercado!</p>
-      
-      <div style="font-size: 0.8rem; color: #7f8c8d; margin-bottom: 2px;">Operação atual:</div>
-      <div id="visor-item-atual" class="visor-subtotal">0</div>
-
-      <div style="font-size: 0.8rem; color: #7f8c8d; margin-bottom: 2px;">Total acumulado da compra:</div>
-      <div id="visor-calculadora" class="visor-calc">R$ 0,00</div>
-      
-      <!-- TECLADO NUMÉRICO -->
-      <div class="teclado-numerico">
-        <button type="button" class="btn-teclado btn-operacao" onclick="digitarNumero('/')">÷</button>
-        <button type="button" class="btn-teclado btn-operacao" onclick="digitarNumero('*')">×</button>
-        <button type="button" class="btn-teclado btn-operacao" onclick="digitarNumero('-')">-</button>
-        <button type="button" class="btn-teclado btn-operacao" onclick="digitarNumero('+')">+</button>
-
-        <button type="button" class="btn-teclado" onclick="digitarNumero('7')">7</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('8')">8</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('9')">9</button>
-        <button type="button" class="btn-teclado btn-operacao" onclick="digitarNumero('%')">%</button>
-        
-        <button type="button" class="btn-teclado" onclick="digitarNumero('4')">4</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('5')">5</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('6')">6</button>
-        <button type="button" class="btn-teclado btn-apagar" onclick="apagarDigito()">⌫</button>
-        
-        <button type="button" class="btn-teclado" onclick="digitarNumero('1')">1</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('2')">2</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('3')">3</button>
-        <button type="button" class="btn-teclado btn-operacao" onclick="calcularResultadoFinal()" style="grid-row: span 2; background-color: #2980b9;">=</button>
-
-        <button type="button" class="btn-teclado" onclick="digitarNumero('0')" style="grid-column: span 2;">0</button>
-        <button type="button" class="btn-teclado" onclick="digitarNumero('.')">.</button>
-      </div>
-
-      <div class="botoes-calc">
-        <button type="button" class="btn-adicionar-item" onclick="adicionarItemCalculadora()">➕ Somar Preço</button>
-        <button type="button" class="btn-limpar-calc" onclick="zerarCalculadora()">🗑 Zerar</button>
-      </div>
-
-      <div id="lista-itens-calculadora" class="lista-itens-calc">
-        Nenhum item somado ainda.
-      </div>
-
-      <button type="button" onclick="enviarCalculadoraParaGasto()" style="background-color: #3f51b5; margin-top: 12px;">📥 Enviar Total para Novo Gasto</button>
-
-      <!-- CHAT INTEGRADO COMPLETO -->
-      <div class="secao-chat-integrado">
-        <h3 style="font-size: 1rem; color: #2c3e50; margin-bottom: 8px; text-align: left;">💬 Chat do Mercado</h3>
-        <div id="lista-mensagens" class="chat-mensagens">
-          <p style="text-align: center; color: #7f8c8d; margin-top: 80px; font-size: 0.85rem;">Nenhuma mensagem ainda. Mande um texto, foto ou áudio!</p>
-        </div>
-        
-        <!-- BARRA DE ENVIO DE MENSAGENS -->
-        <div class="container-envio-chat">
-          <input type="file" id="input-arquivo-chat" accept="image/*" style="display: none;" onchange="enviarImagemChat(this)">
-          <button type="button" class="btn-acao-chat" onclick="document.getElementById('input-arquivo-chat').click()" title="Enviar Foto">📎</button>
-          
-          <input type="text" id="input-mensagem" placeholder="Digite uma mensagem...">
-          
-          <button type="button" id="btn-audio-chat" class="btn-acao-chat" onclick="alternarGravacaoAudio()" title="Gravar Áudio">🎤</button>
-          <button type="button" class="btn-enviar-chat" onclick="enviarMensagemTexto()" title="Enviar">⬆️</button>
+  <!-- APLICATIVO DE MENSAGENS -->
+  <div id="app-chat">
+    <!-- CABEÇALHO -->
+    <div class="cabecalho-chat">
+      <div class="info-usuario-chat">
+        <div id="avatar-usuario" class="avatar-chat">G</div>
+        <div class="status-chat">
+          <h2 id="nome-usuario-logado">Gabriel</h2>
+          <span>Conectado</span>
         </div>
       </div>
+      <button class="btn-sair-chat" onclick="sair()" title="Sair">🚪</button>
     </div>
 
-    <!-- 3. NOVO GASTO -->
-    <form id="form-transacao">
-      <h2>Novo Gasto</h2>
+    <!-- MENSAGENS -->
+    <div id="lista-mensagens" class="lista-mensagens">
+      <p style="text-align: center; color: #667781; margin-top: 50%; font-size: 0.85rem;">Carregando conversas...</p>
+    </div>
+
+    <!-- BARRA DE ENVIO -->
+    <div class="barra-envio">
+      <input type="file" id="input-arquivo" accept="image/*" style="display: none;" onchange="enviarImagem(this)">
+      <button type="button" class="btn-anexo" onclick="document.getElementById('input-arquivo').click()" title="Anexar Imagem">📎</button>
       
-      <div class="form-group">
-        <label for="quem">Autor do Lançamento</label>
-        <select id="quem" disabled required>
-          <option value="Gabriel">Gabriel</option>
-          <option value="Juliana">Juliana</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="descricao">Descrição do Gasto</label>
-        <input type="text" id="descricao" placeholder="Ex: Supermercado, Lanche, Uber" required>
-      </div>
-
-      <div class="form-group">
-        <label for="valor">Valor do Gasto (R$)</label>
-        <input type="number" id="valor" step="0.01" placeholder="0,00" required>
-      </div>
-
-      <button type="submit">Adicionar Gasto</button>
-    </form>
-
-    <!-- 4. HISTÓRICO -->
-    <div class="historico">
-      <h2>Histórico de Gastos</h2>
-      <div id="lista-transacoes">
-        <p style="text-align: center; color: #7f8c8d;">Carregando dados...</p>
-      </div>
+      <input type="text" id="input-mensagem" class="campo-texto-msg" placeholder="Digite uma mensagem...">
+      
+      <button type="button" id="btn-mic" class="btn-mic" onclick="alternarGravacaoAudio()" title="Gravar Áudio">🎤</button>
+      <button type="button" class="btn-enviar-msg" onclick="enviarTexto()" title="Enviar">⬆️</button>
     </div>
-
-    <!-- 5. SALDO FINAL -->
-    <div class="card-saldo-final">
-      <h3>Saldo que Sobrou:</h3>
-      <span id="saldo-restante-final">R$ 500,00</span>
-    </div>
-
-    <button type="button" class="btn-sair" onclick="sair()">🔒 Sair / Trocar Usuário</button>
   </div>
 
   <script>
     const SENHAS = { Gabriel: "7890", Juliana: "2468" };
-
-    let VALOR_POSITIVO_BASE = 500.00;
-    let somaTotalCalculadora = 0;
-    let itensCalculadoraLista = [];
-    let expressaoAtual = "";
-    let totalGastosAtual = 0;
-
-    let dbGlobal = null;
-    let storageGlobal = null;
-    let mediaRecorder = null;
-    let pedacosAudio = [];
-    let gravandoAudioAtivo = false;
-
-    if (localStorage.getItem('financas_autenticado') === 'true') {
-      const usuarioLogado = localStorage.getItem('financas_usuario');
-      if (usuarioLogado && SENHAS[usuarioLogado]) {
-        exibirApp(usuarioLogado);
-      } else {
-        localStorage.clear();
-      }
-    }
-
-    function validarSenha(e) {
-      e.preventDefault();
-      const senhaDigitada = document.getElementById('input-senha').value.trim();
-      const usuarioSelecionado = document.getElementById('usuario-login').value;
-      const msgErro = document.getElementById('msg-erro');
-
-      if (SENHAS[usuarioSelecionado] && senhaDigitada === SENHAS[usuarioSelecionado]) {
-        localStorage.setItem('financas_autenticado', 'true');
-        localStorage.setItem('financas_usuario', usuarioSelecionado);
-        msgErro.style.display = 'none';
-        exibirApp(usuarioSelecionado);
-      } else {
-        msgErro.style.display = 'block';
-      }
-    }
-
-    function exibirApp(usuario) {
-      document.getElementById('tela-login').style.display = 'none';
-      document.getElementById('conteudo-principal').style.display = 'block';
-      document.getElementById('quem').value = usuario;
-
-      if (usuario === 'Gabriel') {
-        document.getElementById('painel-gabriel').style.display = 'block';
-      } else {
-        document.getElementById('painel-gabriel').style.display = 'none';
-      }
-      iniciarFirebase();
-    }
-
-    function sair() {
-      localStorage.clear();
-      location.reload();
-    }
-
-    // CALCULADORA
-    function digitarNumero(valor) {
-      expressaoAtual += valor;
-      atualizarVisorItemAtual();
-    }
-    function apagarDigito() {
-      expressaoAtual = expressaoAtual.slice(0, -1);
-      atualizarVisorItemAtual();
-    }
-    function atualizarVisorItemAtual() {
-      const visorItem = document.getElementById('visor-item-atual');
-      visorItem.textContent = expressaoAtual === '' ? '0' : expressaoAtual.replace(/\*/g, '×').replace(/\//g, '÷');
-    }
-    function calcularResultadoFinal() {
-      try {
-        if (!expressaoAtual) return;
-        let resultado = eval(expressaoAtual.replace(/%/g, '/100'));
-        if (isNaN(resultado) || !isFinite(resultado)) return;
-        expressaoAtual = Number(resultado.toFixed(2)).toString();
-        atualizarVisorItemAtual();
-      } catch (err) { alert("Expressão inválida"); }
-    }
-    function adicionarItemCalculadora() {
-      try {
-        if (!expressaoAtual) return;
-        let valor = eval(expressaoAtual.replace(/%/g, '/100'));
-        if (isNaN(valor) || valor <= 0) return;
-        somaTotalCalculadora += valor;
-        itensCalculadoraLista.push(valor);
-        expressaoAtual = "";
-        atualizarVisorItemAtual();
-        atualizarVisorCalculadora();
-      } catch (err) { alert("Erro ao processar"); }
-    }
-    function zerarCalculadora() {
-      somaTotalCalculadora = 0;
-      itensCalculadoraLista = [];
-      expressaoAtual = "";
-      atualizarVisorItemAtual();
-      atualizarVisorCalculadora();
-    }
-    function atualizarVisorCalculadora() {
-      const visor = document.getElementById('visor-calculadora');
-      const listaEl = document.getElementById('lista-itens-calculadora');
-      visor.textContent = `R$ ${somaTotalCalculadora.toFixed(2).replace('.', ',')}`;
-      listaEl.innerHTML = itensCalculadoraLista.length === 0 ? 'Nenhum item somado ainda.' : 'Itens: ' + itensCalculadoraLista.map(v => `R$ ${v.toFixed(2).replace('.', ',')}`).join(' + ');
-    }
-    function enviarCalculadoraParaGasto() {
-      if (somaTotalCalculadora <= 0) { alert("Calculadora vazia!"); return; }
-      document.getElementById('valor').value = somaTotalCalculadora.toFixed(2);
-      if (!document.getElementById('descricao').value) document.getElementById('descricao').value = "Compras do Mercado";
-      window.scrollTo({ top: document.getElementById('form-transacao').offsetTop, behavior: 'smooth' });
-    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyBK3ptWyBo5nxB9SjFZkMLVvP",
@@ -543,162 +247,104 @@
       measurementId: "G-9E1MW2B2VY"
     };
 
-    let firebaseIniciado = false;
-    function iniciarFirebase() {
-      if (firebaseIniciado) return;
-      firebaseIniciado = true;
+    let dbGlobal = null;
+    let storageGlobal = null;
+    let mediaRecorder = null;
+    let pedacosAudio = [];
+    let gravandoAtivo = false;
 
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
-        }
-        dbGlobal = firebase.firestore();
-        storageGlobal = firebase.storage();
-      } catch (err) {
-        console.error("Erro ao inicializar Firebase:", err);
-        alert("Erro ao conectar com o banco de dados. Verifique sua internet ou chaves do Firebase.");
-        return;
+    // Verificar se já está logado
+    if (localStorage.getItem('abp_autenticado') === 'true') {
+      const u = localStorage.getItem('abp_usuario');
+      if (u && SENHAS[u]) {
+        iniciarApp(u);
+      } else {
+        localStorage.clear();
       }
+    }
 
-      const form = document.getElementById('form-transacao');
-      const formGabriel = document.getElementById('form-exclusivo-gabriel');
-      const listaTransacoes = document.getElementById('lista-transacoes');
-      const displayValorPositivoEl = document.getElementById('display-valor-positivo');
-      const saldoRestanteFinalEl = document.getElementById('saldo-restante-final');
+    function validarSenha(e) {
+      e.preventDefault();
+      const senha = document.getElementById('input-senha').value.trim();
+      const usuario = document.getElementById('usuario-login').value;
+      const msgErro = document.getElementById('msg-erro');
+
+      if (SENHAS[usuario] && senha === SENHAS[usuario]) {
+        localStorage.setItem('abp_autenticado', 'true');
+        localStorage.setItem('abp_usuario', usuario);
+        msgErro.style.display = 'none';
+        iniciarApp(usuario);
+      } else {
+        msgErro.style.display = 'block';
+      }
+    }
+
+    function iniciarApp(usuario) {
+      document.getElementById('tela-login').style.display = 'none';
+      document.getElementById('app-chat').style.display = 'flex';
+      document.getElementById('nome-usuario-logado').textContent = usuario;
+      document.getElementById('avatar-usuario').textContent = usuario.charAt(0);
+
+      iniciarFirebase();
+    }
+
+    function sair() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    function iniciarFirebase() {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      dbGlobal = firebase.firestore();
+      storageGlobal = firebase.storage();
+
       const listaMensagens = document.getElementById('lista-mensagens');
 
-      formGabriel.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (localStorage.getItem('financas_usuario') !== 'Gabriel') return;
-        const novoValor = parseFloat(document.getElementById('novo-limite-input').value);
-        if (!isNaN(novoValor) && novoValor > 0) {
-          VALOR_POSITIVO_BASE = novoValor;
-          atualizarInterfaceFinanceira(totalGastosAtual);
-          alert("✅ Saldo base atualizado!");
-        }
-      });
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const usuarioLogado = localStorage.getItem('financas_usuario');
-        const descricao = document.getElementById('descricao').value;
-        const valor = parseFloat(document.getElementById('valor').value);
-
-        if ((totalGastosAtual + valor) > VALOR_POSITIVO_BASE) {
-          alert(`🚫 Gasto excede o saldo base de R$ ${VALOR_POSITIVO_BASE.toFixed(2)}!`);
-          return;
-        }
-
-        try {
-          await dbGlobal.collection('financas').add({
-            quem: usuarioLogado,
-            descricao: descricao,
-            valor: valor,
-            timestamp: Date.now(),
-            data: new Date().toLocaleDateString('pt-BR')
-          });
-          document.getElementById('descricao').value = '';
-          document.getElementById('valor').value = '';
-          zerarCalculadora();
-        } catch (erro) { alert("Erro ao salvar: " + erro.message); }
-      });
-
-      dbGlobal.collection('financas').onSnapshot((snapshot) => {
-        let items = [];
-        let somaGastos = 0;
-        snapshot.forEach((doc) => {
-          const item = doc.data();
-          items.push({ id: doc.id, ...item });
-          somaGastos += item.valor;
-        });
-        items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-        let html = '';
-        items.forEach((item) => {
-          html += `
-            <div class="item-transacao">
-              <div class="detalhes-transacao">
-                <strong>${item.descricao}</strong>
-                <small>Por: <b>${item.quem}</b> em ${item.data}</small>
-              </div>
-              <div class="lado-direito-transacao">
-                <div class="valor-transacao valor-saida">- R$ ${item.valor.toFixed(2).replace('.', ',')}</div>
-                <button type="button" class="btn-deletar-gasto" onclick="deletarGasto('${item.id}')">🗑️ Apagar</button>
-              </div>
-            </div>
-          `;
-        });
-        listaTransacoes.innerHTML = html || '<p style="text-align: center; color: #7f8c8d;">Nenhum gasto.</p>';
-        totalGastosAtual = somaGastos;
-        atualizarInterfaceFinanceira(totalGastosAtual);
-      }, (error) => {
-        console.error("Erro no listener de finanças:", error);
-        listaTransacoes.innerHTML = '<p style="text-align: center; color: #e74c3c;">Erro ao carregar dados do Firebase.</p>';
-      });
-
+      // Escutar mensagens em tempo real
       dbGlobal.collection('mensagens_chat').onSnapshot((snapshot) => {
         let msgs = [];
         snapshot.forEach((doc) => { msgs.push({ id: doc.id, ...doc.data() }); });
         msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-        const usuarioLogado = localStorage.getItem('financas_usuario');
-        let htmlMsg = '';
+        const usuarioLogado = localStorage.getItem('abp_usuario');
+        let html = '';
+
         msgs.forEach((m) => {
-          const ehMeu = m.quem === usuarioLogado;
-          let conteudoHTML = '';
+          const ehMinha = m.quem === usuarioLogado;
+          let conteudo = '';
 
           if (m.tipo === 'imagem') {
-            conteudoHTML = `<img src="${m.url}" alt="Foto enviada">`;
+            conteudo = `<img src="${m.url}" alt="Imagem">`;
           } else if (m.tipo === 'audio') {
-            conteudoHTML = `<audio controls src="${m.url}"></audio>`;
+            conteudo = `<audio controls src="${m.url}"></audio>`;
           } else {
-            conteudoHTML = `<p>${m.texto || ''}</p>`;
+            conteudo = `<p>${m.texto || ''}</p>`;
           }
 
-          htmlMsg += `
-            <div class="mensagem-item ${ehMeu ? 'mensagem-gabriel' : 'mensagem-juliana'}">
+          html += `
+            <div class="balao-mensagem ${ehMinha ? 'balao-minha' : 'balao-outro'}">
               <strong>${m.quem}</strong>
-              ${conteudoHTML}
-              <small>${m.horario || ''}</small>
+              ${conteudo}
+              <span class="horario">${m.horario || ''}</span>
             </div>
           `;
         });
-        listaMensagens.innerHTML = htmlMsg || '<p style="text-align: center; color: #7f8c8d; margin-top: 80px; font-size: 0.85rem;">Nenhuma mensagem ainda.</p>';
+
+        listaMensagens.innerHTML = html || '<p style="text-align: center; color: #667781; margin-top: 50%; font-size: 0.85rem;">Nenhuma mensagem ainda. Diga oi!</p>';
         listaMensagens.scrollTop = listaMensagens.scrollHeight;
-      }, (error) => {
-        console.error("Erro no chat:", error);
+      }, (erro) => {
+        console.error("Erro ao carregar mensagens:", erro);
       });
-
-      function atualizarInterfaceFinanceira(totalGastos) {
-        const restante = VALOR_POSITIVO_BASE - totalGastos;
-        displayValorPositivoEl.textContent = `R$ ${VALOR_POSITIVO_BASE.toFixed(2).replace('.', ',')}`;
-        saldoRestanteFinalEl.textContent = `R$ ${restante.toFixed(2).replace('.', ',')}`;
-        saldoRestanteFinalEl.style.color = restante < 0 ? '#e74c3c' : '#2ecc71';
-      }
     }
 
-    async function deletarGasto(id) {
-      if (!dbGlobal) return;
-      if (!confirm("Deseja realmente apagar este gasto?")) return;
+    async function enviarTexto() {
+      const input = document.getElementById('input-mensagem');
+      const texto = input.value.trim();
+      const usuarioLogado = localStorage.getItem('abp_usuario');
 
-      try {
-        await dbGlobal.collection('financas').doc(id).delete();
-      } catch (erro) {
-        alert("Erro ao apagar o gasto: " + erro.message);
-      }
-    }
-
-    async function enviarMensagemTexto() {
-      const inputMensagem = document.getElementById('input-mensagem');
-      const usuarioLogado = localStorage.getItem('financas_usuario');
-      const texto = inputMensagem.value.trim();
-      
-      if (!texto) return;
-      
-      if (!dbGlobal) {
-        alert("Erro: O banco de dados não foi inicializado.");
-        return;
-      }
+      if (!texto || !dbGlobal) return;
 
       try {
         await dbGlobal.collection('mensagens_chat').add({
@@ -708,47 +354,47 @@
           timestamp: Date.now(),
           horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
-        inputMensagem.value = '';
-        inputMensagem.focus();
-      } catch (erro) {
-        alert("Erro ao enviar mensagem: " + erro.message);
+        input.value = '';
+        input.focus();
+      } catch (e) {
+        alert("Erro ao enviar: " + e.message);
       }
     }
 
     document.getElementById('input-mensagem').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') { 
-        e.preventDefault(); 
-        enviarMensagemTexto(); 
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        enviarTexto();
       }
     });
 
-    async function enviarImagemChat(input) {
+    async function enviarImagem(input) {
       if (!input.files || !input.files[0] || !storageGlobal || !dbGlobal) return;
       const arquivo = input.files[0];
-      const usuarioLogado = localStorage.getItem('financas_usuario');
-      
+      const usuarioLogado = localStorage.getItem('abp_usuario');
+
       try {
-        const caminhoRef = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
-        const snapshot = await caminhoRef.put(arquivo);
-        const urlDownload = await snapshot.ref.getDownloadURL();
+        const ref = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
+        const snap = await ref.put(arquivo);
+        const url = await snap.ref.getDownloadURL();
 
         await dbGlobal.collection('mensagens_chat').add({
           quem: usuarioLogado,
           tipo: 'imagem',
-          url: urlDownload,
+          url: url,
           timestamp: Date.now(),
           horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
         input.value = '';
-      } catch (erro) {
-        alert("Erro ao enviar imagem: " + erro.message);
+      } catch (e) {
+        alert("Erro ao enviar imagem: " + e.message);
       }
     }
 
     async function alternarGravacaoAudio() {
-      const btnAudio = document.getElementById('btn-audio-chat');
+      const btnMic = document.getElementById('btn-mic');
 
-      if (!gravandoAudioAtivo) {
+      if (!gravandoAtivo) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(stream);
@@ -759,65 +405,45 @@
           };
 
           mediaRecorder.onstop = async () => {
-            const blobAudio = new Blob(pedacosAudio, { type: 'audio/webm' });
-            await enviarAudioParaFirebase(blobAudio);
-            // Parar tracks de áudio da câmera/microfone
-            stream.getTracks().forEach(track => track.stop());
+            const blob = new Blob(pedacosAudio, { type: 'audio/webm' });
+            await enviarAudio(blob);
+            stream.getTracks().forEach(t => t.stop());
           };
 
           mediaRecorder.start();
-          gravandoAudioAtivo = true;
-          btnAudio.classList.add('gravando-ativo');
-          btnAudio.title = "Gravando... Clique para parar e enviar";
+          gravandoAtivo = true;
+          btnMic.classList.add('gravando-ativo');
+          btnMic.title = "Gravando... Clique para enviar";
         } catch (err) {
-          alert("Não foi possível acessar o microfone. Verifique as permissões do navegador.");
+          alert("Acesso ao microfone negado ou não suportado.");
         }
       } else {
-        if (mediaRecorder) {
-          mediaRecorder.stop();
-        }
-        gravandoAudioAtivo = false;
-        btnAudio.classList.remove('gravando-ativo');
-        btnAudio.title = "Gravar Áudio";
+        if (mediaRecorder) mediaRecorder.stop();
+        gravandoAtivo = false;
+        btnMic.classList.remove('gravando-ativo');
+        btnMic.title = "Gravar Áudio";
       }
     }
 
-    async function enviarAudioParaFirebase(blobAudio) {
-      const usuarioLogado = localStorage.getItem('financas_usuario');
+    async function enviarAudio(blob) {
+      const usuarioLogado = localStorage.getItem('abp_usuario');
       if (!storageGlobal || !dbGlobal) return;
 
       try {
-        const caminhoRef = storageGlobal.ref().child(`chat_audios/${Date.now()}.webm`);
-        const snapshot = await caminhoRef.put(blobAudio);
-        const urlDownload = await snapshot.ref.getDownloadURL();
+        const ref = storageGlobal.ref().child(`chat_audios/${Date.now()}.webm`);
+        const snap = await ref.put(blob);
+        const url = await snap.ref.getDownloadURL();
 
         await dbGlobal.collection('mensagens_chat').add({
           quem: usuarioLogado,
           tipo: 'audio',
-          url: urlDownload,
+          url: url,
           timestamp: Date.now(),
           horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
-      } catch (erro) {
-        alert("Erro ao enviar áudio: " + erro.message);
+      } catch (e) {
+        alert("Erro ao enviar áudio: " + e.message);
       }
-    }
-
-    async function limparTudoDoMes() {
-      if (localStorage.getItem('financas_usuario') !== 'Gabriel' || !dbGlobal) return;
-      if (!confirm("⚠ Deseja apagar tudo e recomeçar o mês?")) return;
-
-      try {
-        const b1 = dbGlobal.batch();
-        (await dbGlobal.collection('financas').get()).forEach(d => b1.delete(d.ref));
-        await b1.commit();
-
-        const b2 = dbGlobal.batch();
-        (await dbGlobal.collection('mensagens_chat').get()).forEach(d => b2.delete(d.ref));
-        await b2.commit();
-
-        alert("✅ Mês reiniciado com sucesso!");
-      } catch (e) { alert("Erro: " + e.message); }
     }
   </script>
 </body>
