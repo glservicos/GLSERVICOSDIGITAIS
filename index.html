@@ -6,7 +6,7 @@
   <title>TalkBox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Manifest embutido para permitir a instalação como PWA -->
+  <!-- Manifest corrigido com ícone garantido -->
   <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
     %22name%22: %22TalkBox%22,
     %22short_name%22: %22TalkBox%22,
@@ -16,7 +16,7 @@
     %22theme_color%22: %22%23111b21%22,
     %22icons%22: [
       {
-        %22src%22: %22https://cdn-icons-png.flaticon.com/512/733/733585.png%22,
+        %22src%22: %22https://cdn-icons-png.flaticon.com/512/134/134914.png%22,
         %22sizes%22: %22512x512%22,
         %22type%22: %22image/png%22
       }
@@ -1058,7 +1058,7 @@
 
     document.getElementById('closeModalBtn').addEventListener('click', () => {
       modalOverlay.classList.remove('active');
-      document.getElementById('contactNameInput').value = '';
+      document.getElementById('contactNameInput'].value = '';
     });
 
     document.getElementById('addContactBtn').addEventListener('click', () => {
