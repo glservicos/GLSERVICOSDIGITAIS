@@ -446,6 +446,22 @@
       padding: 30px 15px;
     }
 
+    .camera-header-controls {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .camera-action-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 5px;
+    }
+
     .camera-screen-view {
       flex: 1;
       width: 100%;
@@ -456,7 +472,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 15px;
+      margin: 10px 0;
     }
 
     #cameraVideo {
@@ -478,14 +494,6 @@
       border-radius: 50%;
       background-color: #fff;
       border: 4px solid #00a884;
-      cursor: pointer;
-    }
-
-    .camera-close-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 22px;
       cursor: pointer;
     }
 
@@ -620,11 +628,12 @@
       </div>
     </div>
 
-    <!-- MODAL DA CÂMERA REAL -->
+    <!-- MODAL DA CÂMERA REAL COM BOTÃO DE VIRAR FRENTE/TRÁS -->
     <div class="overlay" id="cameraOverlay">
       <div class="camera-modal">
-        <div style="width:100%; display:flex; justify-content:flex-end;">
-          <button class="camera-close-btn" id="closeCameraBtn"><i class="fa-solid fa-xmark"></i></button>
+        <div class="camera-header-controls">
+          <button class="camera-action-btn" id="switchCameraBtn" title="Alternar Câmera"><i class="fa-solid fa-rotate"></i></button>
+          <button class="camera-action-btn" id="closeCameraBtn" title="Fechar"><i class="fa-solid fa-xmark" style="font-size: 24px;"></i></button>
         </div>
         <div class="camera-screen-view">
           <video id="cameraVideo" autoplay playsinline></video>
@@ -662,6 +671,7 @@
 
     let currentContactId = null;
     let mediaStream = null;
+    let useFrontCamera = true; // Começa na câmera da frente (selfie)
 
     const homeScreen = document.getElementById('homeScreen');
     const chatScreen = document.getElementById('chatScreen');
@@ -696,6 +706,7 @@
 
     const cameraOverlay = document.getElementById('cameraOverlay');
     const closeCameraBtn = document.getElementById('closeCameraBtn');
+    const switchCameraBtn = document.getElementById('switchCameraBtn');
     const cameraVideo = document.getElementById('cameraVideo');
     const takePhotoBtn = document.getElementById('takePhotoBtn');
     const snapshotCanvas = document.getElementById('snapshotCanvas');
@@ -802,18 +813,33 @@
     sendMessageBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- ABRIR CÂMERA REAL NA TELA ---
+    // --- CÂMERA COM SUPORTE A VIRAR FRENTE / TRÁS ---
     async function startCamera() {
       if (currentContactId === null) currentContactId = contacts[0].id;
       cameraOverlay.classList.add('active');
+      
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+      }
+
       try {
-        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        const constraints = {
+          video: { facingMode: useFrontCamera ? 'user' : 'environment' },
+          audio: false
+        };
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
         cameraVideo.srcObject = mediaStream;
       } catch (err) {
-        alert("Não foi possível acessar a câmera. Verifique as permissões do navegador.");
+        alert("Não foi possível acessar a câmera. Verifique as permissões do seu navegador.");
         cameraOverlay.classList.remove('active');
       }
     }
+
+    // Botão para alternar entre câmera frontal e traseira
+    switchCameraBtn.addEventListener('click', () => {
+      useFrontCamera = !useFrontCamera;
+      startCamera();
+    });
 
     function stopCamera() {
       if (mediaStream) {
@@ -827,7 +853,7 @@
     chatCameraBtn.addEventListener('click', startCamera);
     closeCameraBtn.addEventListener('click', stopCamera);
 
-    // Tirar a foto real do vídeo e enviar no chat
+    // Tirar a foto e enviar no chat
     takePhotoBtn.addEventListener('click', () => {
       if (!mediaStream) return;
       
