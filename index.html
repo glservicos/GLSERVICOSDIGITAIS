@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalkBox - Mensagens</title>
+  <title>TalkBox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
@@ -139,7 +139,7 @@
       <div class="search-box-container">
         <div class="search-box">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Pesquisar conversa ou áudio..." />
+          <input type="text" id="searchInput" placeholder="Pesquisar conversa..." />
         </div>
       </div>
 
@@ -161,7 +161,6 @@
       
       <div style="padding: 16px; color: #8696a0; font-weight: 600; font-size: 14px;">STATUS</div>
       
-      <!-- Meu Status -->
       <div class="chat-item" id="myStatusItem">
         <div class="avatar" style="background-color: #00a884;">+</div>
         <div class="chat-info">
@@ -266,14 +265,12 @@
     let mediaStream = null;
     let useFrontCamera = true;
 
-    // Elementos DOM
     const screens = document.querySelectorAll('.screen');
     const navItems = document.querySelectorAll('.nav-item');
     const chatScreen = document.getElementById('chatScreen');
     const chatList = document.getElementById('chatList');
     const statusList = document.getElementById('statusList');
 
-    // Navegação entre Abas
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const target = item.getAttribute('data-tab');
@@ -333,7 +330,7 @@
     function renderMessages(contact) {
       const chatBody = document.getElementById('chatBody');
       chatBody.innerHTML = '';
-      contact.messages.forEach((msg, idx) => {
+      contact.messages.forEach((msg) => {
         const div = document.createElement('div');
         div.className = `message ${msg.sender}`;
         div.innerHTML = msg.type === 'image' ? `<img src="${msg.content}"/>` : msg.text;
@@ -358,7 +355,6 @@
       renderMessages(c);
     });
 
-    // Câmera Real
     async function startCamera() {
       document.getElementById('cameraOverlay').classList.add('active');
       try {
@@ -374,7 +370,6 @@
       document.getElementById('cameraOverlay').classList.remove('active');
     });
 
-    // Visualizador de Status
     function showStatus(contact) {
       const overlay = document.getElementById('statusViewerOverlay');
       const fill = document.getElementById('statusProgress');
