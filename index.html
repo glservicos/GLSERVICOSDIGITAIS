@@ -52,7 +52,7 @@
       pointer-events: none;
     }
 
-    /* --- CABEÇALHO --- */
+    /* --- CABEÇALHO DA LISTA --- */
     .header {
       background-color: #202c33;
       padding: 16px;
@@ -112,7 +112,7 @@
       cursor: pointer;
     }
 
-    /* Menu Contextual dos Três Pontinhos */
+    /* Menu Contextual Principal */
     .dropdown-menu {
       position: absolute;
       top: 50px;
@@ -135,7 +135,6 @@
       font-size: 14px;
       color: #e9edef;
       cursor: pointer;
-      text-decoration: none;
     }
 
     .dropdown-item:hover {
@@ -234,6 +233,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      position: relative;
     }
 
     .back-btn {
@@ -267,6 +267,24 @@
       font-size: 16px;
       font-weight: 500;
       color: #e9edef;
+    }
+
+    /* Menu de opções dentro do Chat (Três pontinhos) */
+    .chat-dropdown-menu {
+      position: absolute;
+      top: 50px;
+      right: 16px;
+      background-color: #233138;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      width: 180px;
+    }
+
+    .chat-dropdown-menu.active {
+      display: flex;
     }
 
     .chat-body {
@@ -416,7 +434,6 @@
     <!-- TELA 1: LISTA DE CONVERSAS -->
     <div class="screen" id="homeScreen">
       
-      <!-- Cabeçalho Normal -->
       <header class="header" id="mainHeader">
         <h1>ABP</h1>
         <div class="header-icons">
@@ -425,22 +442,18 @@
           <i class="fa-solid fa-ellipsis-vertical" id="menuBtn" title="Mais opções"></i>
         </div>
 
-        <!-- Menu dos Três Pontinhos -->
         <div class="dropdown-menu" id="dropdownMenu">
           <div class="dropdown-item" id="menuNewGroup">Novo grupo</div>
           <div class="dropdown-item" id="menuSettings">Configurações</div>
         </div>
       </header>
 
-      <!-- Barra de Pesquisa (Aparece ao clicar na Lupa) -->
       <div class="search-bar-container" id="searchBarContainer">
         <button class="search-back-btn" id="closeSearchBtn"><i class="fa-solid fa-arrow-left"></i></button>
         <input type="text" id="searchInput" placeholder="Pesquisar conversas..." />
       </div>
 
-      <div class="chat-list" id="chatList">
-        <!-- Os chats entram aqui -->
-      </div>
+      <div class="chat-list" id="chatList"></div>
 
       <button class="fab-btn" id="openModalBtn">
         <i class="fa-solid fa-plus"></i>
@@ -455,10 +468,20 @@
           <div class="chat-header-avatar" id="activeAvatar">J</div>
           <div class="chat-header-name" id="activeName">Juliana</div>
         </div>
+        
+        <!-- Ícones do topo da conversa (Câmera de Foto, Câmera de Vídeo, Telefone e Três Pontinhos) -->
         <div class="header-icons" style="color: #aebac1; font-size: 16px;">
-          <i class="fa-solid fa-video" style="margin-left: 15px;"></i>
-          <i class="fa-solid fa-phone" style="margin-left: 15px;"></i>
-          <i class="fa-solid fa-ellipsis-vertical" style="margin-left: 15px;"></i>
+          <i class="fa-solid fa-camera" id="chatCameraBtn" title="Tirar foto" style="margin-left: 12px; cursor: pointer;"></i>
+          <i class="fa-solid fa-video" id="chatVideoBtn" title="Chamada de vídeo" style="margin-left: 12px; cursor: pointer;"></i>
+          <i class="fa-solid fa-phone" id="chatPhoneBtn" title="Chamada de voz" style="margin-left: 12px; cursor: pointer;"></i>
+          <i class="fa-solid fa-ellipsis-vertical" id="chatMenuBtn" title="Mais opções" style="margin-left: 12px; cursor: pointer;"></i>
+        </div>
+
+        <!-- Menu dos Três Pontinhos do Chat -->
+        <div class="chat-dropdown-menu" id="chatDropdownMenu">
+          <div class="dropdown-item" id="chatOptContact">Ver contato</div>
+          <div class="dropdown-item" id="chatOptClear">Limpar conversa</div>
+          <div class="dropdown-item" id="chatOptBlock">Bloquear</div>
         </div>
       </div>
 
@@ -504,7 +527,7 @@
     const messageInput = document.getElementById('messageInput');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
 
-    // Botões do Cabeçalho
+    // Cabeçalho Principal
     const cameraBtn = document.getElementById('cameraBtn');
     const searchBtn = document.getElementById('searchBtn');
     const menuBtn = document.getElementById('menuBtn');
@@ -513,6 +536,13 @@
     const mainHeader = document.getElementById('mainHeader');
     const closeSearchBtn = document.getElementById('closeSearchBtn');
     const searchInput = document.getElementById('searchInput');
+
+    // Cabeçalho do Chat
+    const chatCameraBtn = document.getElementById('chatCameraBtn');
+    const chatVideoBtn = document.getElementById('chatVideoBtn');
+    const chatPhoneBtn = document.getElementById('chatPhoneBtn');
+    const chatMenuBtn = document.getElementById('chatMenuBtn');
+    const chatDropdownMenu = document.getElementById('chatDropdownMenu');
 
     // Modal
     const openModalBtn = document.getElementById('openModalBtn');
@@ -528,7 +558,6 @@
 
     function renderChats(filterText = '') {
       chatList.innerHTML = '';
-      
       const filtered = contacts.filter(c => c.name.toLowerCase().includes(filterText.toLowerCase()));
 
       filtered.forEach(contact => {
@@ -607,53 +636,73 @@
     sendMessageBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- INTERAÇÕES DOS ÍCONES DO CABEÇALHO ---
+    // --- INTERAÇÕES DOS ÍCONES ---
 
-    // 1. Botão da Câmera
-    cameraBtn.addEventListener('click', () => {
-      alert("Abrindo modo Câmera / Status do ABP...");
-    });
-
-    // 2. Botão da Lupa (Abrir Pesquisa)
+    // Tela Principal
+    cameraBtn.addEventListener('click', () => alert("Abrindo câmera de status do ABP..."));
     searchBtn.addEventListener('click', () => {
       mainHeader.style.display = 'none';
       searchBarContainer.classList.add('active');
       searchInput.focus();
     });
-
-    // Fechar Pesquisa
     closeSearchBtn.addEventListener('click', () => {
       searchBarContainer.classList.remove('active');
       mainHeader.style.display = 'flex';
       searchInput.value = '';
       renderChats();
     });
+    searchInput.addEventListener('input', (e) => renderChats(e.target.value));
 
-    // Filtrar conversas ao digitar na lupa
-    searchInput.addEventListener('input', (e) => {
-      renderChats(e.target.value);
-    });
-
-    // 3. Botão dos Três Pontinhos (Menu)
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdownMenu.classList.toggle('active');
+      chatDropdownMenu.classList.remove('active');
     });
 
-    // Fechar menu ao clicar em qualquer outro lugar da tela
-    window.addEventListener('click', () => {
+    // Tela de Chat (Ações dos novos botões do topo)
+    chatCameraBtn.addEventListener('click', () => {
+      alert("Abrindo câmera para tirar foto e enviar no chat de " + activeName.textContent + "...");
+    });
+
+    chatVideoBtn.addEventListener('click', () => {
+      alert("Iniciando chamada de vídeo com " + activeName.textContent + "...");
+    });
+
+    chatPhoneBtn.addEventListener('click', () => {
+      alert("Iniciando chamada de voz com " + activeName.textContent + "...");
+    });
+
+    chatMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      chatDropdownMenu.classList.toggle('active');
       dropdownMenu.classList.remove('active');
     });
 
-    document.getElementById('menuNewGroup').addEventListener('click', () => {
-      alert("Criando novo grupo no ABP...");
+    // Opções do menu do chat
+    document.getElementById('chatOptContact').addEventListener('click', () => alert("Exibindo dados do contato..."));
+    document.getElementById('chatOptClear').addEventListener('click', () => {
+      const contact = contacts.find(c => c.id === currentContactId);
+      if(contact) {
+        contact.messages = [];
+        renderMessages(contact);
+      }
+      chatDropdownMenu.classList.remove('active');
+    });
+    document.getElementById('chatOptBlock').addEventListener('click', () => {
+      alert("Contato bloqueado com sucesso.");
+      chatDropdownMenu.classList.remove('active');
     });
 
-    document.getElementById('menuSettings').addEventListener('click', () => {
-      alert("Abrindo configurações do ABP...");
+    // Fechar menus ao clicar fora
+    window.addEventListener('click', () => {
+      dropdownMenu.classList.remove('active');
+      chatDropdownMenu.classList.remove('active');
     });
 
-    // Modal de Novo Contato
+    document.getElementById('menuNewGroup').addEventListener('click', () => alert("Criando novo grupo..."));
+    document.getElementById('menuSettings').addEventListener('click', () => alert("Abrindo configurações..."));
+
+    // Modal
     openModalBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
       contactNameInput.focus();
