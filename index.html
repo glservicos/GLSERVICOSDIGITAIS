@@ -269,7 +269,6 @@
       color: #e9edef;
     }
 
-    /* Menu de opções dentro do Chat (Três pontinhos) */
     .chat-dropdown-menu {
       position: absolute;
       top: 50px;
@@ -425,9 +424,17 @@
       background-color: #00a884;
       color: #111b21;
     }
+
+    /* Input oculto para abrir a câmera real do celular */
+    #realCameraInput {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Input escondido nativo para capturar foto da câmera do celular -->
+  <input type="file" id="realCameraInput" accept="image/*" capture="environment">
 
   <div class="app-container">
     
@@ -469,7 +476,6 @@
           <div class="chat-header-name" id="activeName">Juliana</div>
         </div>
         
-        <!-- Ícones do topo da conversa (Câmera de Foto, Câmera de Vídeo, Telefone e Três Pontinhos) -->
         <div class="header-icons" style="color: #aebac1; font-size: 16px;">
           <i class="fa-solid fa-camera" id="chatCameraBtn" title="Tirar foto" style="margin-left: 12px; cursor: pointer;"></i>
           <i class="fa-solid fa-video" id="chatVideoBtn" title="Chamada de vídeo" style="margin-left: 12px; cursor: pointer;"></i>
@@ -477,7 +483,6 @@
           <i class="fa-solid fa-ellipsis-vertical" id="chatMenuBtn" title="Mais opções" style="margin-left: 12px; cursor: pointer;"></i>
         </div>
 
-        <!-- Menu dos Três Pontinhos do Chat -->
         <div class="chat-dropdown-menu" id="chatDropdownMenu">
           <div class="dropdown-item" id="chatOptContact">Ver contato</div>
           <div class="dropdown-item" id="chatOptClear">Limpar conversa</div>
@@ -527,7 +532,6 @@
     const messageInput = document.getElementById('messageInput');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
 
-    // Cabeçalho Principal
     const cameraBtn = document.getElementById('cameraBtn');
     const searchBtn = document.getElementById('searchBtn');
     const menuBtn = document.getElementById('menuBtn');
@@ -537,14 +541,13 @@
     const closeSearchBtn = document.getElementById('closeSearchBtn');
     const searchInput = document.getElementById('searchInput');
 
-    // Cabeçalho do Chat
     const chatCameraBtn = document.getElementById('chatCameraBtn');
     const chatVideoBtn = document.getElementById('chatVideoBtn');
     const chatPhoneBtn = document.getElementById('chatPhoneBtn');
     const chatMenuBtn = document.getElementById('chatMenuBtn');
     const chatDropdownMenu = document.getElementById('chatDropdownMenu');
+    const realCameraInput = document.getElementById('realCameraInput');
 
-    // Modal
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -636,10 +639,23 @@
     sendMessageBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- INTERAÇÕES DOS ÍCONES ---
+    // --- AÇÕES REAIS DE CÂMERA E TELEFONE ---
 
-    // Tela Principal
-    cameraBtn.addEventListener('click', () => alert("Abrindo câmera de status do ABP..."));
+    // Botões de Câmera (Abre a câmera nativa do celular para tirar foto)
+    cameraBtn.addEventListener('click', () => realCameraInput.click());
+    chatCameraBtn.addEventListener('click', () => realCameraInput.click());
+
+    // Botão de Chamada de Vídeo (Simula chamada de vídeo ou abre app de vídeo)
+    chatVideoBtn.addEventListener('click', () => {
+      alert("Iniciando chamada de vídeo com " + activeName.textContent);
+    });
+
+    // Botão de Chamada de Voz Real (Abre o discador telefônico do celular)
+    chatPhoneBtn.addEventListener('click', () => {
+      window.location.href = "tel:";
+    });
+
+    // Pesquisa e Menus
     searchBtn.addEventListener('click', () => {
       mainHeader.style.display = 'none';
       searchBarContainer.classList.add('active');
@@ -659,26 +675,12 @@
       chatDropdownMenu.classList.remove('active');
     });
 
-    // Tela de Chat (Ações dos novos botões do topo)
-    chatCameraBtn.addEventListener('click', () => {
-      alert("Abrindo câmera para tirar foto e enviar no chat de " + activeName.textContent + "...");
-    });
-
-    chatVideoBtn.addEventListener('click', () => {
-      alert("Iniciando chamada de vídeo com " + activeName.textContent + "...");
-    });
-
-    chatPhoneBtn.addEventListener('click', () => {
-      alert("Iniciando chamada de voz com " + activeName.textContent + "...");
-    });
-
     chatMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       chatDropdownMenu.classList.toggle('active');
       dropdownMenu.classList.remove('active');
     });
 
-    // Opções do menu do chat
     document.getElementById('chatOptContact').addEventListener('click', () => alert("Exibindo dados do contato..."));
     document.getElementById('chatOptClear').addEventListener('click', () => {
       const contact = contacts.find(c => c.id === currentContactId);
@@ -693,7 +695,6 @@
       chatDropdownMenu.classList.remove('active');
     });
 
-    // Fechar menus ao clicar fora
     window.addEventListener('click', () => {
       dropdownMenu.classList.remove('active');
       chatDropdownMenu.classList.remove('active');
