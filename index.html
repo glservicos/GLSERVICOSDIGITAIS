@@ -3,75 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABP Mensagens</title>
+  <title>ConectaX - ABP Chat</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#075e54">
+  <meta name="theme-color" content="#0d1117">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #d1d7db; color: #111b21; height: 100vh; display: flex; justify-content: center; align-items: center; }
+    body { background-color: #0d1117; color: #f0f6fc; height: 100vh; display: flex; justify-content: center; align-items: center; }
     
     /* TELA DE LOGIN */
     #tela-login {
-      background: white;
+      background: #161b22;
       padding: 30px 24px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
       width: 90%;
       max-width: 400px;
       text-align: center;
+      border: 1px solid #30363d;
     }
-    #tela-login h1 { color: #075e54; margin-bottom: 8px; font-size: 1.6rem; }
-    #tela-login p { color: #667781; font-size: 0.9rem; margin-bottom: 20px; }
+    #tela-login h1 { color: #58a6ff; margin-bottom: 8px; font-size: 1.6rem; }
+    #tela-login p { color: #8b949e; font-size: 0.9rem; margin-bottom: 20px; }
     #tela-login select, #tela-login input {
       width: 100%;
       padding: 12px;
       margin-bottom: 12px;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #fff;
       font-size: 1rem;
       outline: none;
     }
     #tela-login button {
       width: 100%;
       padding: 12px;
-      background-color: #00a884;
+      background: linear-gradient(135deg, #238636, #2ea043);
       color: white;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: opacity 0.2s;
     }
-    #tela-login button:hover { background-color: #008f6f; }
-    .erro-senha { color: #e74c3c; font-size: 0.85rem; margin-top: 10px; display: none; }
+    #tela-login button:hover { opacity: 0.9; }
+    .erro-senha { color: #f85149; font-size: 0.85rem; margin-top: 10px; display: none; }
 
     /* CONTAINER DO APLICATIVO DE MENSAGENS */
     #app-chat {
       display: none;
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       height: 100vh;
-      background: #efeae2;
+      background: #0d1117;
       flex-direction: column;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      border-left: 1px solid #30363d;
+      border-right: 1px solid #30363d;
     }
 
     /* CABEÇALHO DO CHAT */
     .cabecalho-chat {
-      background-color: #075e54;
+      background-color: #161b22;
       color: white;
       padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      border-bottom: 1px solid #30363d;
     }
     .info-usuario-chat { display: flex; align-items: center; gap: 12px; }
+    .avatar-container { position: relative; }
     .avatar-chat {
-      width: 40px;
-      height: 40px;
-      background-color: #128c7e;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #8a2be2, #00ffff);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -79,17 +85,33 @@
       font-weight: bold;
       color: white;
       font-size: 1.1rem;
+      padding: 2px;
     }
-    .status-chat h2 { font-size: 1rem; font-weight: 600; }
-    .status-chat span { font-size: 0.75rem; opacity: 0.85; }
-    .btn-sair-chat {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 4px;
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      background: #161b22;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .status-online {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 10px;
+      height: 10px;
+      background-color: #2ea043;
+      border-radius: 50%;
+      border: 2px solid #161b22;
+    }
+    .status-chat h2 { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #f0f6fc; }
+    .status-chat h2 span.verificado { color: #58a6ff; font-size: 0.85rem; }
+    .status-chat span { font-size: 0.75rem; color: #2ea043; }
+    
+    .acoes-topo { display: flex; gap: 16px; color: #8b949e; font-size: 1.1rem; align-items: center; }
+    .acoes-topo button { background: none; border: none; color: inherit; cursor: pointer; font-size: 1.1rem; }
 
     /* ÁREA DAS MENSAGENS */
     .lista-mensagens {
@@ -98,90 +120,119 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      background: radial-gradient(circle at center, #11161d 0%, #0d1117 100%);
     }
     .balao-mensagem {
       max-width: 80%;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
       position: relative;
       word-wrap: break-word;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
       font-size: 0.95rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     .balao-minha {
-      background-color: #d9fdd3;
+      background: linear-gradient(135deg, #1f6feb, #388bfd);
+      color: #fff;
       align-self: flex-end;
-      border-top-right-radius: 0;
+      border-bottom-right-radius: 2px;
     }
     .balao-outro {
-      background-color: #ffffff;
+      background-color: #21262d;
+      color: #f0f6fc;
       align-self: flex-start;
-      border-top-left-radius: 0;
+      border-bottom-left-radius: 2px;
+      border: 1px solid #30363d;
     }
-    .balao-mensagem strong { display: block; font-size: 0.75rem; color: #075e54; margin-bottom: 2px; }
-    .balao-mensagem p { color: #111b21; margin-bottom: 4px; }
-    .balao-mensagem img { max-width: 100%; border-radius: 6px; margin-top: 4px; display: block; }
-    .balao-mensagem audio { width: 100%; min-width: 200px; height: 36px; margin-top: 4px; }
-    .balao-mensagem .horario {
-      display: block;
+    .balao-mensagem strong { display: block; font-size: 0.75rem; color: #8b949e; margin-bottom: 2px; }
+    .balao-mensagem p { margin-bottom: 4px; }
+    .balao-mensagem img { max-width: 100%; border-radius: 8px; margin-top: 4px; display: block; }
+    .balao-mensagem audio { width: 100%; min-width: 200px; height: 36px; margin-top: 4px; filter: invert(1); }
+    .detalhes-rodape-msg {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
       font-size: 0.65rem;
-      color: #667781;
-      text-align: right;
+      color: #8b949e;
       margin-top: 2px;
     }
+    .balao-minha .detalhes-rodape-msg { color: rgba(255,255,255,0.8); }
 
     /* BARRA INFERIOR DE ENVIO */
-    .barra-envio {
-      background-color: #f0f2f5;
+    .painel-inferior {
+      background-color: #161b22;
+      border-top: 1px solid #30363d;
       padding: 10px;
+    }
+    .barra-envio {
       display: flex;
       align-items: center;
       gap: 8px;
-      border-top: 1px solid #d1d7db;
+      background: #0d1117;
+      padding: 6px 12px;
+      border-radius: 24px;
+      border: 1px solid #30363d;
+      margin-bottom: 10px;
     }
-    .btn-anexo, .btn-mic {
+    .btn-acao {
       background: none;
       border: none;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       cursor: pointer;
-      color: #54656f;
-      padding: 4px;
+      color: #8b949e;
+      padding: 2px;
     }
-    .btn-anexo:hover, .btn-mic:hover { color: #075e54; }
+    .btn-acao:hover { color: #58a6ff; }
     .campo-texto-msg {
       flex: 1;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 20px;
-      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      color: #fff;
       font-size: 0.95rem;
       outline: none;
     }
-    .btn-enviar-msg {
-      background-color: #00a884;
-      color: white;
-      border: none;
+    .btn-ia-circulo {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-      font-size: 1.1rem;
+      background: radial-gradient(circle, #58a6ff, #8a2be2);
+      border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 8px rgba(88,166,255,0.5);
     }
-    .btn-enviar-msg:hover { background-color: #008f6f; }
-    
+
+    /* MENU DE ATALHOS INFERIORES ESTILO FIGURA */
+    .menu-atalhos-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+    .atalho-item {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 8px 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .atalho-item:hover { background: #30363d; }
+    .atalho-item span.icone { font-size: 1.1rem; display: block; margin-bottom: 2px; }
+    .atalho-item span.texto-atalho { font-size: 0.6rem; color: #8b949e; display: block; line-height: 1.1; }
+
     .gravando-ativo {
-      color: #e74c3c !important;
+      color: #f85149 !important;
       animation: piscar 1s infinite;
     }
     @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
   </style>
 
-  <!-- Firebase Scripts Compat (Apenas Firestore necessário agora) -->
+  <!-- Firebase Scripts Compat -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
@@ -189,8 +240,8 @@
 
   <!-- TELA DE LOGIN -->
   <div id="tela-login">
-    <h1>💬 ABP Chat</h1>
-    <p>Escolha seu usuário e digite sua senha para entrar</p>
+    <h1>💬 ConectaX</h1>
+    <p>Mais que mensagens, é conexão.</p>
     <form id="form-login" onsubmit="validarSenha(event)">
       <select id="usuario-login" required>
         <option value="Gabriel">Gabriel</option>
@@ -207,29 +258,66 @@
     <!-- CABEÇALHO -->
     <div class="cabecalho-chat">
       <div class="info-usuario-chat">
-        <div id="avatar-usuario" class="avatar-chat">G</div>
+        <div class="avatar-container">
+          <div class="avatar-chat">
+            <div id="avatar-usuario" class="avatar-inner">G</div>
+          </div>
+          <div class="status-online"></div>
+        </div>
         <div class="status-chat">
-          <h2 id="nome-usuario-logado">Gabriel</h2>
-          <span>Conectado</span>
+          <h2><span id="nome-usuario-logado">Gabriel</span> <span class="verificado">✔</span></h2>
+          <span>online</span>
         </div>
       </div>
-      <button class="btn-sair-chat" onclick="sair()" title="Sair">🚪</button>
+      <div class="acoes-topo">
+        <button title="Chamada de voz">📞</button>
+        <button title="Vídeo chamada">📹</button>
+        <button onclick="sair()" title="Sair">⋮</button>
+      </div>
     </div>
 
     <!-- MENSAGENS -->
     <div id="lista-mensagens" class="lista-mensagens">
-      <p style="text-align: center; color: #667781; margin-top: 50%; font-size: 0.85rem;">Carregando conversas...</p>
+      <p style="text-align: center; color: #8b949e; margin-top: 50%; font-size: 0.85rem;">Carregando conversas...</p>
     </div>
 
-    <!-- BARRA DE ENVIO -->
-    <div class="barra-envio">
-      <input type="file" id="input-arquivo" accept="image/*" style="display: none;">
-      <button type="button" class="btn-anexo" id="btn-clique-anexo" title="Anexar Imagem">📎</button>
-      
-      <input type="text" id="input-mensagem" class="campo-texto-msg" placeholder="Digite uma mensagem...">
-      
-      <button type="button" id="btn-mic" class="btn-mic" title="Gravar Áudio">🎤</button>
-      <button type="button" class="btn-enviar-msg" id="btn-clique-enviar" title="Enviar">⬆️</button>
+    <!-- PAINEL INFERIOR -->
+    <div class="painel-inferior">
+      <!-- BARRA DE DIGITAÇÃO E COMANDOS -->
+      <div class="barra-envio">
+        <button type="button" class="btn-acao" title="Inserir Emoji">😊</button>
+        
+        <input type="file" id="input-arquivo" accept="image/*" style="display: none;">
+        <input type="text" id="input-mensagem" class="campo-texto-msg" placeholder="Digite uma mensagem...">
+        
+        <button type="button" class="btn-acao" id="btn-clique-anexo" title="Anexar Arquivo">📎</button>
+        <button type="button" class="btn-ia-circulo" title="Assistente IA">✨</button>
+        <button type="button" class="btn-acao" id="btn-mic" title="Gravar Áudio">🎤</button>
+      </div>
+
+      <!-- GRID DE ATALHOS INFERIORES (CONFORME DESIGN SOLICITADO) -->
+      <div class="menu-atalhos-grid">
+        <div class="atalho-item" onclick="alert('Modo invisível ativado!')">
+          <span class="icone">✨</span>
+          <span class="texto-atalho">Modo invisível</span>
+        </div>
+        <div class="atalho-item" onclick="alert('Compartilhando localização...')">
+          <span class="icone">📍</span>
+          <span class="texto-atalho">Compartilhar localização</span>
+        </div>
+        <div class="atalho-item" onclick="alert('Mensagens que somem configuradas!')">
+          <span class="icone">⏱️</span>
+          <span class="texto-atalho">Mensagens que somem</span>
+        </div>
+        <div class="atalho-item" onclick="alert('Abrindo arquivos secretos...')">
+          <span class="icone">📁</span>
+          <span class="texto-atalho">Arquivos secretos</span>
+        </div>
+        <div class="atalho-item" onclick="alert('Conversa protegida por criptografia!')">
+          <span class="icone">🔒</span>
+          <span class="texto-atalho">Conversa protegida</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -251,8 +339,8 @@
     let pedacosAudio = [];
     let gravandoAtivo = false;
 
-    if (localStorage.getItem('abp_autenticado') === 'true') {
-      const u = localStorage.getItem('abp_usuario');
+    if (localStorage.getItem('conecta_autenticado') === 'true') {
+      const u = localStorage.getItem('conecta_usuario');
       if (u && SENHAS[u]) {
         iniciarApp(u);
       } else {
@@ -267,8 +355,8 @@
       const msgErro = document.getElementById('msg-erro');
 
       if (SENHAS[usuario] && senha === SENHAS[usuario]) {
-        localStorage.setItem('abp_autenticado', 'true');
-        localStorage.setItem('abp_usuario', usuario);
+        localStorage.setItem('conecta_autenticado', 'true');
+        localStorage.setItem('conecta_usuario', usuario);
         msgErro.style.display = 'none';
         iniciarApp(usuario);
       } else {
@@ -304,7 +392,7 @@
         snapshot.forEach((doc) => { msgs.push({ id: doc.id, ...doc.data() }); });
         msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-        const usuarioLogado = localStorage.getItem('abp_usuario');
+        const usuarioLogado = localStorage.getItem('conecta_usuario');
         let html = '';
 
         msgs.forEach((m) => {
@@ -323,12 +411,15 @@
             <div class="balao-mensagem ${ehMinha ? 'balao-minha' : 'balao-outro'}">
               <strong>${m.quem}</strong>
               ${conteudo}
-              <span class="horario">${m.horario || ''}</span>
+              <div class="detalhes-rodape-msg">
+                <span>${m.horario || ''}</span>
+                ${ehMinha ? '<span style="color: #388bfd; font-weight: bold;">✓✓</span>' : ''}
+              </div>
             </div>
           `;
         });
 
-        listaMensagens.innerHTML = html || '<p style="text-align: center; color: #667781; margin-top: 50%; font-size: 0.85rem;">Nenhuma mensagem ainda. Diga oi!</p>';
+        listaMensagens.innerHTML = html || '<p style="text-align: center; color: #8b949e; margin-top: 50%; font-size: 0.85rem;">Nenhuma mensagem ainda. Diga oi!</p>';
         listaMensagens.scrollTop = listaMensagens.scrollHeight;
       }, (erro) => {
         console.error("Erro ao carregar mensagens:", erro);
@@ -336,8 +427,8 @@
     }
 
     function configurarEventosDOM() {
-      document.getElementById('btn-clique-enviar').addEventListener('click', enviarTexto);
-      document.getElementById('input-mensagem').addEventListener('keypress', (e) => {
+      const inputMensagem = document.getElementById('input-mensagem');
+      inputMensagem.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           enviarTexto();
@@ -361,7 +452,7 @@
     async function enviarTexto() {
       const input = document.getElementById('input-mensagem');
       const texto = input.value.trim();
-      const usuarioLogado = localStorage.getItem('abp_usuario');
+      const usuarioLogado = localStorage.getItem('conecta_usuario');
 
       if (!texto || !dbGlobal) return;
 
@@ -384,7 +475,7 @@
       const reader = new FileReader();
       reader.onload = async function (uploadEvent) {
         const base64Data = uploadEvent.target.result;
-        const usuarioLogado = localStorage.getItem('abp_usuario');
+        const usuarioLogado = localStorage.getItem('conecta_usuario');
 
         try {
           await dbGlobal.collection('mensagens_chat').add({
@@ -398,7 +489,7 @@
             document.getElementById('input-arquivo').value = '';
           }
         } catch (e) {
-          alert("Erro ao salvar no banco: " + e.message);
+          alert("Erro ao salvar arquivo: " + e.message);
         }
       };
       reader.readAsDataURL(arquivo);
@@ -418,6 +509,13 @@
           mediaRecorder = new MediaRecorder(stream);
           pedacosAudio = [];
 
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) {
+              pedancao.push(e.data); // correção de compatibilidade abaixo
+            }
+          };
+
+          // Redefinindo corretamente o ondataavailable
           mediaRecorder.ondataavailable = (e) => {
             if (e.data && e.data.size > 0) {
               pedacosAudio.push(e.data);
