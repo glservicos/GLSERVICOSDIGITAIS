@@ -321,7 +321,6 @@
       border-top-right-radius: 0;
     }
 
-    /* Estilo para imagem enviada na mensagem */
     .message img {
       width: 100%;
       max-width: 220px;
@@ -365,24 +364,25 @@
       cursor: pointer;
     }
 
-    /* Modal Novo Contato */
-    .modal-overlay {
+    /* --- MODAIS INTERNOS (Câmera, Chamada, Novo Contato) --- */
+    .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 2000;
     }
 
-    .modal-overlay.active {
+    .overlay.active {
       display: flex;
     }
 
+    /* Modal de Novo Contato */
     .modal {
       background-color: #222e35;
       width: 85%;
@@ -434,15 +434,118 @@
       color: #111b21;
     }
 
-    #realCameraInput {
-      display: none;
+    /* Visor Simulador de Câmera */
+    .camera-modal {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .camera-screen-view {
+      flex: 1;
+      width: 100%;
+      border: 2px dashed #444;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #8696a0;
+      text-align: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #111;
+    }
+
+    .camera-screen-view i {
+      font-size: 48px;
+      color: #00a884;
+    }
+
+    .camera-controls {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      align-items: center;
+    }
+
+    .shutter-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: #fff;
+      border: 4px solid #00a884;
+      cursor: pointer;
+    }
+
+    .camera-close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* Tela de Chamada Simulada */
+    .call-modal {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #111b21, #0b141a);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .call-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #00a884;
+      color: #fff;
+      font-size: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 40px;
+      box-shadow: 0 0 20px rgba(0, 168, 132, 0.4);
+    }
+
+    .call-info h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .call-info p {
+      color: #8696a0;
+      font-size: 14px;
+    }
+
+    .hangup-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: #ea4335;
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(234, 67, 53, 0.4);
+      margin-bottom: 30px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Input escondido para capturar foto e carregar no chat -->
-  <input type="file" id="realCameraInput" accept="image/*" capture="environment">
 
   <div class="app-container">
     
@@ -508,7 +611,7 @@
     </div>
 
     <!-- MODAL DE NOVO CONTATO -->
-    <div class="modal-overlay" id="modalOverlay">
+    <div class="overlay" id="modalOverlay">
       <div class="modal">
         <h3>Novo Contato</h3>
         <input type="text" id="contactNameInput" placeholder="Digite o nome da pessoa..." />
@@ -516,6 +619,36 @@
           <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
           <button class="btn btn-add" id="addContactBtn">Adicionar</button>
         </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE CÂMERA SIMULADA -->
+    <div class="overlay" id="cameraOverlay">
+      <div class="camera-modal">
+        <div style="width:100%; display:flex; justify-content:flex-end;">
+          <button class="camera-close-btn" id="closeCameraBtn"><i class="fa-solid fa-xmark" style="font-size:22px;"></i></button>
+        </div>
+        <div class="camera-screen-view">
+          <i class="fa-solid fa-camera-retro"></i>
+          <p>Toque no botão abaixo para capturar e enviar foto para a conversa</p>
+        </div>
+        <div class="camera-controls">
+          <div style="width: 40px;"></div>
+          <button class="shutter-btn" id="takePhotoBtn" title="Tirar Foto"></button>
+          <div style="width: 40px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE CHAMADA SIMULADA -->
+    <div class="overlay" id="callOverlay">
+      <div class="call-modal">
+        <div class="call-info">
+          <h2 id="callTitleName">Juliana</h2>
+          <p id="callStatusText">Chamando...</p>
+        </div>
+        <div class="call-avatar" id="callAvatarIcon">J</div>
+        <button class="hangup-btn" id="hangupBtn" title="Encerrar Chamada"><i class="fa-solid fa-phone-slash"></i></button>
       </div>
     </div>
 
@@ -554,13 +687,23 @@
     const chatPhoneBtn = document.getElementById('chatPhoneBtn');
     const chatMenuBtn = document.getElementById('chatMenuBtn');
     const chatDropdownMenu = document.getElementById('chatDropdownMenu');
-    const realCameraInput = document.getElementById('realCameraInput');
 
+    // Modais
+    const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
-    const modalOverlay = document.getElementById('modalOverlay');
     const addContactBtn = document.getElementById('addContactBtn');
     const contactNameInput = document.getElementById('contactNameInput');
+
+    const cameraOverlay = document.getElementById('cameraOverlay');
+    const closeCameraBtn = document.getElementById('closeCameraBtn');
+    const takePhotoBtn = document.getElementById('takePhotoBtn');
+
+    const callOverlay = document.getElementById('callOverlay');
+    const callTitleName = document.getElementById('callTitleName');
+    const callStatusText = document.getElementById('callStatusText');
+    const callAvatarIcon = document.getElementById('callAvatarIcon');
+    const hangupBtn = document.getElementById('hangupBtn');
 
     function getRandomColor() {
       const colors = ['#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ff9800'];
@@ -620,7 +763,7 @@
         
         if (msg.type === 'image') {
           msgDiv.innerHTML = `
-            <img src="${msg.content}" alt="Foto enviada" />
+            <img src="${msg.content}" alt="Foto" />
             <span class="message-time">${msg.time}</span>
           `;
         } else {
@@ -658,46 +801,60 @@
     sendMessageBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- CAPTURA DA CÂMERA REAL SEM SAIR DA TELA DE CHAT ---
-    cameraBtn.addEventListener('click', () => realCameraInput.click());
-    chatCameraBtn.addEventListener('click', () => realCameraInput.click());
+    // --- AÇÕES DOS BOTÕES ---
 
-    realCameraInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file && currentContactId !== null) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const imageUrl = e.target.result;
-          const contact = contacts.find(c => c.id === currentContactId);
-          const now = new Date();
-          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    // Câmera (Abre o visor simulado na tela sem sair do app)
+    cameraBtn.addEventListener('click', () => {
+      // Se estiver na home, seleciona o primeiro contato para receber a foto ou avisa
+      currentContactId = contacts[0].id;
+      cameraOverlay.classList.add('active');
+    });
+    chatCameraBtn.addEventListener('click', () => cameraOverlay.classList.add('active'));
+    closeCameraBtn.addEventListener('click', () => cameraOverlay.classList.remove('active'));
 
-          // Adiciona a foto no chat atual
-          contact.messages.push({
-            type: 'image',
-            content: imageUrl,
-            sender: 'sent',
-            time: timeStr
-          });
-          contact.time = timeStr;
+    // Tirar foto simulada e enviar no chat atual
+    takePhotoBtn.addEventListener('click', () => {
+      if (currentContactId === null) currentContactId = contacts[0].id;
+      const contact = contacts.find(c => c.id === currentContactId);
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-          renderMessages(contact);
-          chatBody.scrollTop = chatBody.scrollHeight;
-        };
-        reader.readAsDataURL(file);
-      }
-      // Limpa o input para permitir tirar outra foto seguida se quiser
-      realCameraInput.value = '';
+      // Cria uma imagem simulada bonita (placeholder com gradiente)
+      const simulatedImage = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400&auto=format&fit=crop&q=60";
+
+      contact.messages.push({
+        type: 'image',
+        content: simulatedImage,
+        sender: 'sent',
+        time: timeStr
+      });
+      contact.time = timeStr;
+
+      cameraOverlay.classList.remove('active');
+      renderMessages(contact);
+      chatBody.scrollTop = chatBody.scrollHeight;
     });
 
+    // Chamadas de Vídeo e Voz (Abre a tela de chamada simulada)
     chatVideoBtn.addEventListener('click', () => {
-      alert("Iniciando chamada de vídeo com " + activeName.textContent);
+      callTitleName.textContent = activeName.textContent;
+      callAvatarIcon.textContent = activeName.textContent.charAt(0).toUpperCase();
+      callStatusText.textContent = "Chamando vídeo...";
+      callOverlay.classList.add('active');
     });
 
     chatPhoneBtn.addEventListener('click', () => {
-      window.location.href = "tel:";
+      callTitleName.textContent = activeName.textContent;
+      callAvatarIcon.textContent = activeName.textContent.charAt(0).toUpperCase();
+      callStatusText.textContent = "Chamando...";
+      callOverlay.classList.add('active');
     });
 
+    hangupBtn.addEventListener('click', () => {
+      callOverlay.classList.remove('active');
+    });
+
+    // Pesquisa e Menus
     searchBtn.addEventListener('click', () => {
       mainHeader.style.display = 'none';
       searchBarContainer.classList.add('active');
@@ -745,6 +902,7 @@
     document.getElementById('menuNewGroup').addEventListener('click', () => alert("Criando novo grupo..."));
     document.getElementById('menuSettings').addEventListener('click', () => alert("Abrindo configurações..."));
 
+    // Modal Novo Contato
     openModalBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
       contactNameInput.focus();
