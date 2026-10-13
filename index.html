@@ -379,18 +379,21 @@
         input.value = '';
         input.focus();
       } catch (e) {
-        alert("Erro ao enviar: " + e.message);
+        alert("Erro ao enviar texto: " + e.message);
       }
     }
 
     async function enviarImagem(arquivo) {
       const usuarioLogado = localStorage.getItem('abp_usuario');
-      if (!storageGlobal || !dbGlobal) return;
+      if (!storageGlobal || !dbGlobal) {
+        alert("Erro: Firebase Storage não inicializado.");
+        return;
+      }
 
       try {
-        const ref = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
-        const snap = await ref.put(arquivo);
-        const url = await snap.ref.getDownloadURL();
+        const refStorage = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
+        const snapshot = await refStorage.put(arquivo);
+        const url = await snapshot.ref.getDownloadURL();
 
         await dbGlobal.collection('mensagens_chat').add({
           quem: usuarioLogado,
@@ -401,7 +404,8 @@
         });
         document.getElementById('input-arquivo').value = '';
       } catch (e) {
-        alert("Erro ao enviar imagem: " + e.message);
+        alert("Erro detalhado ao enviar imagem (Verifique as regras do Firebase Storage): " + e.message);
+        console.error(e);
       }
     }
 
@@ -411,20 +415,32 @@
       if (!gravandoAtivo) {
         try {
           if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            alert("Seu navegador não suporta gravação de áudio ou a página não está usando HTTPS/localhost.");
+            alert("Seu navegador não suporta gravação de áudio.");
             return;
           }
 
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
+          
+          // Seleciona o formato de gravação suportado pelo navegador
+          let options = { mimeType: 'audio/webm' };
+          if (!MediaRecorder.isTypeSupported('audio/webm')) {
+            options = { mimeType: 'audio/mp4' };
+            if (!MediaRecorder.isTypeSupported('audio/mp4')) {
+              options = {}; // Deixa o navegador decidir
+            }
+          }
+
+          mediaRecorder = new MediaRecorder(stream, options);
           pedacosAudio = [];
 
           mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) pedacosAudio.push(e.data);
+            if (e.data && e.data.size > 0) {
+              pedacosAudio.push(e.data);
+            }
           };
 
           mediaRecorder.onstop = async () => {
-            const blob = new Blob(pedacosAudio, { type: 'audio/webm' });
+            const blob = new Blob(pedacosAudio, { type: mediaRecorder.mimeType || 'audio/webm' });
             await enviarAudio(blob);
             stream.getTracks().forEach(t => t.stop());
           };
@@ -432,9 +448,10 @@
           mediaRecorder.start();
           gravandoAtivo = true;
           btnMic.classList.add('gravando-ativo');
-          btnMic.title = "Gravando... Clique para enviar";
+          btnMic.title = "Gravando... Clique novamente para parar e enviar";
         } catch (err) {
-          alert("Não foi possível acessar o microfone. Verifique se permitiu o acesso nas configurações do navegador.");
+          alert("Erro ao acessar o microfone: " + err.message);
+          console.error(err);
         }
       } else {
         if (mediaRecorder && mediaRecorder.state !== "inactive") {
@@ -451,9 +468,9 @@
       if (!storageGlobal || !dbGlobal) return;
 
       try {
-        const ref = storageGlobal.ref().child(`chat_audios/${Date.now()}.webm`);
-        const snap = await ref.put(blob);
-        const url = await snap.ref.getDownloadURL();
+        const refStorage = storageGlobal.ref().child(`chat_audios/${Date.now()}.webm`);
+        const snapshot = await refStorage.put(blob);
+        const url = await snapshot.ref.getDownloadURL();
 
         await dbGlobal.collection('mensagens_chat').add({
           quem: usuarioLogado,
@@ -463,7 +480,8 @@
           horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
       } catch (e) {
-        alert("Erro ao enviar áudio: " + e.message);
+        alert("Erro detalhado ao enviar áudio: " + e.message);
+        console.error(e);
       }
     }
   </script>
