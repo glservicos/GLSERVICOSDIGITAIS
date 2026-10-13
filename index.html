@@ -6,6 +6,23 @@
   <title>TalkBox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Manifest embutido para permitir a instalação como PWA -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
+    %22name%22: %22TalkBox%22,
+    %22short_name%22: %22TalkBox%22,
+    %22start_url%22: %22./%22,
+    %22display%22: %22standalone%22,
+    %22background_color%22: %22%23111b21%22,
+    %22theme_color%22: %22%23111b21%22,
+    %22icons%22: [
+      {
+        %22src%22: %22https://cdn-icons-png.flaticon.com/512/733/733585.png%22,
+        %22sizes%22: %22512x512%22,
+        %22type%22: %22image/png%22
+      }
+    ]
+  }">
+
   <style>
     * {
       box-sizing: border-box;
