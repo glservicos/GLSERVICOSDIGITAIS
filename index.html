@@ -224,13 +224,13 @@
 
     <!-- BARRA DE ENVIO -->
     <div class="barra-envio">
-      <input type="file" id="input-arquivo" accept="image/*" style="display: none;" onchange="enviarImagem(this)">
-      <button type="button" class="btn-anexo" onclick="document.getElementById('input-arquivo').click()" title="Anexar Imagem">📎</button>
+      <input type="file" id="input-arquivo" accept="image/*" style="display: none;">
+      <button type="button" class="btn-anexo" id="btn-clique-anexo" title="Anexar Imagem">📎</button>
       
       <input type="text" id="input-mensagem" class="campo-texto-msg" placeholder="Digite uma mensagem...">
       
-      <button type="button" id="btn-mic" class="btn-mic" onclick="alternarGravacaoAudio()" title="Gravar Áudio">🎤</button>
-      <button type="button" class="btn-enviar-msg" onclick="enviarTexto()" title="Enviar">⬆️</button>
+      <button type="button" id="btn-mic" class="btn-mic" title="Gravar Áudio">🎤</button>
+      <button type="button" class="btn-enviar-msg" id="btn-clique-enviar" title="Enviar">⬆️</button>
     </div>
   </div>
 
@@ -253,7 +253,6 @@
     let pedacosAudio = [];
     let gravandoAtivo = false;
 
-    // Verificar se já está logado
     if (localStorage.getItem('abp_autenticado') === 'true') {
       const u = localStorage.getItem('abp_usuario');
       if (u && SENHAS[u]) {
@@ -286,6 +285,7 @@
       document.getElementById('avatar-usuario').textContent = usuario.charAt(0);
 
       iniciarFirebase();
+      configurarEventosDOM();
     }
 
     function sair() {
@@ -302,7 +302,6 @@
 
       const listaMensagens = document.getElementById('lista-mensagens');
 
-      // Escutar mensagens em tempo real
       dbGlobal.collection('mensagens_chat').onSnapshot((snapshot) => {
         let msgs = [];
         snapshot.forEach((doc) => { msgs.push({ id: doc.id, ...doc.data() }); });
@@ -339,6 +338,29 @@
       });
     }
 
+    function configurarEventosDOM() {
+      document.getElementById('btn-clique-enviar').addEventListener('click', enviarTexto);
+      document.getElementById('input-mensagem').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          enviarTexto();
+        }
+      });
+
+      const inputArquivo = document.getElementById('input-arquivo');
+      document.getElementById('btn-clique-anexo').addEventListener('click', () => {
+        inputArquivo.click();
+      });
+
+      inputArquivo.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          enviarImagem(e.target.files[0]);
+        }
+      });
+
+      document.getElementById('btn-mic').addEventListener('click', alternarGravacaoAudio);
+    }
+
     async function enviarTexto() {
       const input = document.getElementById('input-mensagem');
       const texto = input.value.trim();
@@ -361,17 +383,9 @@
       }
     }
 
-    document.getElementById('input-mensagem').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        enviarTexto();
-      }
-    });
-
-    async function enviarImagem(input) {
-      if (!input.files || !input.files[0] || !storageGlobal || !dbGlobal) return;
-      const arquivo = input.files[0];
+    async function enviarImagem(arquivo) {
       const usuarioLogado = localStorage.getItem('abp_usuario');
+      if (!storageGlobal || !dbGlobal) return;
 
       try {
         const ref = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
@@ -385,7 +399,7 @@
           timestamp: Date.now(),
           horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
-        input.value = '';
+        document.getElementById('input-arquivo').value = '';
       } catch (e) {
         alert("Erro ao enviar imagem: " + e.message);
       }
@@ -396,6 +410,11 @@
 
       if (!gravandoAtivo) {
         try {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Seu navegador não suporta gravação de áudio ou a página não está usando HTTPS/localhost.");
+            return;
+          }
+
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(stream);
           pedacosAudio = [];
@@ -415,10 +434,12 @@
           btnMic.classList.add('gravando-ativo');
           btnMic.title = "Gravando... Clique para enviar";
         } catch (err) {
-          alert("Acesso ao microfone negado ou não suportado.");
+          alert("Não foi possível acessar o microfone. Verifique se permitiu o acesso nas configurações do navegador.");
         }
       } else {
-        if (mediaRecorder) mediaRecorder.stop();
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
         gravandoAtivo = false;
         btnMic.classList.remove('gravando-ativo');
         btnMic.title = "Gravar Áudio";
