@@ -4,96 +4,67 @@
      width="512" height="512" viewBox="0 0 512 512">
 
   <defs>
-    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#00f5ff"/>
-      <stop offset="38%" stop-color="#073cff"/>
-      <stop offset="68%" stop-color="#6b00ff"/>
-      <stop offset="100%" stop-color="#ff00e6"/>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00FFFF"/>
+      <stop offset="35%" stop-color="#0055FF"/>
+      <stop offset="65%" stop-color="#7900FF"/>
+      <stop offset="100%" stop-color="#FF00E5"/>
     </linearGradient>
 
-    <linearGradient id="bubble" x1="0" y1="0" x2="1" y2="0.5">
-      <stop offset="0%" stop-color="#00f9ff"/>
-      <stop offset="42%" stop-color="#087aff"/>
-      <stop offset="72%" stop-color="#7900ff"/>
-      <stop offset="100%" stop-color="#ff18ed"/>
+    <linearGradient id="textGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00FFFF"/>
+      <stop offset="50%" stop-color="#2878FF"/>
+      <stop offset="100%" stop-color="#FF28EA"/>
     </linearGradient>
 
-    <linearGradient id="letters" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#00ffff"/>
-      <stop offset="45%" stop-color="#168cff"/>
-      <stop offset="100%" stop-color="#ff21e9"/>
-    </linearGradient>
-
-    <radialGradient id="background">
-      <stop offset="0%" stop-color="#080b35"/>
-      <stop offset="100%" stop-color="#01010b"/>
+    <radialGradient id="bg" cx="50%" cy="45%" r="75%">
+      <stop offset="0%" stop-color="#070B35"/>
+      <stop offset="100%" stop-color="#010108"/>
     </radialGradient>
 
-    <filter id="glow" x="-50%" y="-50%"
-            width="200%" height="200%">
-      <feGaussianBlur stdDeviation="7" result="blur"/>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-
-    <filter id="softGlow" x="-50%" y="-50%"
-            width="200%" height="200%">
-      <feGaussianBlur stdDeviation="3"/>
-    </filter>
   </defs>
 
-  <!-- Fundo -->
-  <rect width="512" height="512" rx="80"
-        fill="url(#background)"/>
+  <!-- Fundo escuro -->
+  <rect width="512" height="512" rx="88" fill="url(#bg)"/>
 
-  <!-- Moldura neon -->
-  <rect x="29" y="29" width="454" height="454"
-        rx="105" fill="none"
-        stroke="url(#frame)" stroke-width="5"
+  <!-- Moldura luminosa -->
+  <rect x="30" y="30" width="452" height="452" rx="100"
+        fill="none" stroke="url(#neon)"
+        stroke-width="5" filter="url(#glow)"/>
+
+  <!-- Balão de conversa -->
+  <path d="M256 102
+           C174 102 112 153 112 234
+           C112 279 132 315 164 339
+           L135 389
+           Q130 402 145 396
+           L207 364
+           C223 370 240 373 258 373
+           C340 373 400 320 400 238
+           C400 157 339 102 256 102 Z"
+        fill="none"
+        stroke="url(#neon)"
+        stroke-width="34"
+        stroke-linecap="round"
+        stroke-linejoin="round"
         filter="url(#glow)"/>
 
-  <rect x="34" y="34" width="444" height="444"
-        rx="100" fill="none"
-        stroke="#234aff" stroke-width="1.5"/>
-
-  <!-- Brilho do balão -->
-  <path d="M 256 101
-           C 168 101 104 157 104 239
-           C 104 285 124 317 151 340
-           L 126 387
-           Q 121 399 135 394
-           L 204 361
-           C 220 367 238 371 257 371
-           C 345 371 407 315 407 237
-           C 407 157 345 101 256 101 Z"
-        fill="none" stroke="url(#bubble)"
-        stroke-width="39" stroke-linejoin="round"
-        filter="url(#glow)"/>
-
-  <!-- Balão principal -->
-  <path d="M 256 101
-           C 168 101 104 157 104 239
-           C 104 285 124 317 151 340
-           L 126 387
-           Q 121 399 135 394
-           L 204 361
-           C 220 367 238 371 257 371
-           C 345 371 407 315 407 237
-           C 407 157 345 101 256 101 Z"
-        fill="none" stroke="url(#bubble)"
-        stroke-width="29" stroke-linejoin="round"/>
-
-  <!-- Nome do aplicativo -->
-  <text x="256" y="262"
+  <!-- Nome Talkbox -->
+  <text x="256" y="263"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="49" font-weight="bold"
+        font-size="49"
+        font-weight="bold"
         text-anchor="middle"
-        textLength="218" lengthAdjust="spacingAndGlyphs"
-        fill="url(#letters)"
-        stroke="#4aeaff" stroke-width="0.5"
-        paint-order="stroke fill"
+        textLength="220"
+        lengthAdjust="spacingAndGlyphs"
+        fill="url(#textGradient)"
         filter="url(#glow)">Talkbox</text>
 
 </svg>
