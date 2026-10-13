@@ -35,7 +35,6 @@
       overflow: hidden;
     }
 
-    /* Telas (Alternância entre Lista e Chat) */
     .screen {
       position: absolute;
       top: 0;
@@ -53,7 +52,7 @@
       pointer-events: none;
     }
 
-    /* --- TELA 1: LISTA DE CONVERSAS --- */
+    /* --- CABEÇALHO --- */
     .header {
       background-color: #202c33;
       padding: 16px;
@@ -61,6 +60,7 @@
       justify-content: space-between;
       align-items: center;
       color: #aebac1;
+      position: relative;
     }
 
     .header h1 {
@@ -69,12 +69,80 @@
       font-weight: 600;
     }
 
+    .header-icons {
+      display: flex;
+      align-items: center;
+    }
+
     .header-icons i {
       font-size: 18px;
       margin-left: 20px;
       cursor: pointer;
     }
 
+    /* Barra de Pesquisa Expansível */
+    .search-bar-container {
+      display: none;
+      background-color: #202c33;
+      padding: 10px 16px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-bar-container.active {
+      display: flex;
+    }
+
+    .search-bar-container input {
+      flex: 1;
+      background-color: #2a3942;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #e9edef;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-back-btn {
+      background: none;
+      border: none;
+      color: #aebac1;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Menu Contextual dos Três Pontinhos */
+    .dropdown-menu {
+      position: absolute;
+      top: 50px;
+      right: 16px;
+      background-color: #233138;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      width: 180px;
+    }
+
+    .dropdown-menu.active {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #e9edef;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #182229;
+    }
+
+    /* Lista de Conversas */
     .chat-list {
       flex: 1;
       overflow-y: auto;
@@ -159,7 +227,7 @@
       z-index: 10;
     }
 
-    /* --- TELA 2: TELA DE CONVERSA (CHAT) --- */
+    /* --- TELA 2: CHAT INDIVIDUAL --- */
     .chat-header {
       background-color: #202c33;
       padding: 10px 16px;
@@ -181,7 +249,6 @@
       align-items: center;
       gap: 10px;
       flex: 1;
-      cursor: pointer;
     }
 
     .chat-header-avatar {
@@ -202,7 +269,6 @@
       color: #e9edef;
     }
 
-    /* Corpo das Mensagens */
     .chat-body {
       flex: 1;
       background-color: #0b141a;
@@ -244,10 +310,8 @@
       float: right;
       margin-left: 8px;
       margin-top: 4px;
-      line-height: 12px;
     }
 
-    /* Rodapé de Envio de Mensagem */
     .chat-footer {
       background-color: #202c33;
       padding: 10px 16px;
@@ -275,7 +339,7 @@
       cursor: pointer;
     }
 
-    /* Modal / Popup de Novo Contato */
+    /* Modal Novo Contato */
     .modal-overlay {
       position: absolute;
       top: 0;
@@ -351,17 +415,31 @@
     
     <!-- TELA 1: LISTA DE CONVERSAS -->
     <div class="screen" id="homeScreen">
-      <header class="header">
+      
+      <!-- Cabeçalho Normal -->
+      <header class="header" id="mainHeader">
         <h1>ABP</h1>
         <div class="header-icons">
-          <i class="fa-solid fa-camera"></i>
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <i class="fa-solid fa-ellipsis-vertical"></i>
+          <i class="fa-solid fa-camera" id="cameraBtn" title="Câmera"></i>
+          <i class="fa-solid fa-magnifying-glass" id="searchBtn" title="Pesquisar"></i>
+          <i class="fa-solid fa-ellipsis-vertical" id="menuBtn" title="Mais opções"></i>
+        </div>
+
+        <!-- Menu dos Três Pontinhos -->
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" id="menuNewGroup">Novo grupo</div>
+          <div class="dropdown-item" id="menuSettings">Configurações</div>
         </div>
       </header>
 
+      <!-- Barra de Pesquisa (Aparece ao clicar na Lupa) -->
+      <div class="search-bar-container" id="searchBarContainer">
+        <button class="search-back-btn" id="closeSearchBtn"><i class="fa-solid fa-arrow-left"></i></button>
+        <input type="text" id="searchInput" placeholder="Pesquisar conversas..." />
+      </div>
+
       <div class="chat-list" id="chatList">
-        <!-- Os chats entram dinamicamente aqui -->
+        <!-- Os chats entram aqui -->
       </div>
 
       <button class="fab-btn" id="openModalBtn">
@@ -384,9 +462,7 @@
         </div>
       </div>
 
-      <div class="chat-body" id="chatBody">
-        <!-- As mensagens da conversa aparecem aqui -->
-      </div>
+      <div class="chat-body" id="chatBody"></div>
 
       <div class="chat-footer">
         <i class="fa-regular fa-face-smile" style="color: #8696a0; font-size: 20px; cursor: pointer;"></i>
@@ -410,40 +486,14 @@
   </div>
 
   <script>
-    // Lista de contatos e suas respectivas mensagens
     let contacts = [
-      { 
-        id: 1, 
-        name: "Juliana", 
-        color: "#e91e63", 
-        time: "08:05", 
-        messages: [
-          { text: "Oi! Tudo bem?", sender: "received", time: "08:05" }
-        ] 
-      },
-      { 
-        id: 2, 
-        name: "Carlos Oliveira", 
-        color: "#2196f3", 
-        time: "Ontem", 
-        messages: [
-          { text: "Você viu o projeto?", sender: "received", time: "Ontem" }
-        ] 
-      },
-      { 
-        id: 3, 
-        name: "Grupo da Família", 
-        color: "#4caf50", 
-        time: "Ontem", 
-        messages: [
-          { text: "Bom dia a todos!", sender: "received", time: "Ontem" }
-        ] 
-      }
+      { id: 1, name: "Juliana", color: "#e91e63", time: "08:05", messages: [{ text: "Oi! Tudo bem?", sender: "received", time: "08:05" }] },
+      { id: 2, name: "Carlos Oliveira", color: "#2196f3", time: "Ontem", messages: [{ text: "Você viu o projeto?", sender: "received", time: "Ontem" }] },
+      { id: 3, name: "Grupo da Família", color: "#4caf50", time: "Ontem", messages: [{ text: "Bom dia a todos!", sender: "received", time: "Ontem" }] }
     ];
 
     let currentContactId = null;
 
-    // Elementos da UI
     const homeScreen = document.getElementById('homeScreen');
     const chatScreen = document.getElementById('chatScreen');
     const chatList = document.getElementById('chatList');
@@ -454,6 +504,17 @@
     const messageInput = document.getElementById('messageInput');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
 
+    // Botões do Cabeçalho
+    const cameraBtn = document.getElementById('cameraBtn');
+    const searchBtn = document.getElementById('searchBtn');
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const searchBarContainer = document.getElementById('searchBarContainer');
+    const mainHeader = document.getElementById('mainHeader');
+    const closeSearchBtn = document.getElementById('closeSearchBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    // Modal
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -465,10 +526,12 @@
       return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    // Renderizar a tela inicial de conversas
-    function renderChats() {
+    function renderChats(filterText = '') {
       chatList.innerHTML = '';
-      contacts.forEach(contact => {
+      
+      const filtered = contacts.filter(c => c.name.toLowerCase().includes(filterText.toLowerCase()));
+
+      filtered.forEach(contact => {
         const lastMsg = contact.messages[contact.messages.length - 1];
         const lastText = lastMsg ? lastMsg.text : "Toque para conversar";
         const initial = contact.name.charAt(0).toUpperCase();
@@ -485,14 +548,11 @@
             <div class="chat-message">${lastText}</div>
           </div>
         `;
-
-        // Evento de clique para abrir a conversa específica
         item.addEventListener('click', () => openChat(contact.id));
         chatList.appendChild(item);
       });
     }
 
-    // Abrir a tela de chat do contato selecionado
     function openChat(id) {
       currentContactId = id;
       const contact = contacts.find(c => c.id === id);
@@ -509,7 +569,6 @@
       chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    // Renderizar mensagens dentro da conversa
     function renderMessages(contact) {
       chatBody.innerHTML = '';
       contact.messages.forEach(msg => {
@@ -523,14 +582,12 @@
       });
     }
 
-    // Botão de voltar para a lista
     backBtn.addEventListener('click', () => {
       chatScreen.classList.add('hidden');
       homeScreen.classList.remove('hidden');
       renderChats();
     });
 
-    // Enviar mensagem no chat atual
     function sendMessage() {
       const text = messageInput.value.trim();
       if (!text || currentContactId === null) return;
@@ -539,11 +596,7 @@
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      contact.messages.push({
-        text: text,
-        sender: 'sent',
-        time: timeStr
-      });
+      contact.messages.push({ text: text, sender: 'sent', time: timeStr });
       contact.time = timeStr;
 
       messageInput.value = '';
@@ -552,11 +605,55 @@
     }
 
     sendMessageBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
+    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    // --- INTERAÇÕES DOS ÍCONES DO CABEÇALHO ---
+
+    // 1. Botão da Câmera
+    cameraBtn.addEventListener('click', () => {
+      alert("Abrindo modo Câmera / Status do ABP...");
     });
 
-    // Modal de adicionar contato
+    // 2. Botão da Lupa (Abrir Pesquisa)
+    searchBtn.addEventListener('click', () => {
+      mainHeader.style.display = 'none';
+      searchBarContainer.classList.add('active');
+      searchInput.focus();
+    });
+
+    // Fechar Pesquisa
+    closeSearchBtn.addEventListener('click', () => {
+      searchBarContainer.classList.remove('active');
+      mainHeader.style.display = 'flex';
+      searchInput.value = '';
+      renderChats();
+    });
+
+    // Filtrar conversas ao digitar na lupa
+    searchInput.addEventListener('input', (e) => {
+      renderChats(e.target.value);
+    });
+
+    // 3. Botão dos Três Pontinhos (Menu)
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('active');
+    });
+
+    // Fechar menu ao clicar em qualquer outro lugar da tela
+    window.addEventListener('click', () => {
+      dropdownMenu.classList.remove('active');
+    });
+
+    document.getElementById('menuNewGroup').addEventListener('click', () => {
+      alert("Criando novo grupo no ABP...");
+    });
+
+    document.getElementById('menuSettings').addEventListener('click', () => {
+      alert("Abrindo configurações do ABP...");
+    });
+
+    // Modal de Novo Contato
     openModalBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
       contactNameInput.focus();
@@ -578,9 +675,7 @@
           name: name,
           color: getRandomColor(),
           time: timeStr,
-          messages: [
-            { text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }
-          ]
+          messages: [{ text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }]
         });
 
         renderChats();
@@ -589,7 +684,6 @@
       }
     });
 
-    // Inicializar o app renderizando os chats
     renderChats();
   </script>
 </body>
