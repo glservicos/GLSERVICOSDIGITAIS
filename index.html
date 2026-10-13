@@ -321,6 +321,15 @@
       border-top-right-radius: 0;
     }
 
+    /* Estilo para imagem enviada na mensagem */
+    .message img {
+      width: 100%;
+      max-width: 220px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
     .message-time {
       font-size: 10px;
       color: #8696a0;
@@ -425,7 +434,6 @@
       color: #111b21;
     }
 
-    /* Input oculto para abrir a câmera real do celular */
     #realCameraInput {
       display: none;
     }
@@ -433,7 +441,7 @@
 </head>
 <body>
 
-  <!-- Input escondido nativo para capturar foto da câmera do celular -->
+  <!-- Input escondido para capturar foto e carregar no chat -->
   <input type="file" id="realCameraInput" accept="image/*" capture="environment">
 
   <div class="app-container">
@@ -515,9 +523,9 @@
 
   <script>
     let contacts = [
-      { id: 1, name: "Juliana", color: "#e91e63", time: "08:05", messages: [{ text: "Oi! Tudo bem?", sender: "received", time: "08:05" }] },
-      { id: 2, name: "Carlos Oliveira", color: "#2196f3", time: "Ontem", messages: [{ text: "Você viu o projeto?", sender: "received", time: "Ontem" }] },
-      { id: 3, name: "Grupo da Família", color: "#4caf50", time: "Ontem", messages: [{ text: "Bom dia a todos!", sender: "received", time: "Ontem" }] }
+      { id: 1, name: "Juliana", color: "#e91e63", time: "08:05", messages: [{ type: 'text', text: "Oi! Tudo bem?", sender: "received", time: "08:05" }] },
+      { id: 2, name: "Carlos Oliveira", color: "#2196f3", time: "Ontem", messages: [{ type: 'text', text: "Você viu o projeto?", sender: "received", time: "Ontem" }] },
+      { id: 3, name: "Grupo da Família", color: "#4caf50", time: "Ontem", messages: [{ type: 'text', text: "Bom dia a todos!", sender: "received", time: "Ontem" }] }
     ];
 
     let currentContactId = null;
@@ -565,7 +573,10 @@
 
       filtered.forEach(contact => {
         const lastMsg = contact.messages[contact.messages.length - 1];
-        const lastText = lastMsg ? lastMsg.text : "Toque para conversar";
+        let lastText = "Toque para conversar";
+        if (lastMsg) {
+          lastText = lastMsg.type === 'image' ? '📷 Foto' : lastMsg.text;
+        }
         const initial = contact.name.charAt(0).toUpperCase();
 
         const item = document.createElement('div');
@@ -606,10 +617,18 @@
       contact.messages.forEach(msg => {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${msg.sender}`;
-        msgDiv.innerHTML = `
-          ${msg.text}
-          <span class="message-time">${msg.time}</span>
-        `;
+        
+        if (msg.type === 'image') {
+          msgDiv.innerHTML = `
+            <img src="${msg.content}" alt="Foto enviada" />
+            <span class="message-time">${msg.time}</span>
+          `;
+        } else {
+          msgDiv.innerHTML = `
+            ${msg.text}
+            <span class="message-time">${msg.time}</span>
+          `;
+        }
         chatBody.appendChild(msgDiv);
       });
     }
@@ -628,7 +647,7 @@
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      contact.messages.push({ text: text, sender: 'sent', time: timeStr });
+      contact.messages.push({ type: 'text', text: text, sender: 'sent', time: timeStr });
       contact.time = timeStr;
 
       messageInput.value = '';
@@ -639,23 +658,46 @@
     sendMessageBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // --- AÇÕES REAIS DE CÂMERA E TELEFONE ---
-
-    // Botões de Câmera (Abre a câmera nativa do celular para tirar foto)
+    // --- CAPTURA DA CÂMERA REAL SEM SAIR DA TELA DE CHAT ---
     cameraBtn.addEventListener('click', () => realCameraInput.click());
     chatCameraBtn.addEventListener('click', () => realCameraInput.click());
 
-    // Botão de Chamada de Vídeo (Simula chamada de vídeo ou abre app de vídeo)
+    realCameraInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file && currentContactId !== null) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageUrl = e.target.result;
+          const contact = contacts.find(c => c.id === currentContactId);
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+          // Adiciona a foto no chat atual
+          contact.messages.push({
+            type: 'image',
+            content: imageUrl,
+            sender: 'sent',
+            time: timeStr
+          });
+          contact.time = timeStr;
+
+          renderMessages(contact);
+          chatBody.scrollTop = chatBody.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+      }
+      // Limpa o input para permitir tirar outra foto seguida se quiser
+      realCameraInput.value = '';
+    });
+
     chatVideoBtn.addEventListener('click', () => {
       alert("Iniciando chamada de vídeo com " + activeName.textContent);
     });
 
-    // Botão de Chamada de Voz Real (Abre o discador telefônico do celular)
     chatPhoneBtn.addEventListener('click', () => {
       window.location.href = "tel:";
     });
 
-    // Pesquisa e Menus
     searchBtn.addEventListener('click', () => {
       mainHeader.style.display = 'none';
       searchBarContainer.classList.add('active');
@@ -703,7 +745,6 @@
     document.getElementById('menuNewGroup').addEventListener('click', () => alert("Criando novo grupo..."));
     document.getElementById('menuSettings').addEventListener('click', () => alert("Abrindo configurações..."));
 
-    // Modal
     openModalBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
       contactNameInput.focus();
@@ -725,7 +766,7 @@
           name: name,
           color: getRandomColor(),
           time: timeStr,
-          messages: [{ text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }]
+          messages: [{ type: 'text', text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }]
         });
 
         renderChats();
