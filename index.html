@@ -130,14 +130,14 @@
       padding-top: 8px;
     }
 
-    /* CHAT ESTILO WHATSAPP */
+    /* CHAT ESTILO WHATSAPP COMPLETO */
     .secao-chat-integrado {
       margin-top: 20px;
       border-top: 2px dashed #dcdde1;
       padding-top: 15px;
     }
     .chat-mensagens {
-      height: 240px;
+      height: 300px;
       overflow-y: auto;
       border: 1px solid #dcdde1;
       border-radius: 8px;
@@ -167,12 +167,14 @@
     }
     .mensagem-item strong { display: block; font-size: 0.75rem; color: #075e54; margin-bottom: 2px; }
     .mensagem-item p { font-size: 0.9rem; color: #111; }
+    .mensagem-item img { max-width: 100%; border-radius: 6px; margin-top: 4px; }
+    .mensagem-item audio { width: 100%; max-width: 220px; height: 36px; margin-top: 4px; }
     .mensagem-item small { display: block; font-size: 0.65rem; color: #667781; text-align: right; margin-top: 2px; }
 
     /* BARRA DE INPUT DO CHAT */
     .container-envio-chat {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       background: #fff;
       padding: 6px 10px;
@@ -187,7 +189,15 @@
       flex: 1;
       background: transparent;
     }
-
+    .btn-acao-chat {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px;
+      color: #555;
+    }
+    .btn-acao-chat:hover { color: #00a884; }
     .btn-enviar-chat {
       background-color: #00a884;
       color: white;
@@ -204,6 +214,11 @@
       transition: background 0.2s;
     }
     .btn-enviar-chat:hover { background-color: #008f6f; }
+    .gravando-ativo {
+      color: #e74c3c !important;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     .historico { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
     .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
@@ -344,16 +359,21 @@
 
       <button type="button" onclick="enviarCalculadoraParaGasto()" style="background-color: #3f51b5; margin-top: 12px;">📥 Enviar Total para Novo Gasto</button>
 
-      <!-- CHAT INTEGRADO -->
+      <!-- CHAT INTEGRADO COMPLETO -->
       <div class="secao-chat-integrado">
         <h3 style="font-size: 1rem; color: #2c3e50; margin-bottom: 8px; text-align: left;">💬 Chat do Mercado</h3>
         <div id="lista-mensagens" class="chat-mensagens">
-          <p style="text-align: center; color: #7f8c8d; margin-top: 50px; font-size: 0.85rem;">Nenhuma mensagem ainda. Mande um texto!</p>
+          <p style="text-align: center; color: #7f8c8d; margin-top: 80px; font-size: 0.85rem;">Nenhuma mensagem ainda. Mande um texto, foto ou áudio!</p>
         </div>
         
-        <!-- BARRA DE ENVIO -->
+        <!-- BARRA DE ENVIO DE MENSAGENS -->
         <div class="container-envio-chat">
+          <input type="file" id="input-arquivo-chat" accept="image/*" style="display: none;" onchange="enviarImagemChat(this)">
+          <button type="button" class="btn-acao-chat" onclick="document.getElementById('input-arquivo-chat').click()" title="Enviar Foto">📎</button>
+          
           <input type="text" id="input-mensagem" placeholder="Digite uma mensagem...">
+          
+          <button type="button" id="btn-audio-chat" class="btn-acao-chat" onclick="alternarGravacaoAudio()" title="Gravar Áudio">🎤</button>
           <button type="button" class="btn-enviar-chat" onclick="enviarMensagemTexto()" title="Enviar">⬆️</button>
         </div>
       </div>
@@ -411,6 +431,10 @@
     let totalGastosAtual = 0;
 
     let dbGlobal = null;
+    let storageGlobal = null;
+    let mediaRecorder = null;
+    let pedacosAudio = [];
+    let gravandoAudioAtivo = false;
 
     if (localStorage.getItem('financas_autenticado') === 'true') {
       const usuarioLogado = localStorage.getItem('financas_usuario');
@@ -529,6 +553,7 @@
           firebase.initializeApp(firebaseConfig);
         }
         dbGlobal = firebase.firestore();
+        storageGlobal = firebase.storage();
       } catch (err) {
         console.error("Erro ao inicializar Firebase:", err);
         alert("Erro ao conectar com o banco de dados. Verifique sua internet ou chaves do Firebase.");
@@ -620,15 +645,25 @@
         let htmlMsg = '';
         msgs.forEach((m) => {
           const ehMeu = m.quem === usuarioLogado;
+          let conteudoHTML = '';
+
+          if (m.tipo === 'imagem') {
+            conteudoHTML = `<img src="${m.url}" alt="Foto enviada">`;
+          } else if (m.tipo === 'audio') {
+            conteudoHTML = `<audio controls src="${m.url}"></audio>`;
+          } else {
+            conteudoHTML = `<p>${m.texto || ''}</p>`;
+          }
+
           htmlMsg += `
             <div class="mensagem-item ${ehMeu ? 'mensagem-gabriel' : 'mensagem-juliana'}">
               <strong>${m.quem}</strong>
-              <p>${m.texto || ''}</p>
+              ${conteudoHTML}
               <small>${m.horario || ''}</small>
             </div>
           `;
         });
-        listaMensagens.innerHTML = htmlMsg || '<p style="text-align: center; color: #7f8c8d; margin-top: 50px; font-size: 0.85rem;">Nenhuma mensagem ainda.</p>';
+        listaMensagens.innerHTML = htmlMsg || '<p style="text-align: center; color: #7f8c8d; margin-top: 80px; font-size: 0.85rem;">Nenhuma mensagem ainda.</p>';
         listaMensagens.scrollTop = listaMensagens.scrollHeight;
       }, (error) => {
         console.error("Erro no chat:", error);
@@ -661,7 +696,7 @@
       if (!texto) return;
       
       if (!dbGlobal) {
-        alert("Erro: O banco de dados não foi inicializado. Faça login novamente.");
+        alert("Erro: O banco de dados não foi inicializado.");
         return;
       }
 
@@ -677,7 +712,6 @@
         inputMensagem.focus();
       } catch (erro) {
         alert("Erro ao enviar mensagem: " + erro.message);
-        console.error(erro);
       }
     }
 
@@ -687,6 +721,87 @@
         enviarMensagemTexto(); 
       }
     });
+
+    async function enviarImagemChat(input) {
+      if (!input.files || !input.files[0] || !storageGlobal || !dbGlobal) return;
+      const arquivo = input.files[0];
+      const usuarioLogado = localStorage.getItem('financas_usuario');
+      
+      try {
+        const caminhoRef = storageGlobal.ref().child(`chat_imagens/${Date.now()}_${arquivo.name}`);
+        const snapshot = await caminhoRef.put(arquivo);
+        const urlDownload = await snapshot.ref.getDownloadURL();
+
+        await dbGlobal.collection('mensagens_chat').add({
+          quem: usuarioLogado,
+          tipo: 'imagem',
+          url: urlDownload,
+          timestamp: Date.now(),
+          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+        input.value = '';
+      } catch (erro) {
+        alert("Erro ao enviar imagem: " + erro.message);
+      }
+    }
+
+    async function alternarGravacaoAudio() {
+      const btnAudio = document.getElementById('btn-audio-chat');
+
+      if (!gravandoAudioAtivo) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          pedacosAudio = [];
+
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) pedacosAudio.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const blobAudio = new Blob(pedacosAudio, { type: 'audio/webm' });
+            await enviarAudioParaFirebase(blobAudio);
+            // Parar tracks de áudio da câmera/microfone
+            stream.getTracks().forEach(track => track.stop());
+          };
+
+          mediaRecorder.start();
+          gravandoAudioAtivo = true;
+          btnAudio.classList.add('gravando-ativo');
+          btnAudio.title = "Gravando... Clique para parar e enviar";
+        } catch (err) {
+          alert("Não foi possível acessar o microfone. Verifique as permissões do navegador.");
+        }
+      } else {
+        if (mediaRecorder) {
+          mediaRecorder.stop();
+        }
+        gravandoAudioAtivo = false;
+        btnAudio.classList.remove('gravando-ativo');
+        btnAudio.title = "Gravar Áudio";
+      }
+    }
+
+    async function enviarAudioParaFirebase(blobAudio) {
+      const usuarioLogado = localStorage.getItem('financas_usuario');
+      if (!storageGlobal || !dbGlobal) return;
+
+      try {
+        const caminhoRef = storageGlobal.ref().child(`chat_audios/${Date.now()}.webm`);
+        const snapshot = await caminhoRef.put(blobAudio);
+        const urlDownload = await snapshot.ref.getDownloadURL();
+
+        await dbGlobal.collection('mensagens_chat').add({
+          quem: usuarioLogado,
+          tipo: 'audio',
+          url: urlDownload,
+          timestamp: Date.now(),
+          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (erro) {
+        alert("Erro ao enviar áudio: " + erro.message);
+      }
+    }
 
     async function limparTudoDoMes() {
       if (localStorage.getItem('financas_usuario') !== 'Gabriel' || !dbGlobal) return;
