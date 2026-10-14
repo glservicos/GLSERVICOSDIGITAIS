@@ -231,10 +231,10 @@
   <!-- MODAL DE SOLICITAÇÃO DE SENHA -->
   <div class="modal-overlay" id="modalSenha" style="display: none;">
     <div class="modal-box">
-      <h3>🔒 Acesso Restrito ao Dono</h3>
+      <h3>🔒 Acesso Restrito ao Administrador</h3>
       <p>Digite a senha de administrador para autorizar este dispositivo a fazer alterações.</p>
       <input type="password" id="inputSenha" placeholder="Digite a senha">
-      <button class="btn" onclick="validarSenha()">Entrar como Dono</button>
+      <button class="btn" onclick="validarSenha()">Entrar como Administrador</button>
     </div>
   </div>
 
@@ -244,7 +244,7 @@
     
     <div class="status-bar">
       <span id="statusPermissao">🔒 Modo Leitura (Somente Visualização)</span>
-      <button class="btn btn-reset" id="btnAcaoDono" onclick="solicitarSenha()">Entrar como Dono</button>
+      <button class="btn btn-reset" id="btnAcaoDono" onclick="solicitarSenha()">Entrar como Administrador</button>
     </div>
   </div>
 
@@ -337,7 +337,7 @@
   </div>
 
   <script>
-    // SENHA PADRÃO DO DONO (Você pode alterar '1234' para a senha que desejar)
+    // SENHA PADRÃO DO ADMINISTRADOR (Você pode alterar '1234' para a senha que desejar)
     const SENHA_MESTRE = "1234";
 
     const dadosIniciais = {
@@ -378,16 +378,16 @@
       const btnAcao = document.getElementById('btnAcaoDono');
 
       if (ehDono) {
-        statusEl.innerText = "🔓 Dispositivo Autorizado (Dono)";
+        statusEl.innerText = "🔓 Dispositivo Autorizado (Administrador)";
         statusEl.style.color = "var(--green)";
         subtitulo.innerText = "Modo de edição liberado para este dispositivo";
-        btnAcao.innerText = "Sair do Modo Dono";
+        btnAcao.innerText = "Sair do Modo Administrador";
         btnAcao.onclick = desautorizar;
       } else {
         statusEl.innerText = "🔒 Modo Leitura (Somente Visualização)";
         statusEl.style.color = "var(--text-muted)";
-        subtitulo.innerText = "Apenas o dispositivo do dono pode alterar valores";
-        btnAcao.innerText = "Entrar como Dono";
+        subtitulo.innerText = "Apenas o dispositivo do administrador pode alterar valores";
+        btnAcao.innerText = "Entrar como Administrador";
         btnAcao.onclick = solicitarSenha;
       }
 
