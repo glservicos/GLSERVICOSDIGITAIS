@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Gastos - Meu Painel</title>
+  <title>Controle de Gastos Interativo</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -14,19 +14,20 @@
       --red: #ef4444;
       --blue: #3b82f6;
       --border: #334155;
+      --input-bg: #0f172a;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding: 20px;
+      padding: 20px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -35,17 +36,19 @@
 
     .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
     }
 
     .header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       margin-bottom: 6px;
     }
 
     .header p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .container {
@@ -53,13 +56,13 @@
       max-width: 600px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     .card {
       background-color: var(--card-bg);
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
       border: 1px solid var(--border);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
@@ -74,16 +77,16 @@
     }
 
     .card-header h2 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: var(--blue);
     }
 
     .badge {
       background-color: rgba(59, 130, 246, 0.2);
       color: var(--blue);
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: bold;
     }
 
@@ -92,33 +95,84 @@
     }
 
     .section-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .item {
+    .item-list {
       display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 0.95rem;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .item:last-child {
-      border-bottom: none;
+    .item-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
-    .value-in {
-      color: var(--green);
+    input[type="text"], input[type="number"] {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: var(--blue);
+    }
+
+    .desc-input {
+      flex: 1;
+    }
+
+    .val-input {
+      width: 110px;
+      text-align: right;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       font-weight: 600;
+      transition: opacity 0.2s;
     }
 
-    .value-out {
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-del {
+      background-color: rgba(239, 68, 68, 0.2);
       color: var(--red);
-      font-weight: 500;
+      padding: 8px 10px;
+    }
+
+    .btn-add {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
+      border: 1px dashed var(--blue);
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+    }
+
+    .btn-reset {
+      background-color: rgba(148, 163, 184, 0.1);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      margin-top: 10px;
     }
 
     .summary {
@@ -147,95 +201,203 @@
       font-weight: bold;
     }
 
-    .saldo {
-      color: var(--green);
-    }
+    .val-in { color: var(--green); }
+    .val-out { color: var(--red); }
+    .saldo-pos { color: var(--green); }
+    .saldo-neg { color: var(--red); }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <h1>📊 Painel de Controle Financeiro</h1>
-    <p>Resumo detalhado por data de recebimento</p>
+    <h1>📊 Painel Financeiro Editável</h1>
+    <p>Altere os valores e descrições diretamente nos campos</p>
+    <button class="btn btn-reset" onclick="resetarValores()">Restaurar Valores Iniciais</button>
   </div>
 
   <div class="container">
 
-    <!-- CARD DIA 20 -->
-    <div class="card">
+    <!-- BLOCO DIA 20 -->
+    <div class="card" id="card-d20">
       <div class="card-header">
         <h2>🗓️ Recebimento Dia 20</h2>
         <span class="badge">1º Período</span>
       </div>
 
+      <!-- Entradas -->
       <div class="section">
-        <div class="section-title">Entrada</div>
-        <div class="item">
-          <span>Valor a receber</span>
-          <span class="value-in">+ R$ 1.171,00</span>
-        </div>
+        <div class="section-title">Entradas (Recebimentos)</div>
+        <div class="item-list" id="list-in-d20"></div>
+        <button class="btn btn-add" onclick="adicionarItem('d20', 'in')">+ Adicionar Entrada</button>
       </div>
 
+      <!-- Saídas -->
       <div class="section">
-        <div class="section-title">Gastos</div>
-        <div class="item"><span>Energia</span><span class="value-out">- R$ 361,00</span></div>
-        <div class="item"><span>Água</span><span class="value-out">- R$ 90,00</span></div>
-        <div class="item"><span>Condução</span><span class="value-out">- R$ 35,00</span></div>
-        <div class="item"><span>Cloves</span><span class="value-out">- R$ 240,00</span></div>
-        <div class="item"><span>Beba</span><span class="value-out">- R$ 25,00</span></div>
-        <div class="item"><span>Moisés</span><span class="value-out">- R$ 30,00</span></div>
-        <div class="item"><span>Genaldo</span><span class="value-out">- R$ 30,00</span></div>
-        <div class="item"><span>Vania</span><span class="value-out">- R$ 20,00</span></div>
+        <div class="section-title">Saídas (Gastos)</div>
+        <div class="item-list" id="list-out-d20"></div>
+        <button class="btn btn-add" onclick="adicionarItem('d20', 'out')">+ Adicionar Gasto</button>
       </div>
 
+      <!-- Resumo -->
       <div class="summary">
         <div class="summary-item">
           <div class="summary-label">Total Gastos</div>
-          <div class="summary-value value-out">R$ 831,00</div>
+          <div class="summary-value val-out" id="total-out-d20">R$ 0,00</div>
         </div>
         <div class="summary-item">
           <div class="summary-label">Saldo do Dia 20</div>
-          <div class="summary-value saldo">R$ 340,00</div>
+          <div class="summary-value" id="saldo-d20">R$ 0,00</div>
         </div>
       </div>
     </div>
 
-    <!-- CARD DIA 24 -->
-    <div class="card">
+    <!-- BLOCO DIA 24 -->
+    <div class="card" id="card-d24">
       <div class="card-header">
         <h2>🗓️ Recebimento Dia 24</h2>
         <span class="badge">2º Período</span>
       </div>
 
+      <!-- Entradas -->
       <div class="section">
-        <div class="section-title">Entrada</div>
-        <div class="item">
-          <span>Valor a receber</span>
-          <span class="value-in">+ R$ 933,00</span>
-        </div>
+        <div class="section-title">Entradas (Recebimentos)</div>
+        <div class="item-list" id="list-in-d24"></div>
+        <button class="btn btn-add" onclick="adicionarItem('d24', 'in')">+ Adicionar Entrada</button>
       </div>
 
+      <!-- Saídas -->
       <div class="section">
-        <div class="section-title">Gastos</div>
-        <div class="item"><span>Aluguel</span><span class="value-out">- R$ 650,00</span></div>
-        <div class="item"><span>Internet Vivo</span><span class="value-out">- R$ 100,00</span></div>
-        <div class="item"><span>Dona Maria</span><span class="value-out">- R$ 100,00</span></div>
-        <div class="item"><span>Condução</span><span class="value-out">- R$ 35,00</span></div>
+        <div class="section-title">Saídas (Gastos)</div>
+        <div class="item-list" id="list-out-d24"></div>
+        <button class="btn btn-add" onclick="adicionarItem('d24', 'out')">+ Adicionar Gasto</button>
       </div>
 
+      <!-- Resumo -->
       <div class="summary">
         <div class="summary-item">
           <div class="summary-label">Total Gastos</div>
-          <div class="summary-value value-out">R$ 885,00</div>
+          <div class="summary-value val-out" id="total-out-d24">R$ 0,00</div>
         </div>
         <div class="summary-item">
           <div class="summary-label">Saldo do Dia 24</div>
-          <div class="summary-value saldo">R$ 48,00</div>
+          <div class="summary-value" id="saldo-d24">R$ 0,00</div>
         </div>
       </div>
     </div>
 
   </div>
+
+  <script>
+    const dadosIniciais = {
+      d20: {
+        in: [{ desc: "Recebimento Dia 20", valor: 1171 }],
+        out: [
+          { desc: "Energia", valor: 361 },
+          { desc: "Água", valor: 90 },
+          { desc: "Condução", valor: 35 },
+          { desc: "Cloves", valor: 240 },
+          { desc: "Beba", valor: 25 },
+          { desc: "Moisés", valor: 30 },
+          { desc: "Genaldo", valor: 30 },
+          { desc: "Vania", valor: 20 }
+        ]
+      },
+      d24: {
+        in: [{ desc: "Recebimento Dia 24", valor: 933 }],
+        out: [
+          { desc: "Aluguel", valor: 650 },
+          { desc: "Internet Vivo", valor: 100 },
+          { desc: "Dona Maria", valor: 100 },
+          { desc: "Condução", valor: 35 }
+        ]
+      }
+    };
+
+    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros')) || JSON.parse(JSON.stringify(dadosIniciais));
+
+    function salvar() {
+      localStorage.setItem('dadosFinanceiros', JSON.stringify(dados));
+      calcular();
+    }
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function renderizarGrupo(dia, tipo) {
+      const container = document.getElementById(`list-${tipo}-${dia}`);
+      container.innerHTML = '';
+
+      dados[dia][tipo].forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${dia}', '${tipo}', ${index}, 'desc', this.value)">
+          <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${dia}', '${tipo}', ${index}, 'valor', this.value)">
+          <button class="btn btn-del" onclick="removerItem('${dia}', '${tipo}', ${index})">✕</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function atualizarItem(dia, tipo, index, campo, valor) {
+      if (campo === 'valor') {
+        dados[dia][tipo][index].valor = parseFloat(valor) || 0;
+      } else {
+        dados[dia][tipo][index].desc = valor;
+      }
+      salvar();
+    }
+
+    function adicionarItem(dia, tipo) {
+      dados[dia][tipo].push({ desc: tipo === 'in' ? "Nova Entrada" : "Novo Gasto", valor: 0 });
+      renderizarGrupo(dia, tipo);
+      salvar();
+    }
+
+    function removerItem(dia, tipo, index) {
+      dados[dia][tipo].splice(index, 1);
+      renderizarGrupo(dia, tipo);
+      salvar();
+    }
+
+    function calcularDia(dia) {
+      const totalIn = dados[dia].in.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
+      const totalOut = dados[dia].out.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
+      const saldo = totalIn - totalOut;
+
+      document.getElementById(`total-out-${dia}`).innerText = formatarMoeda(totalOut);
+      
+      const saldoEl = document.getElementById(`saldo-${dia}`);
+      saldoEl.innerText = formatarMoeda(saldo);
+      saldoEl.className = `summary-value ${saldo >= 0 ? 'saldo-pos' : 'saldo-neg'}`;
+    }
+
+    function calcular() {
+      ['d20', 'd24'].forEach(dia => {
+        calcularDia(dia);
+      });
+    }
+
+    function renderizarTudo() {
+      ['d20', 'd24'].forEach(dia => {
+        renderizarGrupo(dia, 'in');
+        renderizarGrupo(dia, 'out');
+      });
+      calcular();
+    }
+
+    function resetarValores() {
+      if (confirm("Deseja restaurar para os valores iniciais?")) {
+        dados = JSON.parse(JSON.stringify(dadosIniciais));
+        salvar();
+        renderizarTudo();
+      }
+    }
+
+    // Inicialização
+    renderizarTudo();
+  </script>
 
 </body>
 </html>
