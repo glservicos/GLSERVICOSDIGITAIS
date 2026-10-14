@@ -51,6 +51,18 @@
       font-size: 0.9rem;
     }
 
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
     .container {
       width: 100%;
       max-width: 600px;
@@ -114,7 +126,7 @@
       align-items: center;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], input[type="password"] {
       background-color: var(--input-bg);
       border: 1px solid var(--border);
       color: var(--text);
@@ -124,18 +136,12 @@
       outline: none;
     }
 
-    input[type="text"]:focus, input[type="number"]:focus {
+    input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
       border-color: var(--blue);
     }
 
-    .desc-input {
-      flex: 1;
-    }
-
-    .val-input {
-      width: 110px;
-      text-align: right;
-    }
+    .desc-input { flex: 1; }
+    .val-input { width: 110px; text-align: right; }
 
     .btn {
       cursor: pointer;
@@ -147,9 +153,7 @@
       transition: opacity 0.2s;
     }
 
-    .btn:hover {
-      opacity: 0.85;
-    }
+    .btn:hover { opacity: 0.85; }
 
     .btn-del {
       background-color: rgba(239, 68, 68, 0.2);
@@ -172,7 +176,6 @@
       border: 1px solid var(--border);
       padding: 6px 12px;
       font-size: 0.8rem;
-      margin-top: 10px;
     }
 
     .summary {
@@ -186,59 +189,83 @@
       border: 1px solid var(--border);
     }
 
-    .summary-item {
-      text-align: center;
-    }
-
-    .summary-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .summary-value {
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
+    .summary-item { text-align: center; }
+    .summary-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .summary-value { font-size: 1.1rem; font-weight: bold; }
 
     .val-in { color: var(--green); }
     .val-out { color: var(--red); }
     .saldo-pos { color: var(--green); }
     .saldo-neg { color: var(--red); }
+
+    /* Modal de Senha */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-box h3 { margin-bottom: 10px; color: var(--blue); }
+    .modal-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+    .modal-box input { width: 100%; margin-bottom: 12px; text-align: center; font-size: 1.1rem; }
+    .modal-box button { width: 100%; background: var(--blue); color: #fff; padding: 10px; }
   </style>
 </head>
 <body>
 
+  <!-- MODAL DE SOLICITAÇÃO DE SENHA -->
+  <div class="modal-overlay" id="modalSenha" style="display: none;">
+    <div class="modal-box">
+      <h3>🔒 Acesso Restrito ao Dono</h3>
+      <p>Digite a senha de administrador para autorizar este dispositivo a fazer alterações.</p>
+      <input type="password" id="inputSenha" placeholder="Digite a senha">
+      <button class="btn" onclick="validarSenha()">Entrar como Dono</button>
+    </div>
+  </div>
+
   <div class="header">
-    <h1>📊 Painel Financeiro Editável</h1>
-    <p>Altere os valores e descrições diretamente nos campos</p>
-    <button class="btn btn-reset" onclick="resetarValores()">Restaurar Valores Iniciais</button>
+    <h1>📊 Painel Financeiro</h1>
+    <p id="subtitulo">Aguardando verificação de autorização...</p>
+    
+    <div class="status-bar">
+      <span id="statusPermissao">🔒 Modo Leitura (Somente Visualização)</span>
+      <button class="btn btn-reset" id="btnAcaoDono" onclick="solicitarSenha()">Entrar como Dono</button>
+    </div>
   </div>
 
   <div class="container">
 
-    <!-- BLOCO RECEBIMENTO DO PAGAMENTO (NOVO) -->
+    <!-- RECEBIMENTO DO PAGAMENTO -->
     <div class="card" id="card-pagamento">
       <div class="card-header">
         <h2>💵 Recebimento do Pagamento</h2>
         <span class="badge" style="background-color: rgba(34, 197, 94, 0.2); color: var(--green);">Pagamento Geral</span>
       </div>
-
-      <!-- Entradas -->
       <div class="section">
         <div class="section-title">Entradas (Recebimentos)</div>
         <div class="item-list" id="list-in-pagamento"></div>
-        <button class="btn btn-add" onclick="adicionarItem('pagamento', 'in')">+ Adicionar Entrada</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('pagamento', 'in')">+ Adicionar Entrada</button>
       </div>
-
-      <!-- Saídas -->
       <div class="section">
         <div class="section-title">Saídas (Gastos)</div>
         <div class="item-list" id="list-out-pagamento"></div>
-        <button class="btn btn-add" onclick="adicionarItem('pagamento', 'out')">+ Adicionar Gasto</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('pagamento', 'out')">+ Adicionar Gasto</button>
       </div>
-
-      <!-- Resumo -->
       <div class="summary">
         <div class="summary-item">
           <div class="summary-label">Total Gastos</div>
@@ -251,28 +278,22 @@
       </div>
     </div>
 
-    <!-- BLOCO DIA 20 -->
+    <!-- DIA 20 -->
     <div class="card" id="card-d20">
       <div class="card-header">
         <h2>🗓️ Recebimento Dia 20</h2>
         <span class="badge">1º Período</span>
       </div>
-
-      <!-- Entradas -->
       <div class="section">
         <div class="section-title">Entradas (Recebimentos)</div>
         <div class="item-list" id="list-in-d20"></div>
-        <button class="btn btn-add" onclick="adicionarItem('d20', 'in')">+ Adicionar Entrada</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('d20', 'in')">+ Adicionar Entrada</button>
       </div>
-
-      <!-- Saídas -->
       <div class="section">
         <div class="section-title">Saídas (Gastos)</div>
         <div class="item-list" id="list-out-d20"></div>
-        <button class="btn btn-add" onclick="adicionarItem('d20', 'out')">+ Adicionar Gasto</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('d20', 'out')">+ Adicionar Gasto</button>
       </div>
-
-      <!-- Resumo -->
       <div class="summary">
         <div class="summary-item">
           <div class="summary-label">Total Gastos</div>
@@ -285,28 +306,22 @@
       </div>
     </div>
 
-    <!-- BLOCO DIA 24 -->
+    <!-- DIA 24 -->
     <div class="card" id="card-d24">
       <div class="card-header">
         <h2>🗓️ Recebimento Dia 24</h2>
         <span class="badge">2º Período</span>
       </div>
-
-      <!-- Entradas -->
       <div class="section">
         <div class="section-title">Entradas (Recebimentos)</div>
         <div class="item-list" id="list-in-d24"></div>
-        <button class="btn btn-add" onclick="adicionarItem('d24', 'in')">+ Adicionar Entrada</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('d24', 'in')">+ Adicionar Entrada</button>
       </div>
-
-      <!-- Saídas -->
       <div class="section">
         <div class="section-title">Saídas (Gastos)</div>
         <div class="item-list" id="list-out-d24"></div>
-        <button class="btn btn-add" onclick="adicionarItem('d24', 'out')">+ Adicionar Gasto</button>
+        <button class="btn btn-add action-btn" onclick="adicionarItem('d24', 'out')">+ Adicionar Gasto</button>
       </div>
-
-      <!-- Resumo -->
       <div class="summary">
         <div class="summary-item">
           <div class="summary-label">Total Gastos</div>
@@ -322,6 +337,9 @@
   </div>
 
   <script>
+    // SENHA PADRÃO DO DONO (Você pode alterar '1234' para a senha que desejar)
+    const SENHA_MESTRE = "1234";
+
     const dadosIniciais = {
       pagamento: {
         in: [{ desc: "Recebimento do Pagamento", valor: 0 }],
@@ -351,10 +369,59 @@
       }
     };
 
-    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros_v2')) || JSON.parse(JSON.stringify(dadosIniciais));
+    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros_v3')) || JSON.parse(JSON.stringify(dadosIniciais));
+    let ehDono = localStorage.getItem('isDonoAutorizado') === 'true';
+
+    function verificarAutorizacao() {
+      const statusEl = document.getElementById('statusPermissao');
+      const subtitulo = document.getElementById('subtitulo');
+      const btnAcao = document.getElementById('btnAcaoDono');
+
+      if (ehDono) {
+        statusEl.innerText = "🔓 Dispositivo Autorizado (Dono)";
+        statusEl.style.color = "var(--green)";
+        subtitulo.innerText = "Modo de edição liberado para este dispositivo";
+        btnAcao.innerText = "Sair do Modo Dono";
+        btnAcao.onclick = desautorizar;
+      } else {
+        statusEl.innerText = "🔒 Modo Leitura (Somente Visualização)";
+        statusEl.style.color = "var(--text-muted)";
+        subtitulo.innerText = "Apenas o dispositivo do dono pode alterar valores";
+        btnAcao.innerText = "Entrar como Dono";
+        btnAcao.onclick = solicitarSenha;
+      }
+
+      renderizarTudo();
+    }
+
+    function solicitarSenha() {
+      document.getElementById('modalSenha').style.display = 'flex';
+      document.getElementById('inputSenha').focus();
+    }
+
+    function validarSenha() {
+      const senhaDigitada = document.getElementById('inputSenha').value;
+      if (senhaDigitada === SENHA_MESTRE) {
+        ehDono = true;
+        localStorage.setItem('isDonoAutorizado', 'true');
+        document.getElementById('modalSenha').style.display = 'none';
+        document.getElementById('inputSenha').value = '';
+        verificarAutorizacao();
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+
+    function desautorizar() {
+      if (confirm("Deseja remover a permissão deste dispositivo? Terá que digitar a senha novamente na próxima vez.")) {
+        ehDono = false;
+        localStorage.removeItem('isDonoAutorizado');
+        verificarAutorizacao();
+      }
+    }
 
     function salvar() {
-      localStorage.setItem('dadosFinanceiros_v2', JSON.stringify(dados));
+      localStorage.setItem('dadosFinanceiros_v3', JSON.stringify(dados));
       calcular();
     }
 
@@ -369,16 +436,31 @@
       dados[secao][tipo].forEach((item, index) => {
         const row = document.createElement('div');
         row.className = 'item-row';
-        row.innerHTML = `
-          <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'desc', this.value)">
-          <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'valor', this.value)">
-          <button class="btn btn-del" onclick="removerItem('${secao}', '${tipo}', ${index})">✕</button>
-        `;
+
+        if (ehDono) {
+          row.innerHTML = `
+            <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'desc', this.value)">
+            <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'valor', this.value)">
+            <button class="btn btn-del" onclick="removerItem('${secao}', '${tipo}', ${index})">✕</button>
+          `;
+        } else {
+          row.innerHTML = `
+            <span class="desc-input" style="padding: 8px; font-size: 0.95rem;">${item.desc}</span>
+            <span class="val-input ${tipo === 'in' ? 'val-in' : 'val-out'}" style="padding: 8px; font-size: 0.95rem; font-weight: 600;">${formatarMoeda(item.valor)}</span>
+          `;
+        }
+
         container.appendChild(row);
+      });
+
+      // Esconder ou mostrar botões de adicionar
+      document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.style.display = ehDono ? 'block' : 'none';
       });
     }
 
     function atualizarItem(secao, tipo, index, campo, valor) {
+      if (!ehDono) return;
       if (campo === 'valor') {
         dados[secao][tipo][index].valor = parseFloat(valor) || 0;
       } else {
@@ -388,12 +470,14 @@
     }
 
     function adicionarItem(secao, tipo) {
+      if (!ehDono) return;
       dados[secao][tipo].push({ desc: tipo === 'in' ? "Nova Entrada" : "Novo Gasto", valor: 0 });
       renderizarGrupo(secao, tipo);
       salvar();
     }
 
     function removerItem(secao, tipo, index) {
+      if (!ehDono) return;
       dados[secao][tipo].splice(index, 1);
       renderizarGrupo(secao, tipo);
       salvar();
@@ -425,16 +509,15 @@
       calcular();
     }
 
-    function resetarValores() {
-      if (confirm("Deseja restaurar para os valores iniciais?")) {
-        dados = JSON.parse(JSON.stringify(dadosIniciais));
-        salvar();
-        renderizarTudo();
+    // Permitir pressionar ENTER no input de senha
+    document.getElementById('inputSenha').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        validarSenha();
       }
-    }
+    });
 
     // Inicialização
-    renderizarTudo();
+    verificarAutorizacao();
   </script>
 
 </body>
