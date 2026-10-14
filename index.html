@@ -3,1097 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalkBox</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Configurações de PWA e Ícone SVG -->
-  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
-    %22name%22: %22TalkBox%22,
-    %22short_name%22: %22TalkBox%22,
-    %22start_url%22: %22./%22,
-    %22display%22: %22standalone%22,
-    %22background_color%22: %22%2303091f%22,
-    %22theme_color%22: %22%2303091f%22,
-    %22icons%22: [
-      {
-        %22src%22: %22data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27512%27%20height%3D%27512%27%20viewBox%3D%270%200%20512%20512%27%3E%3Cdefs%3E%3CradialGradient%20id%3D%27fundo%27%20cx%3D%2750%25%27%20cy%3D%2742%25%27%20r%3D%2778%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23071344%27%2F%3E%3Cstop%20offset%3D%2765%25%27%20stop-color%3D%27%2303091f%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%2301030c%27%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%27neon%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%2300f5ff%27%2F%3E%3Cstop%20offset%3D%2742%25%27%20stop-color%3D%27%23087bff%27%2F%3E%3Cstop%20offset%3D%2772%25%27%20stop-color%3D%27%23a000ff%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23ff35e8%27%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%27letras%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%270%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%239bffff%27%2F%3E%3Cstop%20offset%3D%2742%25%27%20stop-color%3D%27%2300bfff%27%2F%3E%3Cstop%20offset%3D%2772%25%27%20stop-color%3D%27%23c35cff%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23ff7aef%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20x%3D%2718%27%20y%3D%2718%27%20width%3D%27476%27%20height%3D%27476%27%20rx%3D%27104%27%20fill%3D%27url(%23fundo)%27%2F%3E%3Crect%20x%3D%2728%27%20y%3D%2728%27%20width%3D%27456%27%20height%3D%27456%27%20rx%3D%2794%27%20fill%3D%27none%27%20stroke%3D%27url(%23neon)%27%20stroke-width%3D%274%27%2F%3E%3Cpath%20id%3D%27b%27%20d%3D%27M256%20130C164%20130%20105%20186%20105%20259C105%20302%20125%20338%20158%20359L137%20407Q132%20421%20148%20415L207%20383C223%20389%20240%20392%20260%20392C350%20392%20408%20337%20408%20261C408%20186%20348%20130%20256%20130Z%27%20fill%3D%27none%27%20stroke%3D%27url(%23neon)%27%20stroke-width%3D%2725%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ctext%20x%3D%27256%27%20y%3D%27278%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%2765%27%20font-weight%3D%27800%27%20fill%3D%27url(%23letras)%27%3ETalkbox%3C%2Ftext%3E%3C%2Fsvg%3E%22,
-        %22sizes%22: %22512x512%22,
-        %22type%22: %22image/svg+xml%22
-      }
-    ]
-  }">
-  <meta name="theme-color" content="#03091f">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+  <title>Controle de Gastos - Meu Painel</title>
   <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: #121b22;
-      color: #e9edef;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       min-height: 100vh;
     }
 
-    .app-container {
-      width: 100%;
-      max-width: 420px;
-      height: 100vh;
-      background-color: #111b21;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      overflow: hidden;
-    }
-
-    .screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 60px);
-      display: flex;
-      flex-direction: column;
-      background-color: #111b21;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      pointer-events: none;
-    }
-
-    .screen.active {
-      transform: translateX(0);
-      pointer-events: auto;
-    }
-
     .header {
-      background-color: #111b21;
-      padding: 16px 16px 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #e9edef;
-      position: relative;
+      text-align: center;
+      margin-bottom: 24px;
     }
 
     .header h1 {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
     }
 
-    .header-icons {
-      display: flex;
-      align-items: center;
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
-    .header-icons i {
-      font-size: 20px;
-      margin-left: 22px;
-      cursor: pointer;
-      color: #e9edef;
-    }
-
-    .search-box-container {
-      padding: 6px 16px 12px 16px;
-      background-color: #111b21;
-    }
-
-    .search-box {
-      background-color: #202c33;
-      border-radius: 24px;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #8696a0;
-      font-size: 14px;
-    }
-
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: #e9edef;
-      font-size: 14px;
-      outline: none;
+    .container {
       width: 100%;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 50px;
-      right: 16px;
-      background-color: #233138;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      display: none;
-      flex-direction: column;
-      z-index: 100;
-      width: 180px;
-    }
-
-    .dropdown-menu.active {
-      display: flex;
-    }
-
-    .dropdown-item {
-      padding: 12px 16px;
-      font-size: 14px;
-      color: #e9edef;
-      cursor: pointer;
-    }
-
-    .dropdown-item:hover {
-      background-color: #182229;
-    }
-
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .chat-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .chat-item:hover {
-      background-color: #202c33;
-    }
-
-    .avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      color: #fff;
-      font-weight: bold;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-
-    .chat-info {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .chat-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .chat-name {
-      font-size: 16px;
-      font-weight: 500;
-      color: #e9edef;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .chat-time {
-      font-size: 12px;
-      color: #8696a0;
-    }
-
-    .chat-message {
-      font-size: 14px;
-      color: #8696a0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .fab-btn {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      background-color: #00a884;
-      border-radius: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #111b21;
-      font-size: 22px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      cursor: pointer;
-      border: none;
-      z-index: 10;
-    }
-
-    .chat-screen-full {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #111b21;
+      max-width: 600px;
       display: flex;
       flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      z-index: 500;
-      pointer-events: none;
+      gap: 24px;
     }
 
-    .chat-screen-full.active {
-      transform: translateX(0);
-      pointer-events: auto;
-    }
-
-    .chat-header {
-      background-color: #202c33;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: relative;
-    }
-
-    .back-btn {
-      background: none;
-      border: none;
-      color: #aebac1;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .chat-header-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-    }
-
-    .chat-header-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .chat-header-name {
-      font-size: 16px;
-      font-weight: 500;
-      color: #e9edef;
-    }
-
-    .chat-body {
-      flex: 1;
-      background-color: #0b141a;
-      background-image: radial-gradient(#1f2c34 1px, transparent 1px);
-      background-size: 20px 20px;
-      padding: 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .message {
-      max-width: 75%;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      line-height: 1.4;
-      position: relative;
-      word-wrap: break-word;
-      color: #e9edef;
-    }
-
-    .message.received {
-      background-color: #202c33;
-      align-self: flex-start;
-      border-top-left-radius: 0;
-    }
-
-    .message.sent {
-      background-color: #005c4b;
-      align-self: flex-end;
-      border-top-right-radius: 0;
-    }
-
-    .message img {
-      width: 100%;
-      max-width: 220px;
-      border-radius: 6px;
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    .message-time {
-      font-size: 10px;
-      color: #8696a0;
-      float: right;
-      margin-left: 8px;
-      margin-top: 4px;
-    }
-
-    .chat-footer {
-      background-color: #202c33;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .chat-footer input {
-      flex: 1;
-      background-color: #2a3942;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #e9edef;
-      font-size: 15px;
-      outline: none;
-    }
-
-    .send-btn {
-      background: none;
-      border: none;
-      color: #00a884;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background-color: #111b21;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      border-top: 1px solid #222d34;
-      z-index: 100;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #8696a0;
-      font-size: 11px;
-      cursor: pointer;
-      flex: 1;
-      height: 100%;
-      gap: 4px;
-    }
-
-    .nav-item i {
-      font-size: 18px;
-      padding: 4px 16px;
-      border-radius: 16px;
-      transition: background 0.2s;
-    }
-
-    .nav-item.active {
-      color: #e9edef;
-      font-weight: 600;
-    }
-
-    .nav-item.active i {
-      background-color: #003b31;
-      color: #00a884;
-    }
-
-    .tab-content {
-      padding: 20px;
-      color: #8696a0;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      gap: 15px;
-    }
-
-    .tab-content h2 {
-      color: #e9edef;
-      font-size: 20px;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    .overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      background-color: #222e35;
-      width: 85%;
-      padding: 20px;
+    .card {
+      background-color: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    .modal h3 {
-      margin-bottom: 15px;
-      color: #e9edef;
-      font-size: 18px;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #3b4a54;
-      background-color: #111b21;
-      color: #e9edef;
-      font-size: 15px;
-      outline: none;
-      margin-bottom: 20px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn-cancel {
-      background-color: transparent;
-      color: #8696a0;
-    }
-
-    .btn-add {
-      background-color: #00a884;
-      color: #111b21;
-    }
-
-    .camera-modal {
-      width: 100%;
-      height: 100%;
-      background-color: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 30px 15px;
-    }
-
-    .camera-header-controls {
-      width: 100%;
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
     }
 
-    .camera-action-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 5px;
+    .card-header h2 {
+      font-size: 1.3rem;
+      color: var(--blue);
     }
 
-    .camera-screen-view {
-      flex: 1;
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 10px 0;
+    .badge {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: var(--blue);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
     }
 
-    #cameraVideo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .section {
+      margin-bottom: 16px;
     }
 
-    .camera-controls {
-      display: flex;
-      justify-content: space-around;
-      width: 100%;
-      align-items: center;
-    }
-
-    .shutter-btn {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: #fff;
-      border: 4px solid #00a884;
-      cursor: pointer;
-    }
-
-    .call-modal {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #111b21, #0b141a);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 60px 20px;
-      text-align: center;
-    }
-
-    .call-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background-color: #00a884;
-      color: #fff;
-      font-size: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 40px;
-      box-shadow: 0 0 20px rgba(0, 168, 132, 0.4);
-    }
-
-    .call-info h2 {
-      font-size: 24px;
+    .section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
       margin-bottom: 8px;
     }
 
-    .call-info p {
-      color: #8696a0;
-      font-size: 14px;
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.95rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
     }
 
-    .hangup-btn {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: #ea4335;
-      color: #fff;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .value-in {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .value-out {
+      color: var(--red);
+      font-weight: 500;
+    }
+
+    .summary {
+      background-color: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(234, 67, 53, 0.4);
-      margin-bottom: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .saldo {
+      color: var(--green);
     }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    
-    <!-- ABA 1: CONVERSAS -->
-    <div class="screen active" id="tabConversas">
-      <header class="header">
-        <h1>TalkBox</h1>
-        <div class="header-icons">
-          <i class="fa-solid fa-camera" id="cameraBtn" title="Câmera"></i>
-          <i class="fa-solid fa-ellipsis-vertical" id="menuBtn" title="Mais opções"></i>
-        </div>
-        <div class="dropdown-menu" id="dropdownMenu">
-          <div class="dropdown-item" id="menuNewGroup">Novo grupo</div>
-          <div class="dropdown-item" id="menuSettings">Configurações</div>
-        </div>
-      </header>
+  <div class="header">
+    <h1>📊 Painel de Controle Financeiro</h1>
+    <p>Resumo detalhado por data de recebimento</p>
+  </div>
 
-      <div class="search-box-container">
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Pergunte à Meta AI ou pesquise" />
-        </div>
+  <div class="container">
+
+    <!-- CARD DIA 20 -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🗓️ Recebimento Dia 20</h2>
+        <span class="badge">1º Período</span>
       </div>
 
-      <div class="chat-list" id="chatList"></div>
-
-      <button class="fab-btn" id="openModalBtn" title="Nova Conversa">
-        <i class="fa-solid fa-comment-medical"></i>
-      </button>
-    </div>
-
-    <!-- ABA 2: ATUALIZAÇÕES -->
-    <div class="screen" id="tabAtualizacoes">
-      <header class="header">
-        <h1>Atualizações</h1>
-        <div class="header-icons">
-          <i class="fa-solid fa-camera" title="Câmera"></i>
-          <i class="fa-solid fa-magnifying-glass" title="Pesquisar"></i>
-          <i class="fa-solid fa-ellipsis-vertical" title="Mais opções"></i>
-        </div>
-      </header>
-      <div class="tab-content">
-        <i class="fa-regular fa-circle-notch" style="font-size: 40px; color: #00a884;"></i>
-        <h2>Status</h2>
-        <p>Acompanhe as atualizações dos seus contatos aqui.</p>
-      </div>
-    </div>
-
-    <!-- ABA 3: COMUNIDADES -->
-    <div class="screen" id="tabComunidades">
-      <header class="header">
-        <h1>Comunidades</h1>
-        <div class="header-icons">
-          <i class="fa-solid fa-camera" title="Câmera"></i>
-          <i class="fa-solid fa-ellipsis-vertical" title="Mais opções"></i>
-        </div>
-      </header>
-      <div class="tab-content">
-        <i class="fa-solid fa-users-rectangle" style="font-size: 40px; color: #00a884;"></i>
-        <h2>Fique em contato com as comunidades</h2>
-        <p>Comunidades reúnem membros em grupos separados por assunto.</p>
-      </div>
-    </div>
-
-    <!-- ABA 4: LIGAÇÕES -->
-    <div class="screen" id="tabLigacoes">
-      <header class="header">
-        <h1>Ligações</h1>
-        <div class="header-icons">
-          <i class="fa-solid fa-magnifying-glass" title="Pesquisar"></i>
-          <i class="fa-solid fa-ellipsis-vertical" title="Mais opções"></i>
-        </div>
-      </header>
-      <div class="tab-content">
-        <i class="fa-solid fa-phone-volume" style="font-size: 40px; color: #00a884;"></i>
-        <h2>Para ligar para alguém</h2>
-        <p>Toque no ícone de telefone em suas conversas para iniciar uma chamada.</p>
-      </div>
-    </div>
-
-    <!-- TELA DE CHAT INDIVIDUAL -->
-    <div class="chat-screen-full" id="chatScreen">
-      <div class="chat-header">
-        <button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i></button>
-        <div class="chat-header-info">
-          <div class="chat-header-avatar" id="activeAvatar">J</div>
-          <div class="chat-header-name" id="activeName">Juliana</div>
-        </div>
-        <div class="header-icons" style="color: #aebac1; font-size: 16px;">
-          <i class="fa-solid fa-camera" id="chatCameraBtn" title="Tirar foto" style="margin-left: 12px; cursor: pointer;"></i>
-          <i class="fa-solid fa-video" id="chatVideoBtn" title="Vídeo" style="margin-left: 12px; cursor: pointer;"></i>
-          <i class="fa-solid fa-phone" id="chatPhoneBtn" title="Ligar" style="margin-left: 12px; cursor: pointer;"></i>
-          <i class="fa-solid fa-ellipsis-vertical" id="chatMenuBtn" title="Opções" style="margin-left: 12px; cursor: pointer;"></i>
-        </div>
-        <div class="chat-dropdown-menu" id="chatDropdownMenu">
-          <div class="dropdown-item" id="chatOptContact">Ver contato</div>
-          <div class="dropdown-item" id="chatOptClear">Limpar conversa</div>
-          <div class="dropdown-item" id="chatOptBlock">Bloquear</div>
+      <div class="section">
+        <div class="section-title">Entrada</div>
+        <div class="item">
+          <span>Valor a receber</span>
+          <span class="value-in">+ R$ 1.171,00</span>
         </div>
       </div>
 
-      <div class="chat-body" id="chatBody"></div>
+      <div class="section">
+        <div class="section-title">Gastos</div>
+        <div class="item"><span>Energia</span><span class="value-out">- R$ 361,00</span></div>
+        <div class="item"><span>Água</span><span class="value-out">- R$ 90,00</span></div>
+        <div class="item"><span>Condução</span><span class="value-out">- R$ 35,00</span></div>
+        <div class="item"><span>Cloves</span><span class="value-out">- R$ 240,00</span></div>
+        <div class="item"><span>Beba</span><span class="value-out">- R$ 25,00</span></div>
+        <div class="item"><span>Moisés</span><span class="value-out">- R$ 30,00</span></div>
+        <div class="item"><span>Genaldo</span><span class="value-out">- R$ 30,00</span></div>
+        <div class="item"><span>Vania</span><span class="value-out">- R$ 20,00</span></div>
+      </div>
 
-      <div class="chat-footer">
-        <i class="fa-regular fa-face-smile" style="color: #8696a0; font-size: 20px; cursor: pointer;"></i>
-        <input type="text" id="messageInput" placeholder="Mensagem" />
-        <button class="send-btn" id="sendMessageBtn"><i class="fa-solid fa-paper-plane"></i></button>
-      </div>
-    </div>
-
-    <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
-    <nav class="bottom-nav">
-      <div class="nav-item active" data-tab="tabConversas">
-        <i class="fa-solid fa-comment"></i>
-        <span>Conversas</span>
-      </div>
-      <div class="nav-item" data-tab="tabAtualizacoes">
-        <i class="fa-solid fa-circle-notch"></i>
-        <span>Atualizações</span>
-      </div>
-      <div class="nav-item" data-tab="tabComunidades">
-        <i class="fa-solid fa-users"></i>
-        <span>Comunidades</span>
-      </div>
-      <div class="nav-item" data-tab="tabLigacoes">
-        <i class="fa-solid fa-phone"></i>
-        <span>Ligações</span>
-      </div>
-    </nav>
-
-    <!-- MODAL DE NOVO CONTATO -->
-    <div class="overlay" id="modalOverlay">
-      <div class="modal">
-        <h3>Novo Contato</h3>
-        <input type="text" id="contactNameInput" placeholder="Digite o nome da pessoa..." />
-        <div class="modal-buttons">
-          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
-          <button class="btn btn-add" id="addContactBtn">Adicionar</button>
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-label">Total Gastos</div>
+          <div class="summary-value value-out">R$ 831,00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Saldo do Dia 20</div>
+          <div class="summary-value saldo">R$ 340,00</div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DA CÂMERA REAL -->
-    <div class="overlay" id="cameraOverlay">
-      <div class="camera-modal">
-        <div class="camera-header-controls">
-          <button class="camera-action-btn" id="switchCameraBtn" title="Alternar"><i class="fa-solid fa-rotate"></i></button>
-          <button class="camera-action-btn" id="closeCameraBtn" title="Fechar"><i class="fa-solid fa-xmark" style="font-size: 24px;"></i></button>
-        </div>
-        <div class="camera-screen-view">
-          <video id="cameraVideo" autoplay playsinline></video>
-        </div>
-        <div class="camera-controls">
-          <div style="width: 40px;"></div>
-          <button class="shutter-btn" id="takePhotoBtn" title="Tirar Foto"></button>
-          <div style="width: 40px;"></div>
+    <!-- CARD DIA 24 -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🗓️ Recebimento Dia 24</h2>
+        <span class="badge">2º Período</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Entrada</div>
+        <div class="item">
+          <span>Valor a receber</span>
+          <span class="value-in">+ R$ 933,00</span>
         </div>
       </div>
-    </div>
 
-    <!-- MODAL DE CHAMADA -->
-    <div class="overlay" id="callOverlay">
-      <div class="call-modal">
-        <div class="call-info">
-          <h2 id="callTitleName">Juliana</h2>
-          <p id="callStatusText">Chamando...</p>
+      <div class="section">
+        <div class="section-title">Gastos</div>
+        <div class="item"><span>Aluguel</span><span class="value-out">- R$ 650,00</span></div>
+        <div class="item"><span>Internet Vivo</span><span class="value-out">- R$ 100,00</span></div>
+        <div class="item"><span>Dona Maria</span><span class="value-out">- R$ 100,00</span></div>
+        <div class="item"><span>Condução</span><span class="value-out">- R$ 35,00</span></div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-label">Total Gastos</div>
+          <div class="summary-value value-out">R$ 885,00</div>
         </div>
-        <div class="call-avatar" id="callAvatarIcon">J</div>
-        <button class="hangup-btn" id="hangupBtn" title="Desligar"><i class="fa-solid fa-phone-slash"></i></button>
+        <div class="summary-item">
+          <div class="summary-label">Saldo do Dia 24</div>
+          <div class="summary-value saldo">R$ 48,00</div>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <canvas id="snapshotCanvas" style="display:none;"></canvas>
-
-  <script>
-    // Registo do Service Worker para permitir a instalação do app
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('Service Worker registado com sucesso:', reg.scope))
-          .catch((err) => console.error('Falha ao registar o Service Worker:', err));
-      });
-    }
-
-    let contacts = [
-      { id: 1, name: "Juliana", color: "#e91e63", time: "08:05", messages: [{ type: 'text', text: "Oi! Tudo bem?", sender: "received", time: "08:05" }] },
-      { id: 2, name: "Carlos Oliveira", color: "#2196f3", time: "Ontem", messages: [{ type: 'text', text: "Você viu o projeto?", sender: "received", time: "Ontem" }] },
-      { id: 3, name: "Grupo da Família", color: "#4caf50", time: "Ontem", messages: [{ type: 'text', text: "Bom dia a todos!", sender: "received", time: "Ontem" }] }
-    ];
-
-    let currentContactId = null;
-    let mediaStream = null;
-    let useFrontCamera = true;
-
-    const screens = document.querySelectorAll('.screen');
-    const navItems = document.querySelectorAll('.nav-item');
-    const chatScreen = document.getElementById('chatScreen');
-    const chatList = document.getElementById('chatList');
-    const backBtn = document.getElementById('backBtn');
-    const activeName = document.getElementById('activeName');
-    const activeAvatar = document.getElementById('activeAvatar');
-    const chatBody = document.getElementById('chatBody');
-    const messageInput = document.getElementById('messageInput');
-    const sendMessageBtn = document.getElementById('sendMessageBtn');
-
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const targetTab = item.getAttribute('data-tab');
-        
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-
-        screens.forEach(scr => scr.classList.remove('active'));
-        document.getElementById(targetTab).classList.add('active');
-        chatScreen.classList.remove('active');
-      });
-    });
-
-    function getRandomColor() {
-      const colors = ['#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ff9800'];
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    function renderChats(filterText = '') {
-      chatList.innerHTML = '';
-      const filtered = contacts.filter(c => c.name.toLowerCase().includes(filterText.toLowerCase()));
-
-      filtered.forEach(contact => {
-        const lastMsg = contact.messages[contact.messages.length - 1];
-        let lastText = "Toque para conversar";
-        if (lastMsg) {
-          lastText = lastMsg.type === 'image' ? '📷 Foto' : lastMsg.text;
-        }
-        const initial = contact.name.charAt(0).toUpperCase();
-
-        const item = document.createElement('div');
-        item.className = 'chat-item';
-        item.innerHTML = `
-          <div class="avatar" style="background-color: ${contact.color};">${initial}</div>
-          <div class="chat-info">
-            <div class="chat-top">
-              <span class="chat-name">${contact.name}</span>
-              <span class="chat-time">${contact.time}</span>
-            </div>
-            <div class="chat-message">${lastText}</div>
-          </div>
-        `;
-        item.addEventListener('click', () => openChat(contact.id));
-        chatList.appendChild(item);
-      });
-    }
-
-    function openChat(id) {
-      currentContactId = id;
-      const contact = contacts.find(c => c.id === id);
-      if (!contact) return;
-
-      activeName.textContent = contact.name;
-      activeAvatar.textContent = contact.name.charAt(0).toUpperCase();
-      activeAvatar.style.backgroundColor = contact.color;
-
-      renderMessages(contact);
-      chatScreen.classList.add('active');
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function renderMessages(contact) {
-      chatBody.innerHTML = '';
-      contact.messages.forEach(msg => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${msg.sender}`;
-        
-        if (msg.type === 'image') {
-          msgDiv.innerHTML = `
-            <img src="${msg.content}" alt="Foto" />
-            <span class="message-time">${msg.time}</span>
-          `;
-        } else {
-          msgDiv.innerHTML = `
-            ${msg.text}
-            <span class="message-time">${msg.time}</span>
-          `;
-        }
-        chatBody.appendChild(msgDiv);
-      });
-    }
-
-    backBtn.addEventListener('click', () => {
-      chatScreen.classList.remove('active');
-      renderChats();
-    });
-
-    function sendMessage() {
-      const text = messageInput.value.trim();
-      if (!text || currentContactId === null) return;
-
-      const contact = contacts.find(c => c.id === currentContactId);
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-      contact.messages.push({ type: 'text', text: text, sender: 'sent', time: timeStr });
-      contact.time = timeStr;
-
-      messageInput.value = '';
-      renderMessages(contact);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    sendMessageBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-    const cameraOverlay = document.getElementById('cameraOverlay');
-    const cameraVideo = document.getElementById('cameraVideo');
-    const snapshotCanvas = document.getElementById('snapshotCanvas');
-
-    async function startCamera() {
-      if (currentContactId === null) currentContactId = contacts[0].id;
-      cameraOverlay.classList.add('active');
-      
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
-
-      try {
-        const constraints = {
-          video: { facingMode: useFrontCamera ? 'user' : 'environment' },
-          audio: false
-        };
-        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-        cameraVideo.srcObject = mediaStream;
-      } catch (err) {
-        alert("Não foi possível acessar a câmera.");
-        cameraOverlay.classList.remove('active');
-      }
-    }
-
-    document.getElementById('switchCameraBtn').addEventListener('click', () => {
-      useFrontCamera = !useFrontCamera;
-      startCamera();
-    });
-
-    function stopCamera() {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-        mediaStream = null;
-      }
-      cameraOverlay.classList.remove('active');
-    }
-
-    document.getElementById('cameraBtn').addEventListener('click', startCamera);
-    document.getElementById('chatCameraBtn').addEventListener('click', startCamera);
-    document.getElementById('closeCameraBtn').addEventListener('click', stopCamera);
-
-    document.getElementById('takePhotoBtn').addEventListener('click', () => {
-      if (!mediaStream) return;
-      
-      snapshotCanvas.width = cameraVideo.videoWidth || 640;
-      snapshotCanvas.height = cameraVideo.videoHeight || 480;
-      const ctx = snapshotCanvas.getContext('2d');
-      ctx.drawImage(cameraVideo, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
-      
-      const imageUrl = snapshotCanvas.toDataURL('image/png');
-      const contact = contacts.find(c => c.id === currentContactId);
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-      contact.messages.push({
-        type: 'image',
-        content: imageUrl,
-        sender: 'sent',
-        time: timeStr
-      });
-      contact.time = timeStr;
-
-      stopCamera();
-      renderMessages(contact);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    });
-
-    const callOverlay = document.getElementById('callOverlay');
-    document.getElementById('chatVideoBtn').addEventListener('click', () => {
-      document.getElementById('callTitleName').textContent = activeName.textContent;
-      document.getElementById('callAvatarIcon').textContent = activeName.textContent.charAt(0).toUpperCase();
-      document.getElementById('callStatusText').textContent = "Chamando vídeo...";
-      callOverlay.classList.add('active');
-    });
-
-    document.getElementById('chatPhoneBtn').addEventListener('click', () => {
-      document.getElementById('callTitleName').textContent = activeName.textContent;
-      document.getElementById('callAvatarIcon').textContent = activeName.textContent.charAt(0).toUpperCase();
-      document.getElementById('callStatusText').textContent = "Chamando...";
-      callOverlay.classList.add('active');
-    });
-
-    document.getElementById('hangupBtn').addEventListener('click', () => {
-      callOverlay.classList.remove('active');
-    });
-
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', (e) => renderChats(e.target.value));
-
-    const menuBtn = document.getElementById('menuBtn');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    menuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdownMenu.classList.toggle('active');
-      document.getElementById('chatDropdownMenu').classList.remove('active');
-    });
-
-    const chatMenuBtn = document.getElementById('chatMenuBtn');
-    const chatDropdownMenu = document.getElementById('chatDropdownMenu');
-    chatMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      chatDropdownMenu.classList.toggle('active');
-      dropdownMenu.classList.remove('active');
-    });
-
-    window.addEventListener('click', () => {
-      dropdownMenu.classList.remove('active');
-      chatDropdownMenu.classList.remove('active');
-    });
-
-    document.getElementById('menuNewGroup').addEventListener('click', () => alert("Criando novo grupo..."));
-    document.getElementById('menuSettings').addEventListener('click', () => alert("Abrindo configurações..."));
-    document.getElementById('chatOptContact').addEventListener('click', () => alert("Exibindo dados do contato..."));
-    document.getElementById('chatOptClear').addEventListener('click', () => {
-      const contact = contacts.find(c => c.id === currentContactId);
-      if(contact) {
-        contact.messages = [];
-        renderMessages(contact);
-      }
-      chatDropdownMenu.classList.remove('active');
-    });
-    document.getElementById('chatOptBlock').addEventListener('click', () => {
-      alert("Contato bloqueado com sucesso.");
-      chatDropdownMenu.classList.remove('active');
-    });
-
-    const modalOverlay = document.getElementById('modalOverlay');
-    document.getElementById('openModalBtn').addEventListener('click', () => {
-      modalOverlay.classList.add('active');
-      document.getElementById('contactNameInput').focus();
-    });
-
-    document.getElementById('closeModalBtn').addEventListener('click', () => {
-      modalOverlay.classList.remove('active');
-      document.getElementById('contactNameInput').value = '';
-    });
-
-    document.getElementById('addContactBtn').addEventListener('click', () => {
-      const name = document.getElementById('contactNameInput').value.trim();
-      if (name) {
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-        contacts.unshift({
-          id: Date.now(),
-          name: name,
-          color: getRandomColor(),
-          time: timeStr,
-          messages: [{ type: 'text', text: "Conversa iniciada. Diga olá!", sender: "received", time: timeStr }]
-        });
-
-        renderChats();
-        document.getElementById('contactNameInput').value = '';
-        modalOverlay.classList.remove('active');
-      }
-    });
-
-    renderChats();
-  </script>
 </body>
 </html>
