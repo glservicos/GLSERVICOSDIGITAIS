@@ -217,6 +217,40 @@
 
   <div class="container">
 
+    <!-- BLOCO RECEBIMENTO DO PAGAMENTO (NOVO) -->
+    <div class="card" id="card-pagamento">
+      <div class="card-header">
+        <h2>💵 Recebimento do Pagamento</h2>
+        <span class="badge" style="background-color: rgba(34, 197, 94, 0.2); color: var(--green);">Pagamento Geral</span>
+      </div>
+
+      <!-- Entradas -->
+      <div class="section">
+        <div class="section-title">Entradas (Recebimentos)</div>
+        <div class="item-list" id="list-in-pagamento"></div>
+        <button class="btn btn-add" onclick="adicionarItem('pagamento', 'in')">+ Adicionar Entrada</button>
+      </div>
+
+      <!-- Saídas -->
+      <div class="section">
+        <div class="section-title">Saídas (Gastos)</div>
+        <div class="item-list" id="list-out-pagamento"></div>
+        <button class="btn btn-add" onclick="adicionarItem('pagamento', 'out')">+ Adicionar Gasto</button>
+      </div>
+
+      <!-- Resumo -->
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-label">Total Gastos</div>
+          <div class="summary-value val-out" id="total-out-pagamento">R$ 0,00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Saldo do Pagamento</div>
+          <div class="summary-value" id="saldo-pagamento">R$ 0,00</div>
+        </div>
+      </div>
+    </div>
+
     <!-- BLOCO DIA 20 -->
     <div class="card" id="card-d20">
       <div class="card-header">
@@ -289,6 +323,10 @@
 
   <script>
     const dadosIniciais = {
+      pagamento: {
+        in: [{ desc: "Recebimento do Pagamento", valor: 0 }],
+        out: []
+      },
       d20: {
         in: [{ desc: "Recebimento Dia 20", valor: 1171 }],
         out: [
@@ -313,10 +351,10 @@
       }
     };
 
-    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros')) || JSON.parse(JSON.stringify(dadosIniciais));
+    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros_v2')) || JSON.parse(JSON.stringify(dadosIniciais));
 
     function salvar() {
-      localStorage.setItem('dadosFinanceiros', JSON.stringify(dados));
+      localStorage.setItem('dadosFinanceiros_v2', JSON.stringify(dados));
       calcular();
     }
 
@@ -324,65 +362,65 @@
       return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    function renderizarGrupo(dia, tipo) {
-      const container = document.getElementById(`list-${tipo}-${dia}`);
+    function renderizarGrupo(secao, tipo) {
+      const container = document.getElementById(`list-${tipo}-${secao}`);
       container.innerHTML = '';
 
-      dados[dia][tipo].forEach((item, index) => {
+      dados[secao][tipo].forEach((item, index) => {
         const row = document.createElement('div');
         row.className = 'item-row';
         row.innerHTML = `
-          <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${dia}', '${tipo}', ${index}, 'desc', this.value)">
-          <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${dia}', '${tipo}', ${index}, 'valor', this.value)">
-          <button class="btn btn-del" onclick="removerItem('${dia}', '${tipo}', ${index})">✕</button>
+          <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'desc', this.value)">
+          <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'valor', this.value)">
+          <button class="btn btn-del" onclick="removerItem('${secao}', '${tipo}', ${index})">✕</button>
         `;
         container.appendChild(row);
       });
     }
 
-    function atualizarItem(dia, tipo, index, campo, valor) {
+    function atualizarItem(secao, tipo, index, campo, valor) {
       if (campo === 'valor') {
-        dados[dia][tipo][index].valor = parseFloat(valor) || 0;
+        dados[secao][tipo][index].valor = parseFloat(valor) || 0;
       } else {
-        dados[dia][tipo][index].desc = valor;
+        dados[secao][tipo][index].desc = valor;
       }
       salvar();
     }
 
-    function adicionarItem(dia, tipo) {
-      dados[dia][tipo].push({ desc: tipo === 'in' ? "Nova Entrada" : "Novo Gasto", valor: 0 });
-      renderizarGrupo(dia, tipo);
+    function adicionarItem(secao, tipo) {
+      dados[secao][tipo].push({ desc: tipo === 'in' ? "Nova Entrada" : "Novo Gasto", valor: 0 });
+      renderizarGrupo(secao, tipo);
       salvar();
     }
 
-    function removerItem(dia, tipo, index) {
-      dados[dia][tipo].splice(index, 1);
-      renderizarGrupo(dia, tipo);
+    function removerItem(secao, tipo, index) {
+      dados[secao][tipo].splice(index, 1);
+      renderizarGrupo(secao, tipo);
       salvar();
     }
 
-    function calcularDia(dia) {
-      const totalIn = dados[dia].in.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
-      const totalOut = dados[dia].out.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
+    function calcularSecao(secao) {
+      const totalIn = dados[secao].in.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
+      const totalOut = dados[secao].out.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
       const saldo = totalIn - totalOut;
 
-      document.getElementById(`total-out-${dia}`).innerText = formatarMoeda(totalOut);
+      document.getElementById(`total-out-${secao}`).innerText = formatarMoeda(totalOut);
       
-      const saldoEl = document.getElementById(`saldo-${dia}`);
+      const saldoEl = document.getElementById(`saldo-${secao}`);
       saldoEl.innerText = formatarMoeda(saldo);
       saldoEl.className = `summary-value ${saldo >= 0 ? 'saldo-pos' : 'saldo-neg'}`;
     }
 
     function calcular() {
-      ['d20', 'd24'].forEach(dia => {
-        calcularDia(dia);
+      ['pagamento', 'd20', 'd24'].forEach(secao => {
+        calcularSecao(secao);
       });
     }
 
     function renderizarTudo() {
-      ['d20', 'd24'].forEach(dia => {
-        renderizarGrupo(dia, 'in');
-        renderizarGrupo(dia, 'out');
+      ['pagamento', 'd20', 'd24'].forEach(secao => {
+        renderizarGrupo(secao, 'in');
+        renderizarGrupo(secao, 'out');
       });
       calcular();
     }
