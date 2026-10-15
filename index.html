@@ -3,527 +3,231 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Gastos Interativo</title>
-  
-  <!-- CONECTANDO AO SEU MANIFEST EXISTENTE -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f172a">
-
+  <title>GL Serviços Digitais - Soluções Remotas & Presença Online</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --green: #22c55e;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --border: #334155;
-      --input-bg: #0f172a;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      padding: 20px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-      width: 100%;
-      max-width: 600px;
-    }
-
-    .header h1 {
-      font-size: 1.6rem;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-top: 10px;
-      font-size: 0.85rem;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-
-    .card-header h2 {
-      font-size: 1.2rem;
-      color: var(--blue);
-    }
-
-    .badge {
-      background-color: rgba(59, 130, 246, 0.2);
-      color: var(--blue);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .section {
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .item-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .item-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    input[type="text"], input[type="number"], input[type="password"] {
-      background-color: var(--input-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
-      border-color: var(--blue);
-    }
-
-    .desc-input { flex: 1; }
-    .val-input { width: 110px; text-align: right; }
-
-    .btn {
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: opacity 0.2s;
-    }
-
-    .btn:hover { opacity: 0.85; }
-
-    .btn-del {
-      background-color: rgba(239, 68, 68, 0.2);
-      color: var(--red);
-      padding: 8px 10px;
-    }
-
-    .btn-add {
-      background-color: rgba(59, 130, 246, 0.15);
-      color: var(--blue);
-      border: 1px dashed var(--blue);
-      width: 100%;
-      margin-top: 8px;
-      padding: 8px;
-    }
-
-    .btn-reset {
-      background-color: rgba(148, 163, 184, 0.1);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      padding: 6px 12px;
-      font-size: 0.8rem;
-    }
-
-    .summary {
-      background-color: rgba(15, 23, 42, 0.6);
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid var(--border);
-    }
-
-    .summary-item { text-align: center; }
-    .summary-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
-    .summary-value { font-size: 1.1rem; font-weight: bold; }
-
-    .val-in { color: var(--green); }
-    .val-out { color: var(--red); }
-    .saldo-pos { color: var(--green); }
-    .saldo-neg { color: var(--red); }
-
-    /* Modal de Senha */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 24px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 380px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-box h3 { margin-bottom: 10px; color: var(--blue); }
-    .modal-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
-    .modal-box input { width: 100%; margin-bottom: 12px; text-align: center; font-size: 1.1rem; }
-    .modal-box button { width: 100%; background: var(--blue); color: #fff; padding: 10px; }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
-  <!-- MODAL DE SOLICITAÇÃO DE SENHA -->
-  <div class="modal-overlay" id="modalSenha" style="display: none;">
-    <div class="modal-box">
-      <h3>🔒 Acesso Restrito ao Administrador</h3>
-      <p>Digite a senha de administrador para autorizar este dispositivo a fazer alterações.</p>
-      <input type="password" id="inputSenha" placeholder="Digite a senha">
-      <button class="btn" onclick="validarSenha()">Entrar como Administrador</button>
-    </div>
-  </div>
-
-  <div class="header">
-    <h1>📊 Painel Financeiro</h1>
-    <p id="subtitulo">Aguardando verificação de autorização...</p>
-    
-    <div class="status-bar">
-      <span id="statusPermissao">🔒 Modo Leitura (Somente Visualização)</span>
-      <button class="btn btn-reset" id="btnAcaoDono" onclick="solicitarSenha()">Entrar como Administrador</button>
-    </div>
-  </div>
-
-  <div class="container">
-
-    <!-- RECEBIMENTO DO PAGAMENTO -->
-    <div class="card" id="card-pagamento">
-      <div class="card-header">
-        <h2>💵 Recebimento do Pagamento</h2>
-        <span class="badge" style="background-color: rgba(34, 197, 94, 0.2); color: var(--green);">Pagamento Geral</span>
-      </div>
-      <div class="section">
-        <div class="section-title">Entradas (Recebimentos)</div>
-        <div class="item-list" id="list-in-pagamento"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('pagamento', 'in')">+ Adicionar Entrada</button>
-      </div>
-      <div class="section">
-        <div class="section-title">Saídas (Gastos)</div>
-        <div class="item-list" id="list-out-pagamento"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('pagamento', 'out')">+ Adicionar Gasto</button>
-      </div>
-      <div class="summary">
-        <div class="summary-item">
-          <div class="summary-label">Total Gastos</div>
-          <div class="summary-value val-out" id="total-out-pagamento">R$ 0,00</div>
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xl tracking-wider">
+          GL
         </div>
-        <div class="summary-item">
-          <div class="summary-label">Saldo do Pagamento</div>
-          <div class="summary-value" id="saldo-pagamento">R$ 0,00</div>
+        <div>
+          <span class="text-xl font-bold block leading-tight">GL Serviços Digitais</span>
+          <span class="text-xs text-emerald-400 font-medium">100% Online & Remoto</span>
         </div>
+      </div>
+      <a href="https://wa.me/5511951681752?text=Ol%C3%A1%2C%20Gabriel!%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20seus%20servi%C3%A7os." 
+         target="_blank" 
+         class="hidden sm:inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition duration-200">
+        <i class="fab font-bold fa-whatsapp text-lg"></i>
+        <span>Falar no WhatsApp</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Banner / Hero Section -->
+  <section class="bg-slate-900 text-white py-16 px-4 border-b border-slate-800">
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      <span class="inline-block bg-emerald-500/20 text-emerald-400 font-semibold text-xs sm:text-sm px-4 py-1.5 rounded-full border border-emerald-500/30">
+        <i class="fas fa-globe mr-1"></i> Atendimento para todo o Brasil
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+        Sua Presença Digital Completa e Gestão Remota Profissional
+      </h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
+        Automatize seu atendimento, potencialize suas redes sociais e crie uma imagem profissional na internet. Tudo feito de forma ágil, prática e 100% online.
+      </p>
+      <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+        <a href="https://wa.me/5511951681752?text=Ol%C3%A1!%20Quero%20fazer%20um%20or%C3%A7amento%20para%20meu%20neg%C3%B3cio." 
+           target="_blank"
+           class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-emerald-600/20 transition duration-200 flex items-center justify-center space-x-2">
+          <i class="fab fa-whatsapp text-xl"></i>
+          <span>Solicitar Orçamento Grátis</span>
+        </a>
+        <a href="#servicos" 
+           class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-8 rounded-xl text-lg border border-slate-700 transition duration-200 flex items-center justify-center">
+          <span>Ver Serviços</span>
+        </a>
       </div>
     </div>
+  </section>
 
-    <!-- DIA 20 -->
-    <div class="card" id="card-d20">
-      <div class="card-header">
-        <h2>🗓️ Recebimento Dia 20</h2>
-        <span class="badge">1º Período</span>
+  <!-- Diferencial / Tarja Remota -->
+  <section class="bg-blue-600 text-white py-4 px-4 shadow-inner">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-2 text-sm sm:text-base font-medium">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
+        <span>Sem necessidade de reuniões presenciais</span>
       </div>
-      <div class="section">
-        <div class="section-title">Entradas (Recebimentos)</div>
-        <div class="item-list" id="list-in-d20"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('d20', 'in')">+ Adicionar Entrada</button>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
+        <span>Suporte e alinhamento contínuo via WhatsApp</span>
       </div>
-      <div class="section">
-        <div class="section-title">Saídas (Gastos)</div>
-        <div class="item-list" id="list-out-d20"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('d20', 'out')">+ Adicionar Gasto</button>
-      </div>
-      <div class="summary">
-        <div class="summary-item">
-          <div class="summary-label">Total Gastos</div>
-          <div class="summary-value val-out" id="total-out-d20">R$ 0,00</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">Saldo do Dia 20</div>
-          <div class="summary-value" id="saldo-d20">R$ 0,00</div>
-        </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
+        <span>Entregas rápidas e dinâmicas</span>
       </div>
     </div>
+  </section>
 
-    <!-- DIA 24 -->
-    <div class="card" id="card-d24">
-      <div class="card-header">
-        <h2>🗓️ Recebimento Dia 24</h2>
-        <span class="badge">2º Período</span>
-      </div>
-      <div class="section">
-        <div class="section-title">Entradas (Recebimentos)</div>
-        <div class="item-list" id="list-in-d24"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('d24', 'in')">+ Adicionar Entrada</button>
-      </div>
-      <div class="section">
-        <div class="section-title">Saídas (Gastos)</div>
-        <div class="item-list" id="list-out-d24"></div>
-        <button class="btn btn-add action-btn" onclick="adicionarItem('d24', 'out')">+ Adicionar Gasto</button>
-      </div>
-      <div class="summary">
-        <div class="summary-item">
-          <div class="summary-label">Total Gastos</div>
-          <div class="summary-value val-out" id="total-out-d24">R$ 0,00</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">Saldo do Dia 24</div>
-          <div class="summary-value" id="saldo-d24">R$ 0,00</div>
-        </div>
-      </div>
+  <!-- Serviços -->
+  <section id="servicos" class="py-16 px-4 max-w-6xl mx-auto">
+    <div class="text-center space-y-3 mb-12">
+      <h2 class="text-2xl sm:text-4xl font-bold text-slate-900">Soluções Digitais para o seu Negócio</h2>
+      <p class="text-slate-600 max-w-xl mx-auto">Serviços sob medida para modernizar sua empresa e liberar o seu tempo.</p>
     </div>
 
-  </div>
-
-  <script>
-    // SENHA PADRÃO DO ADMINISTRADOR (Você pode alterar '1234' para a senha que desejar)
-    const SENHA_MESTRE = "1234";
-
-    const dadosIniciais = {
-      pagamento: {
-        in: [{ desc: "Recebimento do Pagamento", valor: 0 }],
-        out: []
-      },
-      d20: {
-        in: [{ desc: "Recebimento Dia 20", valor: 1171 }],
-        out: [
-          { desc: "Energia", valor: 361 },
-          { desc: "Água", valor: 90 },
-          { desc: "Condução", valor: 35 },
-          { desc: "Cloves", valor: 240 },
-          { desc: "Beba", valor: 25 },
-          { desc: "Moisés", valor: 30 },
-          { desc: "Genaldo", valor: 30 },
-          { desc: "Vania", valor: 20 }
-        ]
-      },
-      d24: {
-        in: [{ desc: "Recebimento Dia 24", valor: 933 }],
-        out: [
-          { desc: "Aluguel", valor: 650 },
-          { desc: "Internet Vivo", valor: 100 },
-          { desc: "Dona Maria", valor: 100 },
-          { desc: "Condução", valor: 35 }
-        ]
-      }
-    };
-
-    let dados = JSON.parse(localStorage.getItem('dadosFinanceiros_v3')) || JSON.parse(JSON.stringify(dadosIniciais));
-    let ehDono = localStorage.getItem('isDonoAutorizado') === 'true';
-
-    function verificarAutorizacao() {
-      const statusEl = document.getElementById('statusPermissao');
-      const subtitulo = document.getElementById('subtitulo');
-      const btnAcao = document.getElementById('btnAcaoDono');
-
-      if (ehDono) {
-        statusEl.innerText = "🔓 Dispositivo Autorizado (Administrador)";
-        statusEl.style.color = "var(--green)";
-        subtitulo.innerText = "Modo de edição liberado para este dispositivo";
-        btnAcao.innerText = "Sair do Modo Administrador";
-        btnAcao.onclick = desautorizar;
-      } else {
-        statusEl.innerText = "🔒 Modo Leitura (Somente Visualização)";
-        statusEl.style.color = "var(--text-muted)";
-        subtitulo.innerText = "Apenas o dispositivo do administrador pode alterar valores";
-        btnAcao.innerText = "Entrar como Administrador";
-        btnAcao.onclick = solicitarSenha;
-      }
-
-      renderizarTudo();
-    }
-
-    function solicitarSenha() {
-      document.getElementById('modalSenha').style.display = 'flex';
-      document.getElementById('inputSenha').focus();
-    }
-
-    function validarSenha() {
-      const senhaDigitada = document.getElementById('inputSenha').value;
-      if (senhaDigitada === SENHA_MESTRE) {
-        ehDono = true;
-        localStorage.setItem('isDonoAutorizado', 'true');
-        document.getElementById('modalSenha').style.display = 'none';
-        document.getElementById('inputSenha').value = '';
-        verificarAutorizacao();
-      } else {
-        alert("Senha incorreta!");
-      }
-    }
-
-    function desautorizar() {
-      if (confirm("Deseja remover a permissão deste dispositivo? Terá que digitar a senha novamente na próxima vez.")) {
-        ehDono = false;
-        localStorage.removeItem('isDonoAutorizado');
-        verificarAutorizacao();
-      }
-    }
-
-    function salvar() {
-      localStorage.setItem('dadosFinanceiros_v3', JSON.stringify(dados));
-      calcular();
-    }
-
-    function formatarMoeda(valor) {
-      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    function renderizarGrupo(secao, tipo) {
-      const container = document.getElementById(`list-${tipo}-${secao}`);
-      container.innerHTML = '';
-
-      dados[secao][tipo].forEach((item, index) => {
-        const row = document.createElement('div');
-        row.className = 'item-row';
-
-        if (ehDono) {
-          row.innerHTML = `
-            <input type="text" class="desc-input" value="${item.desc}" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'desc', this.value)">
-            <input type="number" class="val-input" value="${item.valor}" step="0.01" onchange="atualizarItem('${secao}', '${tipo}', ${index}, 'valor', this.value)">
-            <button class="btn btn-del" onclick="removerItem('${secao}', '${tipo}', ${index})">✕</button>
-          `;
-        } else {
-          row.innerHTML = `
-            <span class="desc-input" style="padding: 8px; font-size: 0.95rem;">${item.desc}</span>
-            <span class="val-input ${tipo === 'in' ? 'val-in' : 'val-out'}" style="padding: 8px; font-size: 0.95rem; font-weight: 600;">${formatarMoeda(item.valor)}</span>
-          `;
-        }
-
-        container.appendChild(row);
-      });
-
-      // Esconder ou mostrar botões de adicionar
-      document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.style.display = ehDono ? 'block' : 'none';
-      });
-    }
-
-    function atualizarItem(secao, tipo, index, campo, valor) {
-      if (!ehDono) return;
-      if (campo === 'valor') {
-        dados[secao][tipo][index].valor = parseFloat(valor) || 0;
-      } else {
-        dados[secao][tipo][index].desc = valor;
-      }
-      salvar();
-    }
-
-    function adicionarItem(secao, tipo) {
-      if (!ehDono) return;
-      dados[secao][tipo].push({ desc: tipo === 'in' ? "Nova Entrada" : "Novo Gasto", valor: 0 });
-      renderizarGrupo(secao, tipo);
-      salvar();
-    }
-
-    function removerItem(secao, tipo, index) {
-      if (!ehDono) return;
-      dados[secao][tipo].splice(index, 1);
-      renderizarGrupo(secao, tipo);
-      salvar();
-    }
-
-    function calcularSecao(secao) {
-      const totalIn = dados[secao].in.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
-      const totalOut = dados[secao].out.reduce((acc, cur) => acc + (parseFloat(cur.valor) || 0), 0);
-      const saldo = totalIn - totalOut;
-
-      document.getElementById(`total-out-${secao}`).innerText = formatarMoeda(totalOut);
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       
-      const saldoEl = document.getElementById(`saldo-${secao}`);
-      saldoEl.innerText = formatarMoeda(saldo);
-      saldoEl.className = `summary-value ${saldo >= 0 ? 'saldo-pos' : 'saldo-neg'}`;
-    }
+      <!-- Card 1: Atendimento WhatsApp -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Atendimento & Suporte via WhatsApp</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Gestão e organização do atendimento de clientes no WhatsApp Business, com mensagens padronizadas, respostas rápidas e suporte direto.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Atendimento%20WhatsApp" target="_blank" class="mt-6 text-emerald-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
 
-    function calcular() {
-      ['pagamento', 'd20', 'd24'].forEach(secao => {
-        calcularSecao(secao);
-      });
-    }
+      <!-- Card 2: Automação & IA -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Automação & Inteligência Artificial</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Implementação de soluções inteligentes para agilizar tarefas repetitivas, atendimento automático inicial e criação de conteúdos com auxílio de IA.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Solu%C3%A7%C3%B5es%20com%20IA" target="_blank" class="mt-6 text-blue-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
 
-    function renderizarTudo() {
-      ['pagamento', 'd20', 'd24'].forEach(secao => {
-        renderizarGrupo(secao, 'in');
-        renderizarGrupo(secao, 'out');
-      });
-      calcular();
-    }
+      <!-- Card 3: Montagem de Posts -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Criação de Posts & Banners</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Montagens atraentes para Instagram, Facebook e WhatsApp. Imagens profissionais para destacar produtos, serviços e promoções da sua empresa.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Cria%C3%A7%C3%A3o%20de%20Posts" target="_blank" class="mt-6 text-purple-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
 
-    // Permitir pressionar ENTER no input de senha
-    document.getElementById('inputSenha').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        validarSenha();
-      }
-    });
+      <!-- Card 4: Publicação & Agendamento -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Gestão & Agendamento de Publicações</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Organização do calendário editorial do seu perfil, mantendo suas redes sociais ativas, atualizadas e com postagens frequentes sem você se preocupar.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Gest%C3%A3o%20de%20Publica%C3%A7%C3%B5es" target="_blank" class="mt-6 text-amber-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
 
-    // Inicialização
-    verificarAutorizacao();
-  </script>
+      <!-- Card 5: Criação de Sites -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fas fa-laptop-code"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Criação de Sites Profissionais</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Desenvolvimento de sites modernos, rápidos e adaptados para celulares, integrados diretamente ao seu WhatsApp para gerar novos contatos.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Cria%C3%A7%C3%A3o%20de%20Sites" target="_blank" class="mt-6 text-indigo-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+
+      <!-- Card 6: Suporte Home Office -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Assistência Virtual & Digital</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Apoio operacional remoto para demandas administrativas digitais, cadastros, organização de contatos e suporte contínuo ao seu negócio.
+          </p>
+        </div>
+        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Assist%C3%AAncia%20Virtual" target="_blank" class="mt-6 text-teal-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
+          <span>Saber mais</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Chamada para Ação / Chamada Final -->
+  <section class="bg-slate-900 text-white py-16 px-4">
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      <h2 class="text-2xl sm:text-4xl font-bold">Pronto para dar o próximo passo?</h2>
+      <p class="text-slate-300 max-w-xl mx-auto text-sm sm:text-base">
+        Atendimento ágil, sem burocracia e focado no seu resultado. Fale comigo pelo WhatsApp e solicite um orçamento sem compromisso.
+      </p>
+      <div class="pt-2">
+        <a href="https://wa.me/5511951681752?text=Ol%C3%A1%2C%20Gabriel!%20Gostaria%20de%20fazer%20um%20or%C3%A7amento." 
+           target="_blank"
+           class="inline-flex items-center space-x-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg hover:shadow-emerald-600/20 transition duration-200">
+          <i class="fab fa-whatsapp text-2xl"></i>
+          <span>Conversar pelo WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="bg-slate-950 text-slate-400 py-8 px-4 border-t border-slate-800 text-center text-xs sm:text-sm">
+    <div class="max-w-6xl mx-auto space-y-2">
+      <p class="font-semibold text-slate-300">GL Serviços Digitais — Gabriel Leite</p>
+      <p>Atendimento 100% Online e Remoto | WhatsApp: (11) 95168-1752</p>
+      <p class="text-slate-500 pt-2">&copy; 2026 GL Serviços Digitais. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Botão Flutuante do WhatsApp -->
+  <a href="https://wa.me/5511951681752?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20tirar%20uma%20d%C3%BAvida." 
+     target="_blank" 
+     aria-label="Contato via WhatsApp"
+     class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:bg-emerald-600 hover:scale-110 transition duration-300 z-50">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
 </body>
 </html>
