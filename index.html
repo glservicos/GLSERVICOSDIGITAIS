@@ -503,17 +503,17 @@
                     localStorage.setItem('talkbox_m3u_url', url);
                     localStorage.setItem('talkbox_m3u_text', texto);
                     processarM3U(texto);
-                    alert('Lista IPTV carregada com sucesso! Todos os Canais, Filmes e Séries foram sincronizados.');
+                    alert('Lista IPTV carregada com sucesso! Todos os itens foram sincronizados.');
                 })
                 .catch(err => {
-                    alert('Erro ao carregar a URL M3U. Verifique se o link está correto e sem bloqueio de CORS.');
+                    alert('Erro ao carregar a URL M3U. Verifique se o link é válido ou se há bloqueio no servidor.');
                 });
         }
 
         function processarM3U(texto) {
             const linhas = texto.split('\n');
             const itens = [];
-            let itemAtual = {};
+            let itemAtual = null;
 
             linhas.forEach(linha => {
                 linha = linha.trim();
@@ -526,203 +526,12 @@
                     itemAtual.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/202024/ffffff?text=IPTV';
 
                     const grupoMatch = linha.match(/group-title="([^"]*)"/);
-                    itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Geral';
+                    itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Variados';
                 } else if (linha && !linha.startsWith('#')) {
-                    itemAtual.url = linha;
+                    if (itemAtual) {
+                        itemAtual.url = linha;
 
-                    const g = (itemAtual.grupo || '').toLowerCase();
-                    const urlLower = linha.toLowerCase();
+                        const g = (itemAtual.grupo || '').toLowerCase();
+                        const urlLower = linha.toLowerCase();
 
-                    if (g.includes('serie') || g.includes('série') || urlLower.includes('/series/')) {
-                        itemAtual.tipo = 'serie';
-                    } else if (g.includes('filme') || g.includes('vod') || urlLower.endsWith('.mp4') || urlLower.endsWith('.mkv') || urlLower.includes('/movie/')) {
-                        itemAtual.tipo = 'filme';
-                    } else {
-                        itemAtual.tipo = 'canal';
-                    }
-
-                    if (itemAtual.nome && itemAtual.url) {
-                        itens.push(itemAtual);
-                    }
-                }
-            });
-
-            todosOsItens = itens;
-            renderizarLista();
-        }
-
-        // --- CONTROLES DE ADMIN E LOGIN ---
-        function abrirTelaAdmin() {
-            document.getElementById('screenLogin').classList.add('hidden');
-            document.getElementById('screenAdmin').classList.remove('hidden');
-            document.getElementById('adminLoginBox').classList.remove('hidden');
-            document.getElementById('adminDashboardBox').classList.add('hidden');
-        }
-
-        function voltarLoginCliente() {
-            document.getElementById('screenAdmin').classList.add('hidden');
-            document.getElementById('screenLogin').classList.remove('hidden');
-        }
-
-        function validarAdmin() {
-            const user = document.getElementById('adminUserInput').value.trim();
-            const pass = document.getElementById('adminPassInput').value.trim();
-            const creds = JSON.parse(localStorage.getItem('talkbox_admin_creds'));
-
-            if (user === creds.user && pass === creds.pass) {
-                document.getElementById('adminLoginBox').classList.add('hidden');
-                document.getElementById('adminDashboardBox').classList.remove('hidden');
-                
-                document.getElementById('adminM3uUrl').value = localStorage.getItem('talkbox_m3u_url') || '';
-                document.getElementById('newAdminUser').value = creds.user;
-                document.getElementById('newAdminPass').value = creds.pass;
-
-                atualizarTabelaAdmin();
-            } else {
-                alert('Usuário ou senha de administrador incorretos!');
-            }
-        }
-
-        function alterarCredenciaisAdmin() {
-            const novoUser = document.getElementById('newAdminUser').value.trim();
-            const novaPass = document.getElementById('newAdminPass').value.trim();
-
-            if (!novoUser || !novaPass) return alert('Preencha os novos dados!');
-
-            localStorage.setItem('talkbox_admin_creds', JSON.stringify({ user: novoUser, pass: novaPass }));
-            alert('Novas credenciais de Admin salvas com sucesso!');
-        }
-
-        function fecharAdmin() {
-            document.getElementById('screenAdmin').classList.add('hidden');
-            if (!localStorage.getItem('talkbox_session')) {
-                document.getElementById('screenLogin').classList.remove('hidden');
-            }
-        }
-
-        function criarUsuario(tipo) {
-            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
-            const randomID = Math.floor(1000 + Math.random() * 9000);
-            const novoUser = tipo === 'teste' ? `teste_${randomID}` : `cliente_${randomID}`;
-            const novaSenha = `${Math.floor(100 + Math.random() * 900)}`;
-            const expiraTime = tipo === 'teste' ? Date.now() + (2 * 60 * 60 * 1000) : null;
-
-            usuarios.push({ usuario: novoUser, senha: novaSenha, tipo: tipo, expira: expiraTime });
-            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
-            atualizarTabelaAdmin();
-            alert(`Acesso Gerado!\nUsuário: ${novoUser}\nSenha: ${novaSenha}`);
-        }
-
-        function atualizarTabelaAdmin() {
-            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
-            const tbody = document.getElementById('tabelaUsuariosAdmin');
-            tbody.innerHTML = '';
-
-            usuarios.forEach((u, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${u.usuario}</td>
-                    <td>${u.senha}</td>
-                    <td>${u.tipo.toUpperCase()}</td>
-                    <td><button style="padding:2px 5px; font-size:0.7rem; background:#e52e2e;" onclick="excluirUsuario(${index})">Excluir</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function excluirUsuario(index) {
-            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
-            usuarios.splice(index, 1);
-            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
-            atualizarTabelaAdmin();
-        }
-
-        function realizarLoginCliente() {
-            const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users') || '[]');
-
-            const encontrado = usuarios.find(u => u.usuario === user && u.senha === pass);
-
-            if (!encontrado) return alert('Usuário ou senha inválidos!');
-            if (encontrado.expira && Date.now() > enclave.expira) return alert('Acesso de teste expirado!');
-
-            localStorage.setItem('talkbox_session', user);
-            document.getElementById('screenLogin').classList.add('hidden');
-            document.getElementById('txtUserConectado').innerText = `Usuário: ${user}`;
-        }
-
-        function entrarModoDemonstracao() {
-            localStorage.setItem('talkbox_session', 'Modo Demo');
-            document.getElementById('screenLogin').classList.add('hidden');
-            document.getElementById('txtUserConectado').innerText = 'Modo Demo';
-        }
-
-        function fazerLogout() {
-            localStorage.removeItem('talkbox_session');
-            location.reload();
-        }
-
-        function carregarListaDemo() {
-            todosOsItens = [
-                { nome: 'Globo SP HD (Demo)', grupo: 'Canais Abertos', logo: '', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', tipo: 'canal' },
-                { nome: 'Big Buck Bunny (Demo)', grupo: 'Filmes - Animação', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', tipo: 'filme' }
-            ];
-            renderizarLista();
-        }
-
-        function filtrarTipo(tipo, evt) {
-            tipoAtual = tipo;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if (evt) evt.target.classList.add('active');
-            renderizarLista();
-        }
-
-        function filtrarGeral() { renderizarLista(); }
-
-        function renderizarLista() {
-            const container = document.getElementById('listaConteudo');
-            const termoBusca = document.getElementById('inputBusca').value.toLowerCase();
-            container.innerHTML = '';
-
-            const filtrados = todosOsItens.filter(item => {
-                const bateuTipo = item.tipo === tipoAtual;
-                const bateuBusca = item.nome.toLowerCase().includes(termoBusca) || item.grupo.toLowerCase().includes(termoBusca);
-                return bateuTipo && bateuBusca;
-            });
-
-            if (filtrados.length === 0) {
-                container.innerHTML = '<div class="placeholder-text" style="margin-top:20px;">Nenhum item encontrado nesta categoria.</div>';
-                return;
-            }
-
-            filtrados.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'media-item';
-                el.onclick = () => reproduzir(item);
-                el.innerHTML = `
-                    <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/202024/ffffff?text=IPTV'">
-                    <div class="media-info">
-                        <div class="media-title">${item.nome}</div>
-                        <div class="media-category">${item.grupo}</div>
-                    </div>
-                `;
-                container.appendChild(el);
-            });
-        }
-
-        function reproduzir(item) {
-            document.getElementById('noVideo').classList.add('hidden');
-            const playerEl = document.getElementById('iptvPlayer');
-            playerEl.classList.remove('hidden');
-
-            let tipoMidia = 'application/x-mpegURL';
-            if (item.url.endsWith('.mp4')) tipoMidia = 'video/mp4';
-            if (item.url.endsWith('.mkv')) tipoMidia = 'video/x-matroska';
-
-            player.src({ src: item.url, type: tipoMidia });
-            player.play();
-        }
-    </script>
-</body>
-</html>
+                        // Classificação ultra
