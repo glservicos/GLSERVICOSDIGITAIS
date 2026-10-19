@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talkbox IPTV</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d0d0f">
+    <meta name="theme-color" content="#120a1f">
 
     <!-- Video.js CSS para o Player -->
     <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
@@ -19,7 +19,7 @@
         }
 
         body {
-            background-color: #0d0d0f;
+            background-color: #120a1f;
             color: #f1f1f3;
             display: flex;
             flex-direction: column;
@@ -31,7 +31,7 @@
         .screen-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a1a24 0%, #0d0d0f 100%);
+            background: radial-gradient(circle at center, #23123b 0%, #120a1f 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,17 +39,17 @@
         }
 
         .card-box {
-            background: rgba(22, 22, 30, 0.85);
+            background: rgba(28, 16, 48, 0.85);
             backdrop-filter: blur(12px);
             padding: 32px;
             border-radius: 16px;
             width: 90%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
             gap: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(162, 89, 247, 0.2);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -59,10 +59,9 @@
             text-align: center;
             font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
         .card-box h2 span {
-            color: #8a52f3;
+            color: #b057f8;
         }
 
         .input-group {
@@ -73,13 +72,13 @@
 
         .input-group label {
             font-size: 0.85rem;
-            color: #9898a6;
+            color: #c0b3d6;
             font-weight: 500;
         }
 
         input[type="text"], input[type="password"] {
-            background: rgba(13, 13, 15, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(14, 8, 25, 0.9);
+            border: 1px solid rgba(162, 89, 247, 0.3);
             color: #fff;
             padding: 14px;
             border-radius: 8px;
@@ -89,12 +88,12 @@
         }
 
         input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #8a52f3;
-            box-shadow: 0 0 0 3px rgba(138, 82, 243, 0.25);
+            border-color: #b057f8;
+            box-shadow: 0 0 0 3px rgba(176, 87, 248, 0.25);
         }
 
         button {
-            background: linear-gradient(135deg, #8a52f3 0%, #6836d6 100%);
+            background: linear-gradient(135deg, #8a2be2 0%, #b057f8 100%);
             color: white;
             border: none;
             padding: 14px;
@@ -103,174 +102,173 @@
             font-weight: 600;
             font-size: 0.95rem;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(138, 82, 243, 0.3);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(138, 82, 243, 0.4);
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
-            color: #c4c4cc;
+            background: rgba(255, 255, 255, 0.08);
+            color: #d1c4e9;
             box-shadow: none;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             color: #fff;
-            box-shadow: none;
         }
 
         .link-admin {
             text-align: center;
             font-size: 0.85rem;
-            color: #9898a6;
+            color: #b057f8;
             cursor: pointer;
             margin-top: 5px;
-            transition: color 0.2s;
-        }
-        .link-admin:hover {
-            color: #8a52f3;
-        }
-
-        /* --- PAINEL ADMIN SEÇÕES --- */
-        .admin-section {
-            background: rgba(13, 13, 15, 0.5);
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .admin-section h3 {
-            font-size: 0.9rem;
-            color: #8a52f3;
             font-weight: 600;
         }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-            margin-top: 5px;
+        .link-admin:hover {
+            text-decoration: underline;
         }
 
-        .admin-table th, .admin-table td {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 8px;
-            text-align: left;
-        }
-
-        .admin-table th {
-            background: #16161e;
-            color: #8a52f3;
-        }
-
-        /* --- INTERFACE PRINCIPAL --- */
+        /* --- BARRA TOPO ESTILO UNITV --- */
         header {
-            background-color: rgba(18, 18, 24, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 14px 24px;
+            background: linear-gradient(180deg, rgba(20, 10, 35, 0.98) 0%, rgba(18, 10, 31, 0.85) 100%);
+            padding: 10px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(162, 89, 247, 0.15);
+            height: 60px;
             z-index: 10;
         }
 
-        .logo {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #fff;
+        .logo-area {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 25px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
             letter-spacing: -0.5px;
         }
         .logo span {
-            color: #8a52f3;
+            color: #ff3366;
         }
 
-        .user-info {
+        /* Menu de Categorias Superior */
+        .top-nav {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .top-nav::-webkit-scrollbar { display: none; }
+
+        .nav-tab {
+            background: transparent;
+            border: none;
+            color: #bfa9d6;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: none;
+            transition: color 0.2s, background 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+            transform: none;
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            background: rgba(176, 87, 248, 0.25);
+            border-bottom: 3px solid #b057f8;
+            box-shadow: none;
+        }
+
+        /* Cores especiais estilo UniTV nas abas */
+        .nav-tab.kids { color: #00e5ff; }
+        .nav-tab.anime { color: #ffea00; }
+        .nav-tab.destaques { color: #ff3d00; }
+
+        .header-right {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-size: 0.85rem;
-            color: #9898a6;
         }
 
+        .user-badge {
+            font-size: 0.8rem;
+            color: #bfa9d6;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- CORPO PRINCIPAL --- */
         .main-container {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
+        /* Lateral esquerda: Lista de Canais/Filmes */
         .sidebar {
-            width: 380px;
-            background: #121218;
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            width: 360px;
+            background: rgba(18, 10, 31, 0.95);
+            border-right: 1px solid rgba(162, 89, 247, 0.15);
             display: flex;
             flex-direction: column;
         }
 
-        .nav-tabs {
+        .list-header {
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #b057f8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             display: flex;
-            background: #16161e;
-            padding: 6px;
-            gap: 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px 6px;
-            background: transparent;
-            border: none;
-            color: #9898a6;
-            font-size: 0.78rem;
-            cursor: pointer;
-            border-radius: 6px;
-            font-weight: 600;
-            box-shadow: none;
-            transition: all 0.2s;
-        }
-
-        .tab-btn:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.04);
-            transform: none;
-            box-shadow: none;
-        }
-
-        .tab-btn.active {
-            color: #fff;
-            background: #8a52f3;
-            box-shadow: 0 2px 8px rgba(138, 82, 243, 0.3);
+            justify-content: space-between;
+            align-items: center;
         }
 
         .search-box {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 14px;
-            font-size: 0.88rem;
+            padding: 9px 12px;
+            font-size: 0.85rem;
+            background: rgba(10, 5, 18, 0.8);
+            border-radius: 6px;
         }
 
         .content-list {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
 
         .media-item {
@@ -280,25 +278,23 @@
             padding: 10px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            position: relative;
         }
 
         .media-item:hover {
-            background: rgba(138, 82, 243, 0.08);
-            border-color: rgba(138, 82, 243, 0.3);
-            transform: translateX(4px);
+            background: rgba(176, 87, 248, 0.12);
+            border-color: rgba(176, 87, 248, 0.4);
+            transform: translateX(3px);
         }
 
         .media-item img {
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             object-fit: cover;
-            border-radius: 8px;
-            background: #0d0d0f;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            background: #000;
         }
 
         .media-info {
@@ -307,7 +303,7 @@
         }
 
         .media-title {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
             color: #fff;
             white-space: nowrap;
@@ -316,36 +312,30 @@
         }
 
         .media-category {
-            font-size: 0.75rem;
-            color: #9898a6;
-            margin-top: 3px;
+            font-size: 0.72rem;
+            color: #9e8fb8;
+            margin-top: 2px;
         }
 
         .btn-fav {
             background: transparent;
             border: none;
-            font-size: 1.3rem;
-            color: #4e4e5e;
+            font-size: 1.2rem;
+            color: #52426e;
             cursor: pointer;
-            padding: 6px;
+            padding: 4px;
+            box-shadow: none;
             transition: color 0.2s, transform 0.2s;
-            box-shadow: none;
         }
-        .btn-fav:hover {
-            transform: scale(1.2);
-            box-shadow: none;
-            background: transparent;
-        }
+        .btn-fav:hover { transform: scale(1.2); background: transparent; box-shadow: none; }
+        .btn-fav.active { color: #ffea00; }
 
-        .btn-fav.active {
-            color: #ffc107;
-        }
-
+        /* Área do Player à direita */
         .content-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #000;
+            background: #05020a;
             position: relative;
         }
 
@@ -353,13 +343,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(18, 18, 24, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 20px;
+            background: rgba(20, 10, 35, 0.9);
+            border-bottom: 1px solid rgba(162, 89, 247, 0.15);
         }
 
         .player-toolbar span {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #fff;
         }
@@ -370,7 +360,6 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            background: radial-gradient(circle at center, #161622 0%, #000000 100%);
         }
 
         .video-js {
@@ -379,57 +368,88 @@
         }
 
         .placeholder-text {
-            color: #6e6e80;
+            color: #6a578a;
             text-align: center;
             padding: 20px;
         }
         .placeholder-text h2 {
-            color: #a2a2b0;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
+            color: #bfa9d6;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
         }
 
         .hidden { display: none !important; }
+
+        /* Painel Admin Estilizado */
+        .admin-section {
+            background: rgba(14, 8, 25, 0.7);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(162, 89, 247, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .admin-section h3 {
+            font-size: 0.9rem;
+            color: #b057f8;
+            font-weight: 600;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid rgba(162, 89, 247, 0.2);
+            padding: 8px;
+            text-align: left;
+        }
+        .admin-table th {
+            background: #1e0d38;
+            color: #b057f8;
+        }
 
         @media (max-width: 768px) {
             .main-container { flex-direction: column; }
             .sidebar { width: 100%; height: 45%; }
             .content-area { height: 55%; }
+            header { padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. TELA DE LOGIN DO CLIENTE -->
+    <!-- 1. TELA DE LOGIN -->
     <div id="screenLogin" class="screen-overlay">
         <div class="card-box">
             <h2>Talkbox <span>IPTV</span></h2>
-            <p style="font-size:0.85rem; color:#9898a6; text-align:center;">Entre com sua conta para acessar o catálogo</p>
+            <p style="font-size:0.85rem; color:#bfa9d6; text-align:center;">Insira suas credenciais para acessar o sistema</p>
             
             <div class="input-group">
                 <label>Usuário</label>
-                <input type="text" id="loginUser" placeholder="Digite seu usuário">
+                <input type="text" id="loginUser" placeholder="Seu usuário">
             </div>
 
             <div class="input-group">
                 <label>Senha</label>
-                <input type="password" id="loginPass" placeholder="Digite sua senha">
+                <input type="password" id="loginPass" placeholder="Sua senha">
             </div>
 
-            <button onclick="realizarLoginCliente()">Entrar na Plataforma</button>
+            <button onclick="realizarLoginCliente()">Entrar no Sistema</button>
             <button class="btn-secondary" onclick="entrarModoDemonstracao()">Modo Demonstração</button>
-            <div class="link-admin" onclick="abrirTelaAdmin()">⚙️ Área do Administrador</div>
+            <div class="link-admin" onclick="abrirTelaAdmin()">⚙️ Painel do Administrador</div>
         </div>
     </div>
 
-    <!-- 2. TELA DO PAINEL ADMINISTRATIVO -->
+    <!-- 2. PAINEL ADMINISTRATIVO -->
     <div id="screenAdmin" class="screen-overlay hidden">
-        <div class="card-box" style="max-width: 520px;">
+        <div class="card-box" style="max-width: 500px;">
             <h2>Painel <span>Administrativo</span></h2>
             
-            <!-- Login do Admin -->
             <div id="adminLoginBox" style="display: flex; flex-direction: column; gap: 12px;">
-                <p style="font-size:0.85rem; color:#9898a6; text-align:center;">Acesso restrito ao administrador</p>
+                <p style="font-size:0.85rem; color:#bfa9d6; text-align:center;">Acesso exclusivo ao administrador</p>
                 <div class="input-group">
                     <label>Usuário Admin</label>
                     <input type="text" id="adminUserInput" placeholder="Usuário Admin">
@@ -442,32 +462,29 @@
                 <button class="btn-secondary" onclick="voltarLoginCliente()">Voltar</button>
             </div>
 
-            <!-- Conteúdo do Painel Admin -->
             <div id="adminDashboardBox" class="hidden" style="display: flex; flex-direction: column; gap: 14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.9rem; color: #8a52f3; font-weight: bold;">Gerenciamento Geral</span>
-                    <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="fecharAdmin()">Sair do Painel</button>
+                    <span style="font-size: 0.9rem; color: #b057f8; font-weight: bold;">Configuração Geral</span>
+                    <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="fecharAdmin()">Sair</button>
                 </div>
 
-                <!-- SEÇÃO 1: CONFIGURAR LISTA M3U REAIS -->
                 <div class="admin-section">
                     <h3>🔗 Link da Lista M3U / Servidor</h3>
                     <div class="input-group">
-                        <label>URL M3U do Servidor:</label>
+                        <label>URL M3U Completa:</label>
                         <input type="text" id="adminM3uUrl" placeholder="http://servidor.com:8080/get.php?username=...&type=m3u_plus">
                     </div>
-                    <button style="background: linear-gradient(135deg, #04d361 0%, #038c3f 100%); box-shadow: 0 4px 12px rgba(4, 211, 97, 0.3);" onclick="salvarEProcessarM3U()">Salvar e Sincronizar Conteúdo</button>
+                    <button style="background: linear-gradient(135deg, #00c853 0%, #64dd17 100%);" onclick="salvarEProcessarM3U()">Salvar e Sincronizar Canais</button>
                 </div>
 
-                <!-- SEÇÃO 2: GERAR USUÁRIOS DE CLIENTES -->
                 <div class="admin-section">
-                    <h3>👥 Contas de Clientes</h3>
+                    <h3>👥 Gestão de Contas</h3>
                     <div style="display: flex; gap: 10px;">
                         <button style="flex:1; font-size: 0.8rem; padding: 10px;" onclick="criarUsuario('teste')">+ Teste (2h)</button>
                         <button style="flex:1; font-size: 0.8rem; padding: 10px;" onclick="criarUsuario('permanente')">+ Permanente</button>
                     </div>
 
-                    <div style="max-height: 130px; overflow-y: auto;">
+                    <div style="max-height: 120px; overflow-y: auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -482,48 +499,60 @@
                     </div>
                 </div>
 
-                <!-- SEÇÃO 3: ALTERAR DADOS DO ADMIN -->
                 <div class="admin-section">
-                    <h3>🔑 Credenciais de Administrador</h3>
+                    <h3>🔑 Alterar Senha de Admin</h3>
                     <div class="input-group">
-                        <label>Novo Usuário Admin</label>
+                        <label>Novo Usuário</label>
                         <input type="text" id="newAdminUser">
                     </div>
                     <div class="input-group">
-                        <label>Nova Senha Admin</label>
+                        <label>Nova Senha</label>
                         <input type="password" id="newAdminPass">
                     </div>
-                    <button class="btn-secondary" style="border-color: #8a52f3; color: #8a52f3;" onclick="alterarCredenciaisAdmin()">Atualizar Credenciais</button>
+                    <button class="btn-secondary" style="border-color: #b057f8; color: #b057f8;" onclick="alterarCredenciaisAdmin()">Atualizar Credenciais</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- INTERFACE PRINCIPAL DO APP -->
+    <!-- CABEÇALHO ESTILO UNITV -->
     <header>
-        <div class="logo">📺 Talkbox <span>IPTV</span></div>
-        <div class="user-info">
-            <span id="txtUserConectado">Usuário</span>
-            <button class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;" onclick="fazerLogout()">Sair</button>
+        <div class="logo-area">
+            <div class="logo">Talkbox <span>IPTV</span></div>
+            <!-- Menu superior com abas coloridas -->
+            <div class="top-nav">
+                <button class="nav-tab active" onclick="filtrarTipo('canal', event)">TV</button>
+                <button class="nav-tab destaques" onclick="filtrarTipo('destaque', event)">DESTAQUES</button>
+                <button class="nav-tab" onclick="filtrarTipo('filme', event)">FILMES</button>
+                <button class="nav-tab" onclick="filtrarTipo('serie', event)">SÉRIES</button>
+                <button class="nav-tab kids" onclick="filtrarTipo('kids', event)">KIDS</button>
+                <button class="nav-tab anime" onclick="filtrarTipo('anime', event)">ANIME</button>
+                <button class="nav-tab" onclick="filtrarTipo('favorito', event)">⭐ FAVORITOS</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-badge" id="txtUserConectado">Conta: Demo</div>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="fazerLogout()">Sair</button>
         </div>
     </header>
 
+    <!-- CORPO PRINCIPAL -->
     <div class="main-container">
+        <!-- Lista à Esquerda -->
         <div class="sidebar">
-            <div class="nav-tabs">
-                <button class="tab-btn active" onclick="filtrarTipo('canal', event)">Canais</button>
-                <button class="tab-btn" onclick="filtrarTipo('filme', event)">Filmes</button>
-                <button class="tab-btn" onclick="filtrarTipo('serie', event)">Séries</button>
-                <button class="tab-btn" onclick="filtrarTipo('favorito', event)">⭐ Favoritos</button>
+            <div class="list-header">
+                <span id="tituloSecao">Lista de Canais</span>
+                <span id="contadorItens" style="font-size:0.75rem; color:#8a7a9e;">0 itens</span>
             </div>
             <div class="search-box">
-                <input type="text" id="inputBusca" placeholder="Pesquisar canais e filmes..." oninput="filtrarGeral()">
+                <input type="text" id="inputBusca" placeholder="Pesquisar..." oninput="filtrarGeral()">
             </div>
             <div class="content-list" id="listaConteudo">
-                <div class="placeholder-text" style="margin-top: 30px;">Carregando conteúdos...</div>
+                <div class="placeholder-text">Carregando conteúdos...</div>
             </div>
         </div>
 
+        <!-- Player à Direita -->
         <div class="content-area">
             <div id="playerHeader" class="player-toolbar hidden">
                 <span id="playerTitle">Reproduzindo...</span>
@@ -532,7 +561,7 @@
             <div class="player-wrapper">
                 <div id="noVideo" class="placeholder-text">
                     <h2>Nenhum vídeo selecionado</h2>
-                    <p>Selecione um item na lista ao lado para iniciar a reprodução.</p>
+                    <p>Selecione um canal ou filme na lista ao lado para assistir.</p>
                 </div>
                 <video id="iptvPlayer" class="video-js vjs-big-play-centered hidden" controls preload="auto"></video>
             </div>
@@ -578,9 +607,9 @@
 
         function salvarEProcessarM3U() {
             const url = document.getElementById('adminM3uUrl').value.trim();
-            if (!url) return alert('Insira a URL M3U do servidor!');
+            if (!url) return alert('Insira a URL M3U!');
 
-            alert('Baixando e processando lista IPTV... Aguarde.');
+            alert('Baixando e processando lista IPTV...');
 
             fetch(url)
                 .then(res => res.text())
@@ -608,7 +637,7 @@
                     itemAtual.nome = partes[partes.length - 1].trim();
 
                     const logoMatch = linha.match(/tvg-logo="([^"]*)"/);
-                    itemAtual.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/16161e/ffffff?text=IPTV';
+                    itemAtual.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/1e0d38/ffffff?text=IPTV';
 
                     const grupoMatch = linha.match(/group-title="([^"]*)"/);
                     itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Geral';
@@ -619,10 +648,16 @@
                         const g = (itemAtual.grupo || '').toLowerCase();
                         const urlLower = linha.toLowerCase();
 
-                        if (g.includes('serie') || g.includes('série') || g.includes('series') || urlLower.includes('/series/')) {
+                        if (g.includes('kids') || g.includes('infantil') || g.includes('desenho')) {
+                            itemAtual.tipo = 'kids';
+                        } else if (g.includes('anime') || g.includes('otaku')) {
+                            itemAtual.tipo = 'anime';
+                        } else if (g.includes('serie') || g.includes('série') || g.includes('series')) {
                             itemAtual.tipo = 'serie';
-                        } else if (g.includes('filme') || g.includes('vod') || g.includes('movie') || g.includes('movies') || urlLower.endsWith('.mp4') || urlLower.endsWith('.mkv') || urlLower.includes('/movie/')) {
+                        } else if (g.includes('filme') || g.includes('vod') || g.includes('movie') || urlLower.endsWith('.mp4') || urlLower.endsWith('.mkv')) {
                             itemAtual.tipo = 'filme';
+                        } else if (g.includes('destaque') || g.includes('premiere') || g.includes('vip')) {
+                            itemAtual.tipo = 'destaque';
                         } else {
                             itemAtual.tipo = 'canal';
                         }
@@ -706,7 +741,7 @@
 
                 atualizarTabelaAdmin();
             } else {
-                alert('Credenciais de administrador inválidas!');
+                alert('Credenciais inválidas!');
             }
         }
 
@@ -717,7 +752,7 @@
             if (!novoUser || !novaPass) return alert('Preencha os campos!');
 
             localStorage.setItem('talkbox_admin_creds', JSON.stringify({ user: novoUser, pass: novaPass }));
-            alert('Credenciais de Admin atualizadas com sucesso!');
+            alert('Credenciais atualizadas com sucesso!');
         }
 
         function fecharAdmin() {
@@ -737,7 +772,7 @@
             usuarios.push({ usuario: novoUser, senha: novaSenha, tipo: tipo, expira: expiraTime });
             localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
             atualizarTabelaAdmin();
-            alert(`Conta gerada com sucesso!\nUsuário: ${novoUser}\nSenha: ${novaSenha}`);
+            alert(`Conta gerada!\nUsuário: ${novoUser}\nSenha: ${novaSenha}`);
         }
 
         function atualizarTabelaAdmin() {
@@ -751,7 +786,7 @@
                     <td>${u.usuario}</td>
                     <td>${u.senha}</td>
                     <td>${u.tipo.toUpperCase()}</td>
-                    <td><button style="padding:4px 8px; font-size:0.75rem; background:#e52e2e; box-shadow:none;" onclick="excluirUsuario(${index})">Excluir</button></td>
+                    <td><button style="padding:4px 8px; font-size:0.75rem; background:#ff3366; box-shadow:none;" onclick="excluirUsuario(${index})">Excluir</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -800,8 +835,19 @@
 
         function filtrarTipo(tipo, evt) {
             tipoAtual = tipo;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
             if (evt) evt.target.classList.add('active');
+
+            const titulos = {
+                'canal': 'Lista de Canais (TV)',
+                'destaque': 'Destaques',
+                'filme': 'Filmes VOD',
+                'serie': 'Séries',
+                'kids': 'Kids & Infantil',
+                'anime': 'Animes',
+                'favorito': 'Meus Favoritos'
+            };
+            document.getElementById('tituloSecao').innerText = titulos[tipo] || 'Conteúdos';
             renderizarLista();
         }
 
@@ -820,6 +866,8 @@
                 return bateuTipo && bateuBusca;
             });
 
+            document.getElementById('contadorItens').innerText = `${filtrados.length} itens`;
+
             if (filtrados.length === 0) {
                 container.innerHTML = '<div class="placeholder-text" style="margin-top:20px;">Nenhum item encontrado.</div>';
                 return;
@@ -831,7 +879,7 @@
                 el.className = 'media-item';
                 el.onclick = () => reproduzir(item);
                 el.innerHTML = `
-                    <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/16161e/ffffff?text=IPTV'">
+                    <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/1e0d38/ffffff?text=IPTV'">
                     <div class="media-info">
                         <div class="media-title">${item.nome}</div>
                         <div class="media-category">${item.grupo}</div>
