@@ -1,233 +1,448 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GL Serviços Digitais - Soluções Remotas & Presença Online</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    html { scroll-behavior: smooth; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkbox IPTV</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121214">
+
+    <!-- Video.js CSS para o Player -->
+    <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121214;
+            color: #e1e1e6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #202024;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #29292e;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #8257e5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-top {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"], select {
+            background: #121214;
+            border: 1px solid #29292e;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"]:focus {
+            border-color: #8257e5;
+        }
+
+        button, label.btn {
+            background: #8257e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+
+        button:hover, label.btn:hover {
+            background: #996dff;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: #121214;
+            border-right: 1px solid #29292e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #202024;
+            border-bottom: 1px solid #29292e;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: #a8a8b3;
+            border-radius: 0;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-bottom: 2px solid #8257e5;
+            background: #121214;
+        }
+
+        .search-box {
+            padding: 10px;
+            border-bottom: 1px solid #29292e;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .content-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .media-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            background: #202024;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .media-item:hover {
+            background: #29292e;
+            transform: translateX(2px);
+        }
+
+        .media-item img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #000;
+        }
+
+        .media-info {
+            overflow: hidden;
+        }
+
+        .media-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .media-category {
+            font-size: 0.75rem;
+            color: #a8a8b3;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            position: relative;
+        }
+
+        .player-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-js {
+            width: 100%;
+            height: 100%;
+        }
+
+        .placeholder-text {
+            color: #737380;
+            text-align: center;
+        }
+
+        /* Modal para carregar M3U */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #202024;
+            padding: 24px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; height: 45%; }
+            .content-area { height: 55%; }
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<body>
 
-  <!-- Header / Navbar -->
-  <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xl tracking-wider">
-          GL
+    <header>
+        <div class="logo">
+            📺 Talkbox IPTV
         </div>
-        <div>
-          <span class="text-xl font-bold block leading-tight">GL Serviços Digitais</span>
-          <span class="text-xs text-emerald-400 font-medium">100% Online & Remoto</span>
+        <div class="controls-top">
+            <button onclick="abrirModal()">+ Carregar Lista</button>
         </div>
-      </div>
-      <a href="https://wa.me/5511951681752?text=Ol%C3%A1%2C%20Gabriel!%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20seus%20servi%C3%A7os." 
-         target="_blank" 
-         class="hidden sm:inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition duration-200">
-        <i class="fab font-bold fa-whatsapp text-lg"></i>
-        <span>Falar no WhatsApp</span>
-      </a>
-    </div>
-  </header>
+    </header>
 
-  <!-- Banner / Hero Section -->
-  <section class="bg-slate-900 text-white py-16 px-4 border-b border-slate-800">
-    <div class="max-w-4xl mx-auto text-center space-y-6">
-      <span class="inline-block bg-emerald-500/20 text-emerald-400 font-semibold text-xs sm:text-sm px-4 py-1.5 rounded-full border border-emerald-500/30">
-        <i class="fas fa-globe mr-1"></i> Atendimento para todo o Brasil
-      </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-        Sua Presença Digital Completa e Gestão Remota Profissional
-      </h1>
-      <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
-        Automatize seu atendimento, potencialize suas redes sociais e crie uma imagem profissional na internet. Tudo feito de forma ágil, prática e 100% online.
-      </p>
-      <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
-        <a href="https://wa.me/5511951681752?text=Ol%C3%A1!%20Quero%20fazer%20um%20or%C3%A7amento%20para%20meu%20neg%C3%B3cio." 
-           target="_blank"
-           class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-emerald-600/20 transition duration-200 flex items-center justify-center space-x-2">
-          <i class="fab fa-whatsapp text-xl"></i>
-          <span>Solicitar Orçamento Grátis</span>
-        </a>
-        <a href="#servicos" 
-           class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-8 rounded-xl text-lg border border-slate-700 transition duration-200 flex items-center justify-center">
-          <span>Ver Serviços</span>
-        </a>
-      </div>
-    </div>
-  </section>
+    <div class="main-container">
+        <!-- Barra Lateral: Lista de Canais / Filmes -->
+        <div class="sidebar">
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="filtrarTipo('canal')">Canais</button>
+                <button class="tab-btn" onclick="filtrarTipo('filme')">Filmes</button>
+                <button class="tab-btn" onclick="filtrarTipo('serie')">Séries</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="inputBusca" placeholder="Buscar no Talkbox..." oninput="filtrarGeral()">
+            </div>
+            <div class="content-list" id="listaConteudo">
+                <div class="placeholder-text" style="margin-top: 20px;">Nenhuma lista carregada. Clique em "+ Carregar Lista".</div>
+            </div>
+        </div>
 
-  <!-- Diferencial / Tarja Remota -->
-  <section class="bg-blue-600 text-white py-4 px-4 shadow-inner">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-2 text-sm sm:text-base font-medium">
-      <div class="flex items-center space-x-2">
-        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
-        <span>Sem necessidade de reuniões presenciais</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
-        <span>Suporte e alinhamento contínuo via WhatsApp</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <i class="fas fa-check-circle text-emerald-300 text-lg"></i>
-        <span>Entregas rápidas e dinâmicas</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Serviços -->
-  <section id="servicos" class="py-16 px-4 max-w-6xl mx-auto">
-    <div class="text-center space-y-3 mb-12">
-      <h2 class="text-2xl sm:text-4xl font-bold text-slate-900">Soluções Digitais para o seu Negócio</h2>
-      <p class="text-slate-600 max-w-xl mx-auto">Serviços sob medida para modernizar sua empresa e liberar o seu tempo.</p>
+        <!-- Área Central: Player de Vídeo -->
+        <div class="content-area">
+            <div class="player-wrapper">
+                <div id="noVideo" class="placeholder-text">
+                    <h2>Nenhum vídeo selecionado</h2>
+                    <p>Escolha um canal ou filme na lista para começar a assistir.</p>
+                </div>
+                <video id="iptvPlayer" class="video-js vjs-big-play-centered hidden" controls preload="auto"></video>
+            </div>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      
-      <!-- Card 1: Atendimento WhatsApp -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fab fa-whatsapp"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Atendimento & Suporte via WhatsApp</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Gestão e organização do atendimento de clientes no WhatsApp Business, com mensagens padronizadas, respostas rápidas e suporte direto.
-          </p>
-        </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Atendimento%20WhatsApp" target="_blank" class="mt-6 text-emerald-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
+    <!-- Modal para entrada da Lista M3U -->
+    <div id="modalLista" class="modal hidden">
+        <div class="modal-content">
+            <h3>Carregar Lista IPTV</h3>
+            <p style="font-size: 0.85rem; color: #a8a8b3;">Cole o link .m3u / .m3u8 ou envie o arquivo do seu dispositivo:</p>
 
-      <!-- Card 2: Automação & IA -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fas fa-robot"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Automação & Inteligência Artificial</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Implementação de soluções inteligentes para agilizar tarefas repetitivas, atendimento automático inicial e criação de conteúdos com auxílio de IA.
-          </p>
-        </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Solu%C3%A7%C3%B5es%20com%20IA" target="_blank" class="mt-6 text-blue-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
+            <input type="text" id="urlM3U" placeholder="https://exemplo.com/lista.m3u">
+            <button onclick="carregarPorURL()">Baixar Lista via URL</button>
 
-      <!-- Card 3: Montagem de Posts -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fas fa-palette"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Criação de Posts & Banners</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Montagens atraentes para Instagram, Facebook e WhatsApp. Imagens profissionais para destacar produtos, serviços e promoções da sua empresa.
-          </p>
-        </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Cria%C3%A7%C3%A3o%20de%20Posts" target="_blank" class="mt-6 text-purple-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
+            <hr style="border-color: #29292e;">
 
-      <!-- Card 4: Publicação & Agendamento -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fas fa-calendar-alt"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Gestão & Agendamento de Publicações</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Organização do calendário editorial do seu perfil, mantendo suas redes sociais ativas, atualizadas e com postagens frequentes sem você se preocupar.
-          </p>
-        </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Gest%C3%A3o%20de%20Publica%C3%A7%C3%B5es" target="_blank" class="mt-6 text-amber-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
+            <label class="btn" style="text-align: center;">
+                Escolher Arquivo .m3u
+                <input type="file" id="fileM3U" accept=".m3u,.m3u8" style="display: none;" onchange="carregarPorArquivo(event)">
+            </label>
 
-      <!-- Card 5: Criação de Sites -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fas fa-laptop-code"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Criação de Sites Profissionais</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Desenvolvimento de sites modernos, rápidos e adaptados para celulares, integrados diretamente ao seu WhatsApp para gerar novos contatos.
-          </p>
+            <button style="background: #29292e;" onclick="fecharModal()">Cancelar</button>
         </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Cria%C3%A7%C3%A3o%20de%20Sites" target="_blank" class="mt-6 text-indigo-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
-
-      <!-- Card 6: Suporte Home Office -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-2xl font-bold">
-            <i class="fas fa-headset"></i>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">Assistência Virtual & Digital</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Apoio operacional remoto para demandas administrativas digitais, cadastros, organização de contatos e suporte contínuo ao seu negócio.
-          </p>
-        </div>
-        <a href="https://wa.me/5511951681752?text=Quero%20saber%20mais%20sobre%20Assist%C3%AAncia%20Virtual" target="_blank" class="mt-6 text-teal-600 font-semibold text-sm hover:underline inline-flex items-center space-x-1">
-          <span>Saber mais</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-      </div>
-
     </div>
-  </section>
 
-  <!-- Chamada para Ação / Chamada Final -->
-  <section class="bg-slate-900 text-white py-16 px-4">
-    <div class="max-w-4xl mx-auto text-center space-y-6">
-      <h2 class="text-2xl sm:text-4xl font-bold">Pronto para dar o próximo passo?</h2>
-      <p class="text-slate-300 max-w-xl mx-auto text-sm sm:text-base">
-        Atendimento ágil, sem burocracia e focado no seu resultado. Fale comigo pelo WhatsApp e solicite um orçamento sem compromisso.
-      </p>
-      <div class="pt-2">
-        <a href="https://wa.me/5511951681752?text=Ol%C3%A1%2C%20Gabriel!%20Gostaria%20de%20fazer%20um%20or%C3%A7amento." 
-           target="_blank"
-           class="inline-flex items-center space-x-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg hover:shadow-emerald-600/20 transition duration-200">
-          <i class="fab fa-whatsapp text-2xl"></i>
-          <span>Conversar pelo WhatsApp</span>
-        </a>
-      </div>
-    </div>
-  </section>
+    <!-- Scripts do Video.js -->
+    <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
 
-  <!-- Rodapé -->
-  <footer class="bg-slate-950 text-slate-400 py-8 px-4 border-t border-slate-800 text-center text-xs sm:text-sm">
-    <div class="max-w-6xl mx-auto space-y-2">
-      <p class="font-semibold text-slate-300">GL Serviços Digitais — Gabriel Leite</p>
-      <p>Atendimento 100% Online e Remoto | WhatsApp: (11) 95168-1752</p>
-      <p class="text-slate-500 pt-2">&copy; 2026 GL Serviços Digitais. Todos os direitos reservados.</p>
-    </div>
-  </footer>
+    <script>
+        let todosOsItens = [];
+        let tipoAtual = 'canal';
+        let player = null;
 
-  <!-- Botão Flutuante do WhatsApp -->
-  <a href="https://wa.me/5511951681752?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20tirar%20uma%20d%C3%BAvida." 
-     target="_blank" 
-     aria-label="Contato via WhatsApp"
-     class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:bg-emerald-600 hover:scale-110 transition duration-300 z-50">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+        // Inicializa o player de vídeo
+        document.addEventListener('DOMContentLoaded', () => {
+            player = videojs('iptvPlayer');
+            
+            // Carrega lista salva se existir no navegador
+            const listaSalva = localStorage.getItem('talkbox_iptv_data');
+            if (listaSalva) {
+                todosOsItens = JSON.parse(listaSalva);
+                renderizarLista();
+            } else {
+                abrirModal();
+            }
+        });
 
+        function abrirModal() { document.getElementById('modalLista').classList.remove('hidden'); }
+        function fecharModal() { document.getElementById('modalLista').classList.add('hidden'); }
+
+        // Faz a leitura e interpretação do texto .m3u
+        function processarM3U(texto) {
+            const linhas = texto.split('\n');
+            const itens = [];
+            let itemAtual = {};
+
+            linhas.forEach(linha => {
+                linha = linha.trim();
+                if (linha.startsWith('#EXTINF:')) {
+                    itemAtual = {};
+                    
+                    // Extrai o Nome
+                    const partes = linha.split(',');
+                    itemAtual.nome = partes[partes.length - 1].trim();
+
+                    // Extrai a Capa/Logo
+                    const logoMatch = linha.match(/tvg-logo="([^"]*)"/);
+                    itemAtual.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/202024/ffffff?text=IPTV';
+
+                    // Extrai o Grupo/Categoria
+                    const grupoMatch = linha.match(/group-title="([^"]*)"/);
+                    itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Geral';
+
+                } else if (linha && !linha.startsWith('#')) {
+                    itemAtual.url = linha;
+                    
+                    const g = (itemAtual.grupo || '').toLowerCase();
+                    if (g.includes('filme') || g.includes('vod') || linha.endsWith('.mp4') || linha.endsWith('.mkv')) {
+                        itemAtual.tipo = 'filme';
+                    } else if (g.includes('serie') || g.includes('série')) {
+                        itemAtual.tipo = 'serie';
+                    } else {
+                        itemAtual.tipo = 'canal';
+                    }
+
+                    if (itemAtual.nome && itemAtual.url) {
+                        itens.push(itemAtual);
+                    }
+                }
+            });
+
+            todosOsItens = itens;
+            localStorage.setItem('talkbox_iptv_data', JSON.stringify(itens));
+            renderizarLista();
+            fecharModal();
+        }
+
+        function carregarPorURL() {
+            const url = document.getElementById('urlM3U').value;
+            if (!url) return alert('Por favor, informe uma URL válida!');
+            
+            fetch(url)
+                .then(res => res.text())
+                .then(texto => processarM3U(texto))
+                .catch(err => alert('Erro ao carregar lista. Verifique o link ou problemas de CORS.'));
+        }
+
+        function carregarPorArquivo(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processarM3U(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function filtrarTipo(tipo) {
+            tipoAtual = tipo;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderizarLista();
+        }
+
+        function filtrarGeral() {
+            renderizarLista();
+        }
+
+        function renderizarLista() {
+            const container = document.getElementById('listaConteudo');
+            const termoBusca = document.getElementById('inputBusca').value.toLowerCase();
+            container.innerHTML = '';
+
+            const filtrados = todosOsItens.filter(item => {
+                const bateuTipo = item.tipo === tipoAtual;
+                const bateuBusca = item.nome.toLowerCase().includes(termoBusca) || item.grupo.toLowerCase().includes(termoBusca);
+                return bateuTipo && bateuBusca;
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div class="placeholder-text" style="margin-top:20px;">Nenhum item encontrado.</div>';
+                return;
+            }
+
+            filtrados.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'media-item';
+                el.onclick = () => reproduzir(item);
+                el.innerHTML = `
+                    <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/202024/ffffff?text=IPTV'">
+                    <div class="media-info">
+                        <div class="media-title">${item.nome}</div>
+                        <div class="media-category">${item.grupo}</div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function reproduzir(item) {
+            document.getElementById('noVideo').classList.add('hidden');
+            const playerEl = document.getElementById('iptvPlayer');
+            playerEl.classList.remove('hidden');
+
+            let tipoMidia = 'application/x-mpegURL'; // Padrão HLS (.m3u8)
+            if (item.url.endsWith('.mp4')) tipoMidia = 'video/mp4';
+            if (item.url.endsWith('.mkv')) tipoMidia = 'video/x-matroska';
+
+            player.src({
+                src: item.url,
+                type: tipoMidia
+            });
+
+            player.play();
+        }
+    </script>
 </body>
 </html>
