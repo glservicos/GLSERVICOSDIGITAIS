@@ -43,12 +43,14 @@
             padding: 32px;
             border-radius: 12px;
             width: 90%;
-            max-width: 420px;
+            max-width: 480px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             gap: 16px;
             border: 1px solid #29292e;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .card-box h2 {
@@ -121,11 +123,27 @@
         }
 
         /* --- PAINEL ADMIN INTERNO --- */
+        .admin-section {
+            background: #121214;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #29292e;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .admin-section h3 {
+            font-size: 0.95rem;
+            color: #8257e5;
+        }
+
         .admin-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .admin-table th, .admin-table td {
@@ -135,7 +153,7 @@
         }
 
         .admin-table th {
-            background: #121214;
+            background: #202024;
             color: #8257e5;
         }
 
@@ -321,48 +339,70 @@
         </div>
     </div>
 
-    <!-- 2. TELA DO PAINEL ADMINISTRATIVO (SECRETO) -->
+    <!-- 2. TELA DO PAINEL ADMINISTRATIVO -->
     <div id="screenAdmin" class="screen-overlay hidden">
-        <div class="card-box" style="max-width: 600px;">
+        <div class="card-box">
             <h2>🔐 Painel Administrativo</h2>
             
             <!-- Login do Admin -->
             <div id="adminLoginBox">
-                <p style="font-size:0.85rem; color:#a8a8b3;">Digite a senha de Administrador para gerenciar usuários:</p>
+                <p style="font-size:0.85rem; color:#a8a8b3; text-align:center;">Acesso restrito ao administrador do sistema</p>
                 <div class="input-group">
-                    <label>Senha Master</label>
-                    <input type="password" id="adminPassInput" placeholder="Senha do painel">
+                    <label>Usuário Admin</label>
+                    <input type="text" id="adminUserInput" placeholder="Usuário Admin">
+                </div>
+                <div class="input-group">
+                    <label>Senha Admin</label>
+                    <input type="password" id="adminPassInput" placeholder="Senha Admin">
                 </div>
                 <button onclick="validarAdmin()">Entrar no Painel</button>
                 <button class="btn-secondary" onclick="voltarLoginCliente()">Voltar</button>
             </div>
 
-            <!-- Conteúdo do Painel (Visível após logar) -->
+            <!-- Conteúdo do Painel (Visível após logar como Admin) -->
             <div id="adminDashboardBox" class="hidden">
-                <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.9rem; color: #8257e5; font-weight: bold;">Gerenciar Acessos</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9rem; color: #8257e5; font-weight: bold;">Gestão de Acessos</span>
                     <button class="btn-secondary" style="padding: 6px 10px; font-size: 0.75rem;" onclick="fecharAdmin()">Sair do Painel</button>
                 </div>
 
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button style="flex:1; font-size: 0.85rem; padding: 8px;" onclick="criarUsuario('teste')">+ Gerar Teste (2h)</button>
-                    <button style="flex:1; font-size: 0.85rem; padding: 8px; background: #04d361;" onclick="criarUsuario('permanente')">+ Gerar Permanente</button>
+                <!-- SEÇÃO: GERAR USUÁRIOS -->
+                <div class="admin-section">
+                    <h3>Criar Acessos de Clientes</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button style="flex:1; font-size: 0.85rem; padding: 8px;" onclick="criarUsuario('teste')">+ Teste (2h)</button>
+                        <button style="flex:1; font-size: 0.85rem; padding: 8px; background: #04d361;" onclick="criarUsuario('permanente')">+ Permanente</button>
+                    </div>
+
+                    <div style="max-height: 150px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Senha</th>
+                                    <th>Tipo</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaUsuariosAdmin">
+                                <!-- Lista injeção JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Usuário</th>
-                                <th>Senha</th>
-                                <th>Tipo</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaUsuariosAdmin">
-                            <!-- Lista injetada via JS -->
-                        </tbody>
-                    </table>
+                <!-- SEÇÃO: ALTERAR DADOS MESTRES DO ADMIN -->
+                <div class="admin-section">
+                    <h3>Alterar Credenciais de Admin</h3>
+                    <div class="input-group">
+                        <label>Novo Usuário Admin</label>
+                        <input type="text" id="newAdminUser" placeholder="Novo usuário mestre">
+                    </div>
+                    <div class="input-group">
+                        <label>Nova Senha Admin</label>
+                        <input type="password" id="newAdminPass" placeholder="Nova senha mestre">
+                    </div>
+                    <button style="background: #202024; border: 1px solid #8257e5; color: #8257e5;" onclick="alterarCredenciaisAdmin()">Salvar Novas Credenciais</button>
                 </div>
             </div>
         </div>
@@ -411,13 +451,16 @@
         let tipoAtual = 'canal';
         let player = null;
 
-        // Senha padrão do seu painel admin (mude aqui se quiser)
-        const SENHA_ADMIN_MESTRE = "admin123";
-
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptvPlayer');
 
-            // Garante usuários padrão iniciais se não existirem
+            // Garante credenciais iniciais de Admin no localStorage se não existirem
+            if (!localStorage.getItem('talkbox_admin_creds')) {
+                const credsAdminPadrao = { user: "admin", pass: "admin123" };
+                localStorage.setItem('talkbox_admin_creds', JSON.stringify(credsAdminPadrao));
+            }
+
+            // Garante usuários padrão de teste iniciais
             if (!localStorage.getItem('talkbox_db_users')) {
                 const usuariosIniciais = [
                     { usuario: "teste1", senha: "123", tipo: "teste", expira: Date.now() + (2 * 60 * 60 * 1000) },
@@ -426,7 +469,7 @@
                 localStorage.setItem('talkbox_db_users', JSON.stringify(usuariosIniciais));
             }
 
-            // Verifica sessão ativa
+            // Verifica sessão ativa de cliente
             const sessao = localStorage.getItem('talkbox_session');
             if (sessao) {
                 document.getElementById('screenLogin').classList.add('hidden');
@@ -435,7 +478,7 @@
             }
         });
 
-        // --- CONTROLES DE TELA DE LOGIN / ADMIN ---
+        // --- CONTROLES DA TELA ADMIN ---
         function abrirTelaAdmin() {
             document.getElementById('screenLogin').classList.add('hidden');
             document.getElementById('screenAdmin').classList.remove('hidden');
@@ -449,14 +492,37 @@
         }
 
         function validarAdmin() {
-            const senha = document.getElementById('adminPassInput').value;
-            if (senha === SENHA_ADMIN_MESTRE) {
+            const userDigitado = document.getElementById('adminUserInput').value.trim();
+            const passDigitada = document.getElementById('adminPassInput').value.trim();
+
+            const credsMaster = JSON.parse(localStorage.getItem('talkbox_admin_creds'));
+
+            if (userDigitado === credsMaster.user && passDigitada === credsMaster.pass) {
                 document.getElementById('adminLoginBox').classList.add('hidden');
                 document.getElementById('adminDashboardBox').classList.remove('hidden');
+                
+                // Preenche os campos de alteração com os dados atuais
+                document.getElementById('newAdminUser').value = credsMaster.user;
+                document.getElementById('newAdminPass').value = credsMaster.pass;
+
                 atualizarTabelaAdmin();
             } else {
-                alert('Senha de administrador incorreta!');
+                alert('Usuário ou senha de administrador incorretos!');
             }
+        }
+
+        function alterarCredenciaisAdmin() {
+            const novoUser = document.getElementById('newAdminUser').value.trim();
+            const novaPass = document.getElementById('newAdminPass').value.trim();
+
+            if (!novoUser || !novaPass) {
+                return alert('Preencha o novo usuário e a nova senha do Admin!');
+            }
+
+            const novasCreds = { user: novoUser, pass: novaPass };
+            localStorage.setItem('talkbox_admin_creds', JSON.stringify(novasCreds));
+
+            alert('Credenciais do Administrador alteradas com sucesso!\nGuarde seu novo usuário e senha.');
         }
 
         function fecharAdmin() {
@@ -464,18 +530,18 @@
             document.getElementById('screenLogin').classList.remove('hidden');
         }
 
-        // --- GESTÃO DE USUÁRIOS NO PAINEL ADMIN ---
+        // --- GESTÃO DE USUÁRIOS DE CLIENTE NO PAINEL ---
         function criarUsuario(tipo) {
             const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
             const randomID = Math.floor(1000 + Math.random() * 9000);
             const novoUser = tipo === 'teste' ? `teste_${randomID}` : `cliente_${randomID}`;
             const novaSenha = `${Math.floor(100 + Math.random() * 900)}`;
-            const expiraTime = tipo === 'teste' ? Date.now() + (2 * 60 * 60 * 1000) : null; // 2 horas para teste
+            const expiraTime = tipo === 'teste' ? Date.now() + (2 * 60 * 60 * 1000) : null;
 
             usuarios.push({ usuario: novoUser, senha: novaSenha, tipo: tipo, expira: expiraTime });
             localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
             atualizarTabelaAdmin();
-            alert(`Usuário criado com sucesso!\nUser: ${novoUser}\nSenha: ${novaSenha}`);
+            alert(`Acesso criado com sucesso!\nUsuário: ${novoUser}\nSenha: ${novaSenha}`);
         }
 
         function atualizarTabelaAdmin() {
@@ -514,7 +580,6 @@
                 return alert('Usuário ou senha inválidos!');
             }
 
-            // Verifica validade se for teste
             if (encontrado.expira && Date.now() > encontrado.expira) {
                 return alert('Este acesso de teste expirou!');
             }
@@ -537,7 +602,7 @@
             location.reload();
         }
 
-        // --- CARREGA CONTEÚDO DE DEMONSTRAÇÃO/EXEMPLO NO PLAYER ---
+        // --- CONTEÚDO DE DEMONSTRAÇÃO ---
         function carregarListaPadrao() {
             todosOsItens = [
                 { nome: 'Globo SP HD', grupo: 'Canais Abertos', logo: '', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', tipo: 'canal' },
