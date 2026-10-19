@@ -205,11 +205,11 @@
 
         .tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px 4px;
             background: transparent;
             border: none;
             color: #a8a8b3;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
@@ -241,12 +241,13 @@
         .media-item {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             padding: 8px;
             background: #202024;
             border-radius: 6px;
             cursor: pointer;
             transition: transform 0.1s, background 0.2s;
+            position: relative;
         }
 
         .media-item:hover {
@@ -263,6 +264,7 @@
         }
 
         .media-info {
+            flex: 1;
             overflow: hidden;
         }
 
@@ -280,6 +282,19 @@
             margin-top: 2px;
         }
 
+        .btn-fav {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            color: #555;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .btn-fav.active {
+            color: #ffca28;
+        }
+
         .content-area {
             flex: 1;
             display: flex;
@@ -288,11 +303,27 @@
             position: relative;
         }
 
+        .player-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #202024;
+            border-bottom: 1px solid #29292e;
+        }
+
+        .player-toolbar span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
         .player-wrapper {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .video-js {
@@ -430,6 +461,7 @@
                 <button class="tab-btn active" onclick="filtrarTipo('canal', event)">Canais</button>
                 <button class="tab-btn" onclick="filtrarTipo('filme', event)">Filmes</button>
                 <button class="tab-btn" onclick="filtrarTipo('serie', event)">Séries</button>
+                <button class="tab-btn" onclick="filtrarTipo('favorito', event)">⭐ Favoritos</button>
             </div>
             <div class="search-box">
                 <input type="text" id="inputBusca" placeholder="Buscar no Talkbox..." oninput="filtrarGeral()">
@@ -440,6 +472,10 @@
         </div>
 
         <div class="content-area">
+            <div id="playerHeader" class="player-toolbar hidden">
+                <span id="playerTitle">Reproduzindo...</span>
+                <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="expandirTelaCheia()">📺 Tela Cheia</button>
+            </div>
             <div class="player-wrapper">
                 <div id="noVideo" class="placeholder-text">
                     <h2>Nenhum vídeo selecionado</h2>
@@ -455,6 +491,7 @@
 
     <script>
         let todosOsItens = [];
+        let favoritos = JSON.parse(localStorage.getItem('talkbox_favs') || '[]');
         let tipoAtual = 'canal';
         let player = null;
 
@@ -503,10 +540,10 @@
                     localStorage.setItem('talkbox_m3u_url', url);
                     localStorage.setItem('talkbox_m3u_text', texto);
                     processarM3U(texto);
-                    alert('Lista IPTV carregada com sucesso! Todos os itens foram sincronizados.');
+                    alert('Lista IPTV carregada com sucesso!');
                 })
                 .catch(err => {
-                    alert('Erro ao carregar a URL M3U. Verifique se o link é válido ou se há bloqueio no servidor.');
+                    alert('Erro ao carregar a URL M3U.');
                 });
         }
 
@@ -534,4 +571,247 @@
                         const g = (itemAtual.grupo || '').toLowerCase();
                         const urlLower = linha.toLowerCase();
 
-                        // Classificação ultra
+                        if (g.includes('serie') || g.includes('série') || g.includes('series') || urlLower.includes('/series/')) {
+                            itemAtual.tipo = 'serie';
+                        } else if (g.includes('filme') || g.includes('vod') || g.includes('movie') || g.includes('movies') || urlLower.endsWith('.mp4') || urlLower.endsWith('.mkv') || urlLower.includes('/movie/')) {
+                            itemAtual.tipo = 'filme';
+                        } else {
+                            itemAtual.tipo = 'canal';
+                        }
+
+                        if (itemAtual.nome && itemAtual.url) {
+                            itens.push(itemAtual);
+                        }
+                        itemAtual = null;
+                    }
+                }
+            });
+
+            todosOsItens = itens;
+            renderizarLista();
+        }
+
+        // --- SISTEMA DE FAVORITOS ---
+        function toggleFavorito(item, event) {
+            event.stopPropagation();
+            const index = favoritos.findIndex(f => f.url === item.url);
+            if (index >= 0) {
+                favoritos.splice(index, 1);
+            } else {
+                favoritos.push(item);
+            }
+            localStorage.setItem('talkbox_favs', JSON.stringify(favoritos));
+            renderizarLista();
+        }
+
+        function eFavorito(item) {
+            return favoritos.some(f => f.url === item.url);
+        }
+
+        // --- CONTROLES DE REPRODUÇÃO E TELA CHEIA ---
+        function reproduzir(item) {
+            document.getElementById('noVideo').classList.add('hidden');
+            document.getElementById('playerHeader').classList.remove('hidden');
+            document.getElementById('playerTitle').innerText = item.nome;
+
+            const playerEl = document.getElementById('iptvPlayer');
+            playerEl.classList.remove('hidden');
+
+            let tipoMidia = 'application/x-mpegURL';
+            if (item.url.endsWith('.mp4')) tipoMidia = 'video/mp4';
+            if (item.url.endsWith('.mkv')) tipoMidia = 'video/x-matroska';
+
+            player.src({ src: item.url, type: tipoMidia });
+            player.play();
+        }
+
+        function expandirTelaCheia() {
+            if (player.requestFullscreen) {
+                player.requestFullscreen();
+            } else if (player.isFullscreen_) {
+                player.exitFullscreen();
+            }
+        }
+
+        // --- CONTROLES DE ADMIN E LOGIN ---
+        function abrirTelaAdmin() {
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('screenAdmin').classList.remove('hidden');
+            document.getElementById('adminLoginBox').classList.remove('hidden');
+            document.getElementById('adminDashboardBox').classList.add('hidden');
+        }
+
+        function voltarLoginCliente() {
+            document.getElementById('screenAdmin').classList.add('hidden');
+            document.getElementById('screenLogin').classList.remove('hidden');
+        }
+
+        function validarAdmin() {
+            const user = document.getElementById('adminUserInput').value.trim();
+            const pass = document.getElementById('adminPassInput').value.trim();
+            const creds = JSON.parse(localStorage.getItem('talkbox_admin_creds'));
+
+            if (user === creds.user && pass === creds.pass) {
+                document.getElementById('adminLoginBox').classList.add('hidden');
+                document.getElementById('adminDashboardBox').classList.remove('hidden');
+                
+                document.getElementById('adminM3uUrl').value = localStorage.getItem('talkbox_m3u_url') || '';
+                document.getElementById('newAdminUser').value = creds.user;
+                document.getElementById('newAdminPass').value = creds.pass;
+
+                atualizarTabelaAdmin();
+            } else {
+                alert('Usuário ou senha de administrador incorretos!');
+            }
+        }
+
+        function alterarCredenciaisAdmin() {
+            const novoUser = document.getElementById('newAdminUser').value.trim();
+            const novaPass = document.getElementById('newAdminPass').value.trim();
+
+            if (!novoUser || !novaPass) return alert('Preencha os novos dados!');
+
+            localStorage.setItem('talkbox_admin_creds', JSON.stringify({ user: novoUser, pass: novaPass }));
+            alert('Novas credenciais de Admin salvas com sucesso!');
+        }
+
+        function fecharAdmin() {
+            document.getElementById('screenAdmin').classList.add('hidden');
+            if (!localStorage.getItem('talkbox_session')) {
+                document.getElementById('screenLogin').classList.remove('hidden');
+            }
+        }
+
+        function criarUsuario(tipo) {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            const novoUser = tipo === 'teste' ? `teste_${randomID}` : `cliente_${randomID}`;
+            const novaSenha = `${Math.floor(100 + Math.random() * 900)}`;
+            const expiraTime = tipo === 'teste' ? Date.now() + (2 * 60 * 60 * 1000) : null;
+
+            usuarios.push({ usuario: novoUser, senha: novaSenha, tipo: tipo, expira: expiraTime });
+            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
+            atualizarTabelaAdmin();
+            alert(`Acesso Gerado!\nUsuário: ${novoUser}\nSenha: ${novaSenha}`);
+        }
+
+        function atualizarTabelaAdmin() {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            const tbody = document.getElementById('tabelaUsuariosAdmin');
+            tbody.innerHTML = '';
+
+            usuarios.forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${u.usuario}</td>
+                    <td>${u.senha}</td>
+                    <td>${u.tipo.toUpperCase()}</td>
+                    <td><button style="padding:2px 5px; font-size:0.7rem; background:#e52e2e;" onclick="excluirUsuario(${index})">Excluir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function excluirUsuario(index) {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            usuarios.splice(index, 1);
+            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
+            atualizarTabelaAdmin();
+        }
+
+        function realizarLoginCliente() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users') || '[]');
+
+            const encontrado = usuarios.find(u => u.usuario === user && u.senha === pass);
+
+            if (!encontrado) return alert('Usuário ou senha inválidos!');
+            if (encontrado.expira && Date.now() > encontrado.expira) return alert('Acesso de teste expirado!');
+
+            localStorage.setItem('talkbox_session', user);
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('txtUserConectado').innerText = `Usuário: ${user}`;
+        }
+
+        function entrarModoDemonstracao() {
+            localStorage.setItem('talkbox_session', 'Modo Demo');
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('txtUserConectado').innerText = 'Modo Demo';
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('talkbox_session');
+            location.reload();
+        }
+
+        function carregarListaDemo() {
+            todosOsItens = [
+                { nome: 'Globo SP HD (Demo)', grupo: 'Canais Abertos', logo: '', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', tipo: 'canal' },
+                { nome: 'Big Buck Bunny (Demo)', grupo: 'Filmes - Animação', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', tipo: 'filme' }
+            ];
+            renderizarLista();
+        }
+
+        function filtrarTipo(tipo, evt) {
+            tipoAtual = tipo;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (evt) evt.target.classList.add('active');
+            renderizarLista();
+        }
+
+        function filtrarGeral() { renderizarLista(); }
+
+        function renderizarLista() {
+            const container = document.getElementById('listaConteudo');
+            const termoBusca = document.getElementById('inputBusca').value.toLowerCase();
+            container.innerHTML = '';
+
+            let listaBase = tipoAtual === 'favorito' ? favoritos : todosOsItens;
+
+            const filtrados = listaBase.filter(item => {
+                const bateuTipo = (tipoAtual === 'favorito') || (item.tipo === tipoAtual);
+                const bateuBusca = item.nome.toLowerCase().includes(termoBusca) || item.grupo.toLowerCase().includes(termoBusca);
+                return bateuTipo && bateuBusca;
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div class="placeholder-text" style="margin-top:20px;">Nenhum item encontrado nesta categoria.</div>';
+                return;
+            }
+
+            filtrados.forEach(item => {
+                const fav = eFavorito(item);
+                const el = document.createElement('div');
+                el.className = 'media-item';
+                el.onclick = () => reproduzir(item);
+                el.innerHTML = `
+                    <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/202024/ffffff?text=IPTV'">
+                    <div class="media-info">
+                        <div class="media-title">${item.nome}</div>
+                        <div class="media-category">${item.grupo}</div>
+                    </div>
+                    <button class="btn-fav ${fav ? 'active' : ''}" onclick="toggleFavorito(${JSON.stringify(item).replace(/"/g, '&quot;')}, event)">★</button>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function reproduzir(item) {
+            document.getElementById('noVideo').classList.add('hidden');
+            document.getElementById('playerHeader').classList.remove('hidden');
+            document.getElementById('playerTitle').innerText = item.nome;
+
+            const playerEl = document.getElementById('iptvPlayer');
+            playerEl.classList.remove('hidden');
+
+            let tipoMidia = 'application/x-mpegURL';
+            if (item.url.endsWith('.mp4')) tipoMidia = 'video/mp4';
+            if (item.url.endsWith('.mkv')) tipoMidia = 'video/x-matroska';
+
+            player.src({ src: item.url, type: tipoMidia });
+            player.play();
+        }
+    </script>
+</body>
+</html>
