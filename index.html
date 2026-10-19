@@ -27,6 +27,119 @@
             overflow: hidden;
         }
 
+        /* --- TELAS DE LOGIN E ADMIN --- */
+        .screen-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #121214;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .card-box {
+            background: #202024;
+            padding: 32px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid #29292e;
+        }
+
+        .card-box h2 {
+            color: #8257e5;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            color: #a8a8b3;
+        }
+
+        input[type="text"], input[type="password"] {
+            background: #121214;
+            border: 1px solid #29292e;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #8257e5;
+        }
+
+        button {
+            background: #8257e5;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #996dff;
+        }
+
+        .btn-secondary {
+            background: #29292e;
+            color: #a8a8b3;
+        }
+
+        .btn-secondary:hover {
+            background: #323238;
+            color: #fff;
+        }
+
+        .link-admin {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #737380;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .link-admin:hover {
+            color: #8257e5;
+            text-decoration: underline;
+        }
+
+        /* --- PAINEL ADMIN INTERNO --- */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .admin-table th, .admin-table td {
+            border: 1px solid #29292e;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .admin-table th {
+            background: #121214;
+            color: #8257e5;
+        }
+
+        /* --- INTERFACE PRINCIPAL DO APP --- */
         header {
             background-color: #202024;
             padding: 12px 20px;
@@ -45,41 +158,12 @@
             gap: 8px;
         }
 
-        .controls-top {
+        .user-info {
             display: flex;
-            gap: 10px;
             align-items: center;
-        }
-
-        input[type="text"], select {
-            background: #121214;
-            border: 1px solid #29292e;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            outline: none;
-            font-size: 0.9rem;
-        }
-
-        input[type="text"]:focus {
-            border-color: #8257e5;
-        }
-
-        button, label.btn {
-            background: #8257e5;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-            display: inline-block;
-        }
-
-        button:hover, label.btn:hover {
-            background: #996dff;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #a8a8b3;
         }
 
         .main-container {
@@ -89,7 +173,7 @@
         }
 
         .sidebar {
-            width: 320px;
+            width: 340px;
             background: #121214;
             border-right: 1px solid #29292e;
             display: flex;
@@ -104,18 +188,19 @@
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             background: transparent;
             border: none;
             color: #a8a8b3;
-            border-radius: 0;
             font-size: 0.85rem;
+            cursor: pointer;
         }
 
         .tab-btn.active {
             color: #fff;
             border-bottom: 2px solid #8257e5;
             background: #121214;
+            font-weight: bold;
         }
 
         .search-box {
@@ -140,7 +225,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px;
+            padding: 10px;
             background: #202024;
             border-radius: 6px;
             cursor: pointer;
@@ -149,14 +234,14 @@
 
         .media-item:hover {
             background: #29292e;
-            transform: translateX(2px);
+            transform: translateX(3px);
         }
 
         .media-item img {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
             background: #000;
         }
 
@@ -175,6 +260,7 @@
         .media-category {
             font-size: 0.75rem;
             color: #a8a8b3;
+            margin-top: 3px;
         }
 
         .content-area {
@@ -202,28 +288,6 @@
             text-align: center;
         }
 
-        /* Modal para carregar M3U */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: #202024;
-            padding: 24px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 450px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
         .hidden { display: none !important; }
 
         @media (max-width: 768px) {
@@ -235,60 +299,107 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo">
-            📺 Talkbox IPTV
+    <!-- 1. TELA DE LOGIN DO CLIENTE -->
+    <div id="screenLogin" class="screen-overlay">
+        <div class="card-box">
+            <h2>📺 Talkbox IPTV</h2>
+            <p style="font-size:0.85rem; color:#a8a8b3; text-align:center;">Digite seu usuário e senha para acessar</p>
+            
+            <div class="input-group">
+                <label>Usuário</label>
+                <input type="text" id="loginUser" placeholder="Seu usuário">
+            </div>
+
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="loginPass" placeholder="Sua senha">
+            </div>
+
+            <button onclick="realizarLoginCliente()">Entrar no App</button>
+            <button class="btn-secondary" onclick="entrarModoDemonstracao()">Modo Demonstração</button>
+            <div class="link-admin" onclick="abrirTelaAdmin()">⚙️ Área do Administrador</div>
         </div>
-        <div class="controls-top">
-            <button onclick="abrirModal()">+ Carregar Lista</button>
+    </div>
+
+    <!-- 2. TELA DO PAINEL ADMINISTRATIVO (SECRETO) -->
+    <div id="screenAdmin" class="screen-overlay hidden">
+        <div class="card-box" style="max-width: 600px;">
+            <h2>🔐 Painel Administrativo</h2>
+            
+            <!-- Login do Admin -->
+            <div id="adminLoginBox">
+                <p style="font-size:0.85rem; color:#a8a8b3;">Digite a senha de Administrador para gerenciar usuários:</p>
+                <div class="input-group">
+                    <label>Senha Master</label>
+                    <input type="password" id="adminPassInput" placeholder="Senha do painel">
+                </div>
+                <button onclick="validarAdmin()">Entrar no Painel</button>
+                <button class="btn-secondary" onclick="voltarLoginCliente()">Voltar</button>
+            </div>
+
+            <!-- Conteúdo do Painel (Visível após logar) -->
+            <div id="adminDashboardBox" class="hidden">
+                <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9rem; color: #8257e5; font-weight: bold;">Gerenciar Acessos</span>
+                    <button class="btn-secondary" style="padding: 6px 10px; font-size: 0.75rem;" onclick="fecharAdmin()">Sair do Painel</button>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button style="flex:1; font-size: 0.85rem; padding: 8px;" onclick="criarUsuario('teste')">+ Gerar Teste (2h)</button>
+                    <button style="flex:1; font-size: 0.85rem; padding: 8px; background: #04d361;" onclick="criarUsuario('permanente')">+ Gerar Permanente</button>
+                </div>
+
+                <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Senha</th>
+                                <th>Tipo</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaUsuariosAdmin">
+                            <!-- Lista injetada via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERFACE PRINCIPAL DO APP -->
+    <header>
+        <div class="logo">📺 Talkbox IPTV</div>
+        <div class="user-info">
+            <span id="txtUserConectado">Usuário</span>
+            <button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="fazerLogout()">Sair</button>
         </div>
     </header>
 
     <div class="main-container">
-        <!-- Barra Lateral: Lista de Canais / Filmes -->
         <div class="sidebar">
             <div class="nav-tabs">
-                <button class="tab-btn active" onclick="filtrarTipo('canal')">Canais</button>
-                <button class="tab-btn" onclick="filtrarTipo('filme')">Filmes</button>
-                <button class="tab-btn" onclick="filtrarTipo('serie')">Séries</button>
+                <button class="tab-btn active" onclick="filtrarTipo('canal', event)">Canais</button>
+                <button class="tab-btn" onclick="filtrarTipo('filme', event)">Filmes</button>
+                <button class="tab-btn" onclick="filtrarTipo('serie', event)">Séries</button>
             </div>
             <div class="search-box">
                 <input type="text" id="inputBusca" placeholder="Buscar no Talkbox..." oninput="filtrarGeral()">
             </div>
             <div class="content-list" id="listaConteudo">
-                <div class="placeholder-text" style="margin-top: 20px;">Nenhuma lista carregada. Clique em "+ Carregar Lista".</div>
+                <div class="placeholder-text" style="margin-top: 20px;">Carregando conteúdo...</div>
             </div>
         </div>
 
-        <!-- Área Central: Player de Vídeo -->
         <div class="content-area">
             <div class="player-wrapper">
                 <div id="noVideo" class="placeholder-text">
                     <h2>Nenhum vídeo selecionado</h2>
-                    <p>Escolha um canal ou filme na lista para começar a assistir.</p>
+                    <p>Escolha um canal ou filme na lista ao lado para assistir.</p>
                 </div>
                 <video id="iptvPlayer" class="video-js vjs-big-play-centered hidden" controls preload="auto"></video>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal para entrada da Lista M3U -->
-    <div id="modalLista" class="modal hidden">
-        <div class="modal-content">
-            <h3>Carregar Lista IPTV</h3>
-            <p style="font-size: 0.85rem; color: #a8a8b3;">Cole o link .m3u / .m3u8 ou envie o arquivo do seu dispositivo:</p>
-
-            <input type="text" id="urlM3U" placeholder="https://exemplo.com/lista.m3u">
-            <button onclick="carregarPorURL()">Baixar Lista via URL</button>
-
-            <hr style="border-color: #29292e;">
-
-            <label class="btn" style="text-align: center;">
-                Escolher Arquivo .m3u
-                <input type="file" id="fileM3U" accept=".m3u,.m3u8" style="display: none;" onchange="carregarPorArquivo(event)">
-            </label>
-
-            <button style="background: #29292e;" onclick="fecharModal()">Cancelar</button>
         </div>
     </div>
 
@@ -300,95 +411,147 @@
         let tipoAtual = 'canal';
         let player = null;
 
-        // Inicializa o player de vídeo
+        // Senha padrão do seu painel admin (mude aqui se quiser)
+        const SENHA_ADMIN_MESTRE = "admin123";
+
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptvPlayer');
-            
-            // Carrega lista salva se existir no navegador
-            const listaSalva = localStorage.getItem('talkbox_iptv_data');
-            if (listaSalva) {
-                todosOsItens = JSON.parse(listaSalva);
-                renderizarLista();
-            } else {
-                abrirModal();
+
+            // Garante usuários padrão iniciais se não existirem
+            if (!localStorage.getItem('talkbox_db_users')) {
+                const usuariosIniciais = [
+                    { usuario: "teste1", senha: "123", tipo: "teste", expira: Date.now() + (2 * 60 * 60 * 1000) },
+                    { usuario: "vip", senha: "456", tipo: "permanente", expira: null }
+                ];
+                localStorage.setItem('talkbox_db_users', JSON.stringify(usuariosIniciais));
+            }
+
+            // Verifica sessão ativa
+            const sessao = localStorage.getItem('talkbox_session');
+            if (sessao) {
+                document.getElementById('screenLogin').classList.add('hidden');
+                document.getElementById('txtUserConectado').innerText = `Usuário: ${sessao}`;
+                carregarListaPadrao();
             }
         });
 
-        function abrirModal() { document.getElementById('modalLista').classList.remove('hidden'); }
-        function fecharModal() { document.getElementById('modalLista').classList.add('hidden'); }
+        // --- CONTROLES DE TELA DE LOGIN / ADMIN ---
+        function abrirTelaAdmin() {
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('screenAdmin').classList.remove('hidden');
+            document.getElementById('adminLoginBox').classList.remove('hidden');
+            document.getElementById('adminDashboardBox').classList.add('hidden');
+        }
 
-        // Faz a leitura e interpretação do texto .m3u
-        function processarM3U(texto) {
-            const linhas = texto.split('\n');
-            const itens = [];
-            let itemAtual = {};
+        function voltarLoginCliente() {
+            document.getElementById('screenAdmin').classList.add('hidden');
+            document.getElementById('screenLogin').classList.remove('hidden');
+        }
 
-            linhas.forEach(linha => {
-                linha = linha.trim();
-                if (linha.startsWith('#EXTINF:')) {
-                    itemAtual = {};
-                    
-                    // Extrai o Nome
-                    const partes = linha.split(',');
-                    itemAtual.nome = partes[partes.length - 1].trim();
+        function validarAdmin() {
+            const senha = document.getElementById('adminPassInput').value;
+            if (senha === SENHA_ADMIN_MESTRE) {
+                document.getElementById('adminLoginBox').classList.add('hidden');
+                document.getElementById('adminDashboardBox').classList.remove('hidden');
+                atualizarTabelaAdmin();
+            } else {
+                alert('Senha de administrador incorreta!');
+            }
+        }
 
-                    // Extrai a Capa/Logo
-                    const logoMatch = linha.match(/tvg-logo="([^"]*)"/);
-                    itemAtual.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/202024/ffffff?text=IPTV';
+        function fecharAdmin() {
+            document.getElementById('screenAdmin').classList.add('hidden');
+            document.getElementById('screenLogin').classList.remove('hidden');
+        }
 
-                    // Extrai o Grupo/Categoria
-                    const grupoMatch = linha.match(/group-title="([^"]*)"/);
-                    itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Geral';
+        // --- GESTÃO DE USUÁRIOS NO PAINEL ADMIN ---
+        function criarUsuario(tipo) {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            const novoUser = tipo === 'teste' ? `teste_${randomID}` : `cliente_${randomID}`;
+            const novaSenha = `${Math.floor(100 + Math.random() * 900)}`;
+            const expiraTime = tipo === 'teste' ? Date.now() + (2 * 60 * 60 * 1000) : null; // 2 horas para teste
 
-                } else if (linha && !linha.startsWith('#')) {
-                    itemAtual.url = linha;
-                    
-                    const g = (itemAtual.grupo || '').toLowerCase();
-                    if (g.includes('filme') || g.includes('vod') || linha.endsWith('.mp4') || linha.endsWith('.mkv')) {
-                        itemAtual.tipo = 'filme';
-                    } else if (g.includes('serie') || g.includes('série')) {
-                        itemAtual.tipo = 'serie';
-                    } else {
-                        itemAtual.tipo = 'canal';
-                    }
+            usuarios.push({ usuario: novoUser, senha: novaSenha, tipo: tipo, expira: expiraTime });
+            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
+            atualizarTabelaAdmin();
+            alert(`Usuário criado com sucesso!\nUser: ${novoUser}\nSenha: ${novaSenha}`);
+        }
 
-                    if (itemAtual.nome && itemAtual.url) {
-                        itens.push(itemAtual);
-                    }
-                }
+        function atualizarTabelaAdmin() {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            const tbody = document.getElementById('tabelaUsuariosAdmin');
+            tbody.innerHTML = '';
+
+            usuarios.forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${u.usuario}</td>
+                    <td>${u.senha}</td>
+                    <td>${u.tipo.toUpperCase()}</td>
+                    <td><button style="padding: 3px 6px; font-size:0.7rem; background:#e52e2e;" onclick="excluirUsuario(${index})">Excluir</button></td>
+                `;
+                tbody.appendChild(tr);
             });
+        }
 
-            todosOsItens = itens;
-            localStorage.setItem('talkbox_iptv_data', JSON.stringify(itens));
+        function excluirUsuario(index) {
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users'));
+            usuarios.splice(index, 1);
+            localStorage.setItem('talkbox_db_users', JSON.stringify(usuarios));
+            atualizarTabelaAdmin();
+        }
+
+        // --- LOGIN DO CLIENTE ---
+        function realizarLoginCliente() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+
+            const usuarios = JSON.parse(localStorage.getItem('talkbox_db_users') || '[]');
+            const encontrado = usuarios.find(u => u.usuario === user && u.senha === pass);
+
+            if (!encontrado) {
+                return alert('Usuário ou senha inválidos!');
+            }
+
+            // Verifica validade se for teste
+            if (encontrado.expira && Date.now() > encontrado.expira) {
+                return alert('Este acesso de teste expirou!');
+            }
+
+            localStorage.setItem('talkbox_session', user);
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('txtUserConectado').innerText = `Usuário: ${user}`;
+            carregarListaPadrao();
+        }
+
+        function entrarModoDemonstracao() {
+            localStorage.setItem('talkbox_session', 'Modo Demo');
+            document.getElementById('screenLogin').classList.add('hidden');
+            document.getElementById('txtUserConectado').innerText = 'Modo Demo';
+            carregarListaPadrao();
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('talkbox_session');
+            location.reload();
+        }
+
+        // --- CARREGA CONTEÚDO DE DEMONSTRAÇÃO/EXEMPLO NO PLAYER ---
+        function carregarListaPadrao() {
+            todosOsItens = [
+                { nome: 'Globo SP HD', grupo: 'Canais Abertos', logo: '', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', tipo: 'canal' },
+                { nome: 'ESPN Brasil HD', grupo: 'Esportes', logo: '', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', tipo: 'canal' },
+                { nome: 'Big Buck Bunny', grupo: 'Filmes - Animação', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', tipo: 'filme' },
+                { nome: 'Sintel', grupo: 'Filmes - Ação', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', tipo: 'filme' }
+            ];
             renderizarLista();
-            fecharModal();
         }
 
-        function carregarPorURL() {
-            const url = document.getElementById('urlM3U').value;
-            if (!url) return alert('Por favor, informe uma URL válida!');
-            
-            fetch(url)
-                .then(res => res.text())
-                .then(texto => processarM3U(texto))
-                .catch(err => alert('Erro ao carregar lista. Verifique o link ou problemas de CORS.'));
-        }
-
-        function carregarPorArquivo(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                processarM3U(e.target.result);
-            };
-            reader.readAsText(file);
-        }
-
-        function filtrarTipo(tipo) {
+        function filtrarTipo(tipo, evt) {
             tipoAtual = tipo;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (evt) evt.target.classList.add('active');
             renderizarLista();
         }
 
@@ -432,15 +595,10 @@
             const playerEl = document.getElementById('iptvPlayer');
             playerEl.classList.remove('hidden');
 
-            let tipoMidia = 'application/x-mpegURL'; // Padrão HLS (.m3u8)
+            let tipoMidia = 'application/x-mpegURL';
             if (item.url.endsWith('.mp4')) tipoMidia = 'video/mp4';
-            if (item.url.endsWith('.mkv')) tipoMidia = 'video/x-matroska';
 
-            player.src({
-                src: item.url,
-                type: tipoMidia
-            });
-
+            player.src({ src: item.url, type: tipoMidia });
             player.play();
         }
     </script>
