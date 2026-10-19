@@ -9,6 +9,8 @@
 
     <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
+    <!-- Plugin de Qualidade e Seleção de Resolução -->
+    <link href="https://unpkg.com/@silvermine/videojs-quality-selector/dist/silvermine-videojs-quality-selector.css" rel="stylesheet">
 
     <style>
         * {
@@ -206,6 +208,32 @@
             background: rgba(40, 10, 80, 0.6);
         }
 
+        .quality-filter {
+            display: flex;
+            gap: 5px;
+            padding: 8px 12px;
+            background: rgba(10, 0, 25, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: center;
+        }
+
+        .q-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #e9d5ff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .q-btn.active {
+            background: #a855f7;
+            color: #fff;
+            border-color: #38bdf8;
+        }
+
         .search-box {
             padding: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -269,6 +297,18 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-res {
+            font-size: 0.65rem;
+            background: #38bdf8;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 900;
         }
 
         .media-category {
@@ -418,6 +458,14 @@
                 <span id="tituloSecao">Canais de TV</span>
                 <span id="contadorItens" style="color:#38bdf8;">0 itens</span>
             </div>
+            <!-- FILTRO DE RESOLUÇÃO SELECIONÁVEL -->
+            <div class="quality-filter">
+                <button class="q-btn active" onclick="filtrarResolucoes('TODAS', event)">TODAS</button>
+                <button class="q-btn" onclick="filtrarResolucoes('4K', event)">4K</button>
+                <button class="q-btn" onclick="filtrarResolucoes('FHD', event)">FHD</button>
+                <button class="q-btn" onclick="filtrarResolucoes('HD', event)">HD</button>
+                <button class="q-btn" onclick="filtrarResolucoes('SD', event)">SD</button>
+            </div>
             <div class="search-box">
                 <input type="text" id="inputBusca" placeholder="Pesquisar..." oninput="filtrarGeral()">
             </div>
@@ -438,19 +486,28 @@
         </div>
     </div>
 
+    <!-- Video.js & Quality Selector Scripts -->
     <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+    <script src="https://unpkg.com/@silvermine/videojs-quality-selector/dist/silvermine-videojs-quality-selector.min.js"></script>
 
     <script>
         let todosOsItens = [];
         let favoritos = JSON.parse(localStorage.getItem('talkbox_favs') || '[]');
         let tipoAtual = 'canal';
+        let resolucaoFiltro = 'TODAS';
         let player = null;
 
-        // LISTA PADRÃO CASO NÃO TENHA M3U SALVA
         const LISTA_PADRAO = "https://iptv-org.github.io/iptv/countries/br.m3u";
 
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptvPlayer');
+
+            // Ativa o Seletor de Qualidade no Player do Video.js
+            if (player.controlBar && player.controlBar.addChild) {
+                try {
+                    player.controlBar.addChild('QualitySelector');
+                } catch(e) {}
+            }
 
             if (!localStorage.getItem('talkbox_admin_creds')) {
                 localStorage.setItem('talkbox_admin_creds', JSON.stringify({ user: "admin", pass: "admin123" }));
@@ -467,7 +524,6 @@
             if (m3uSalva) {
                 processarM3U(m3uSalva);
             } else {
-                // Se não tiver M3U salva, baixa a lista padrão automaticamente
                 baixarLista(LISTA_PADRAO);
             }
 
@@ -483,9 +539,7 @@
                 .then(texto => {
                     localStorage.setItem('talkbox_m3u_text', texto);
                     processarM3U(texto);
-                }).catch(() => {
-                    carregarDemoManual();
-                });
+                }).catch(() => {});
         }
 
         function salvarEProcessarM3U() {
@@ -520,6 +574,14 @@
 
                     const grupoMatch = linha.match(/group-title="([^"]*)"/);
                     itemAtual.grupo = grupoMatch ? grupoMatch[1] : 'Geral';
+
+                    // Identifica automaticamente a Resolução pelo título do canal/filme
+                    const n = itemAtual.nome.toUpperCase();
+                    if (n.includes('4K') || n.includes('UHD')) itemAtual.res = '4K';
+                    else if (n.includes('FHD') || n.includes('1080')) itemAtual.res = 'FHD';
+                    else if (n.includes('HD') || n.includes('720')) itemAtual.res = 'HD';
+                    else itemAtual.res = 'SD';
+
                 } else if (linha && !linha.startsWith('#')) {
                     if (itemAtual) {
                         itemAtual.url = linha;
@@ -560,7 +622,7 @@
         function reproduzir(item) {
             document.getElementById('noVideo').classList.add('hidden');
             document.getElementById('playerHeader').classList.remove('hidden');
-            document.getElementById('playerTitle').innerText = item.nome;
+            document.getElementById('playerTitle').innerText = `${item.nome} [${item.res}]`;
 
             const playerEl = document.getElementById('iptvPlayer');
             playerEl.classList.remove('hidden');
@@ -647,6 +709,13 @@
             renderizarLista();
         }
 
+        function filtrarResolucoes(res, evt) {
+            resolucaoFiltro = res;
+            document.querySelectorAll('.q-btn').forEach(btn => btn.classList.remove('active'));
+            if (evt) evt.target.classList.add('active');
+            renderizarLista();
+        }
+
         function filtrarGeral() { renderizarLista(); }
 
         function renderizarLista() {
@@ -659,13 +728,14 @@
             const filtrados = listaBase.filter(item => {
                 const bateuTipo = (tipoAtual === 'favorito') || (item.tipo === tipoAtual);
                 const bateuBusca = item.nome.toLowerCase().includes(termoBusca) || item.grupo.toLowerCase().includes(termoBusca);
-                return bateuTipo && bateuBusca;
+                const bateuRes = (resolucaoFiltro === 'TODAS') || (item.res === resolucaoFiltro);
+                return bateuTipo && bateuBusca && bateuRes;
             });
 
             document.getElementById('contadorItens').innerText = `${filtrados.length} itens`;
 
             if (filtrados.length === 0) {
-                container.innerHTML = '<div class="placeholder-text" style="padding:20px;">Nenhum item nesta aba. Cole a URL M3U do seu servidor no Painel Admin para carregar.</div>';
+                container.innerHTML = '<div class="placeholder-text" style="padding:20px;">Nenhum item encontrado nesta resolução.</div>';
                 return;
             }
 
@@ -677,7 +747,7 @@
                 el.innerHTML = `
                     <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150/6b21a8/ffffff?text=TV'">
                     <div class="media-info">
-                        <div class="media-title">${item.nome}</div>
+                        <div class="media-title">${item.nome} <span class="badge-res">${item.res}</span></div>
                         <div class="media-category">${item.grupo}</div>
                     </div>
                     <button class="btn-fav ${fav ? 'active' : ''}" onclick="toggleFavorito(${JSON.stringify(item).replace(/"/g, '&quot;')}, event)">★</button>
